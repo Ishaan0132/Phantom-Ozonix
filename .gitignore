@@ -35,3 +35,4 @@ node_modules
 # Cassius files
 config.js
 .eslintcache
+plugins/private.js
