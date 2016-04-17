@@ -21,12 +21,6 @@ let commands = {
 			this.say(e.name + ": " + e.message);
 		}
 	},
-
-	// General commands
-	about: function (target, room, user) {
-		if (room !== user && !user.hasRank(room, '+')) return;
-		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
-	},
 };
 
 module.exports = commands;
