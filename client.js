@@ -103,6 +103,11 @@ class Client {
 				room = Rooms.add(lines.shift().substr(1));
 			}
 			for (let i = 0, len = lines.length; i < len; i++) {
+				if (lines[i].startsWith('|init|')) {
+					room.onJoin(Users.self, ' ');
+					console.log('Joined room: ' + room.id);
+					return;
+				}
 				this.parseMessage(lines[i], room);
 			}
 		}
@@ -131,10 +136,6 @@ class Client {
 					this.send('|/join ' + Config.rooms[i]);
 				}
 			}
-			break;
-		case 'init':
-			room.onJoin(Users.self, ' ');
-			console.log('Joined room: ' + room.id);
 			break;
 		case 'noinit':
 			console.log('Could not join room: ' + room.id);
