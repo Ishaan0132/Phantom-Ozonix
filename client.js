@@ -181,7 +181,7 @@ class Client {
 			options.method = 'GET';
 			options.path += '?' + querystring.stringify({
 				'act': 'getassertion',
-				'id': Tools.toId(Config.username),
+				'userid': Tools.toId(Config.username),
 				'challengekeyid': this.challengeKeyId,
 				'challenge': this.challenge,
 			});
@@ -209,13 +209,16 @@ class Client {
 					console.log('Failed to log in: ' + data);
 					process.exit();
 				} else {
-					data = JSON.parse(data.substr(1));
-					if (data.actionsuccess) {
-						this.send('|/trn ' + Config.username + ',0,' + data.assertion);
-					} else {
-						console.log('Failed to log in: ' + JSON.stringify(data));
-						process.exit();
+					if (Config.password) {
+						data = JSON.parse(data.substr(1));
+						if (data.actionsuccess) {
+							data = data.assertion;
+						} else {
+							console.log('Failed to log in: ' + JSON.stringify(data));
+							process.exit();
+						}
 					}
+					this.send('|/trn ' + Config.username + ',0,' + data);
 				}
 			});
 		});
