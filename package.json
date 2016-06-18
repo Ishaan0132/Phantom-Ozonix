@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"start": "node app.js",
-		"test": "eslint --cache ."
+		"test": "eslint --cache *.js plugins/"
 	},
 	"main": "app.js",
 	"repository": {

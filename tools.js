@@ -10,6 +10,17 @@
 'use strict';
 
 class Tools {
+	constructor() {
+		this.data = {};
+	}
+
+	loadData() {
+		this.data.pokedex = require('./data/pokedex.js').BattlePokedex;
+		this.data.moves = require('./data/moves.js').BattleMovedex;
+		this.data.items = require('./data/items.js').BattleItems;
+		this.data.abilities = require('./data/abilities.js').BattleAbilities;
+	}
+
 	toId(text) {
 		if (!text) return '';
 		if (text.id) text = text.id;
@@ -54,4 +65,7 @@ class Tools {
 	}
 }
 
-module.exports = new Tools();
+let tools = new Tools();
+tools.loadData();
+
+module.exports = tools;
