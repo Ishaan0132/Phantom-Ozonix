@@ -27,7 +27,7 @@ if (plugins) {
 		let file = plugins[i];
 		if (!file.endsWith('.js')) continue;
 		file = require('./plugins/' + file);
-		if (file.module && file.nameSpace) global[file.nameSpace] = file.module;
+		if (file.plugin && file.plugin.name) global[file.plugin.name] = file.plugin;
 		if (file.commands) Object.assign(commands, file.commands);
 	}
 }
