@@ -61,7 +61,9 @@ class Tools {
 	normalizeMessage(text) {
 		text = this.toString(text);
 		if (!text) return '';
-		return text.trim();
+		text = text.trim();
+		if (text.length > 300) text = text.substr(0, 297) + "...";
+		return text;
 	}
 }
 

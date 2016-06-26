@@ -231,7 +231,7 @@ class Client {
 
 	send(message) {
 		if (!this.connection || !this.connection.connected) return;
-		message = Tools.toString(message);
+		message = Tools.normalizeMessage(message);
 		if (!message) return;
 		if (this.messageQueueTimeout) {
 			this.messageQueue.push(message);
