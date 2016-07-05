@@ -16,6 +16,4 @@ let commands = {
 	},
 };
 
-module.exports = {
-	commands: commands,
-};
+exports.commands = commands;

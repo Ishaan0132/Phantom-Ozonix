@@ -27,22 +27,11 @@ if (plugins) {
 		let file = plugins[i];
 		if (!file.endsWith('.js')) continue;
 		file = require('./plugins/' + file);
-		if (file.plugin && file.plugin.name) global[file.plugin.name] = file.plugin;
-		if (file.commands) Object.assign(commands, file.commands);
-	}
-	if (global.Games) {
-		let games;
-		try {
-			games = fs.readdirSync('./games');
-		} catch (e) {}
-		if (!games) return;
-		for (let i = 0, len = games.length; i < len; i++) {
-			let file = games[i];
-			if (!file.endsWith('.js')) continue;
-			let id = Tools.toId(file.split('.js')[0]);
-			file = require('./games/' + file);
-			Games.games[id] = file;
+		if (file.name) {
+			global[file.name] = file;
+			if (typeof global[file.name].onLoad === 'function') global[file.name].onLoad();
 		}
+		if (file.commands) Object.assign(commands, file.commands);
 	}
 }
 

@@ -9,6 +9,8 @@
 
 'use strict';
 
+const fs = require('fs');
+
 class Player {
 	constructor(user) {
 		this.name = user.name;
@@ -85,12 +87,28 @@ class Game {
 	}
 }
 
-class Games {
+class Plugin {
 	constructor() {
 		this.name = 'Games';
-		this.Game = Game;
-		this.Player = Player;
 		this.games = {};
+	}
+
+	onLoad() {
+		this.loadGames();
+	}
+
+	loadGames() {
+		let games;
+		try {
+			games = fs.readdirSync('./games');
+		} catch (e) {}
+		if (!games) return;
+		for (let i = 0, len = games.length; i < len; i++) {
+			let file = games[i];
+			if (!file.endsWith('.js')) continue;
+			file = require('./../games/' + file);
+			if (file.name && file.game) this.games[Tools.toId(file.name)] = file;
+		}
 	}
 
 	createGame(game, room) {
@@ -102,11 +120,13 @@ class Games {
 	}
 }
 
+let Games = new Plugin();
+
 let commands = {
 	gamesignups: 'creategame',
 	creategame: function (target, room, user) {
 		if (!user.hasRank(room, '+')) return;
-		global.Games.createGame(target, room);
+		Games.createGame(target, room);
 	},
 	startgame: function (target, room, user) {
 		if (!user.hasRank(room, '+') || !room.game) return;
@@ -130,5 +150,8 @@ let commands = {
 	},
 };
 
-exports.plugin = new Games();
-exports.commands = commands;
+Games.Game = Game;
+Games.Player = Player;
+Games.commands = commands;
+
+module.exports = Games;
