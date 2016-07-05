@@ -32,6 +32,7 @@ class Room {
 			user.name = name;
 			return;
 		}
+		let oldName = user.name;
 		delete Users.users[user.id];
 		if (Users.users[id]) {
 			Users.users[id].name = name;
@@ -40,6 +41,7 @@ class Room {
 		user.name = name;
 		user.id = id;
 		Users.users[id] = user;
+		if (this.game) this.game.renamePlayer(user, oldName);
 	}
 
 	say(message) {
