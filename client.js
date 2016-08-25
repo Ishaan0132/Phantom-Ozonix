@@ -218,7 +218,7 @@ class Client {
 							process.exit();
 						}
 					}
-					this.send('|/trn ' + Config.username + ',0,' + data);
+					this.send('|/trn ' + Config.username + ',0,' + data, true);
 				}
 			});
 		});
@@ -229,9 +229,9 @@ class Client {
 		request.end();
 	}
 
-	send(message) {
+	send(message, systemCommand) {
 		if (!this.connection || !this.connection.connected) return;
-		message = Tools.normalizeMessage(message);
+		if (!systemCommand) message = Tools.normalizeMessage(message);
 		if (!message) return;
 		if (this.messageQueueTimeout) {
 			this.messageQueue.push(message);
