@@ -72,7 +72,7 @@ class Room {
 			this.onRename(user, splitMessage[0]);
 			break;
 		case 'c':
-			user = Users.add(splitMessage[0]);
+			user = Users.get(splitMessage[0]);
 			if (!user) return;
 			rank = splitMessage[0].charAt(0);
 			if (user.rooms.get(this) !== rank) user.rooms.set(this, rank);
@@ -80,7 +80,7 @@ class Room {
 			CommandParser.parse(splitMessage.slice(1).join('|'), this, user);
 			break;
 		case 'c:':
-			user = Users.add(splitMessage[1]);
+			user = Users.get(splitMessage[1]);
 			if (!user) return;
 			rank = splitMessage[1].charAt(0);
 			if (user.rooms.get(this) !== rank) user.rooms.set(this, rank);
