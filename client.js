@@ -106,6 +106,21 @@ class Client {
 				if (lines[i].startsWith('|init|')) {
 					room.onJoin(Users.self, ' ');
 					console.log('Joined room: ' + room.id);
+					lines = lines.splice(i + 1);
+					for (let i = 0, len = lines.length; i < len; i++) {
+						if (lines[i].startsWith('|users|')) {
+							let line = lines[i].split('|');
+							if (line[2] === '0') break;
+							let users = line[2].split(",");
+							for (let i = 1, len = users.length; i < len; i++) {
+								let user = Users.add(users[i].substr(1));
+								let rank = users[i].charAt(0);
+								room.users.set(user, rank);
+								user.rooms.set(room, rank);
+							}
+							break;
+						}
+					}
 					return;
 				}
 				this.parseMessage(lines[i], room);
