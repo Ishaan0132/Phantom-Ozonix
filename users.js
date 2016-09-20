@@ -42,9 +42,9 @@ class Users {
 		this.pruneUsersInterval = setInterval(() => this.pruneUsers(), PRUNE_INTERVAL);
 	}
 
-	get(id) {
-		if (id && id.rooms) return id;
-		return this.users[id];
+	get(name) {
+		if (name && name.rooms) return name;
+		return this.users[Tools.toId(name)];
 	}
 
 	add(name) {
