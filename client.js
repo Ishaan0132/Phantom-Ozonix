@@ -233,7 +233,7 @@ class Client {
 							process.exit();
 						}
 					}
-					this.send('|/trn ' + Config.username + ',0,' + data, true);
+					this.send('|/trn ' + Config.username + ',0,' + data);
 				}
 			});
 		});
@@ -244,10 +244,8 @@ class Client {
 		request.end();
 	}
 
-	send(message, systemCommand) {
-		if (!this.connection || !this.connection.connected) return;
-		if (!systemCommand) message = Tools.normalizeMessage(message);
-		if (!message) return;
+	send(message) {
+		if (!message || !this.connection || !this.connection.connected) return;
 		if (this.messageQueueTimeout) {
 			this.messageQueue.push(message);
 			return;

@@ -12,6 +12,7 @@
 class Room {
 	constructor(id) {
 		this.id = id;
+		this.clientId = id === 'lobby' ? '' : id;
 		this.users = new Map();
 	}
 
@@ -51,7 +52,7 @@ class Room {
 	say(message) {
 		message = Tools.normalizeMessage(message);
 		if (!message) return;
-		Client.send((this.id === 'lobby' ? '' : this.id) + '|' + message);
+		Client.send(this.clientId + '|' + message);
 	}
 
 	parseMessage(messageType, splitMessage) {
