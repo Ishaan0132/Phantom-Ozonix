@@ -16,7 +16,7 @@
 		"url": "https://github.com/sirDonovan/Cassius.git"
 	},
 	"dependencies": {
-		"websocket": "1.0.22"
+		"websocket": "1.0.23"
 	},
 	"devDependencies": {
 		"eslint": "2.4.0"
