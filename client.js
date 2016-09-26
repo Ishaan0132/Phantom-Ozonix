@@ -104,20 +104,11 @@ class Client {
 			}
 			for (let i = 0, len = lines.length; i < len; i++) {
 				if (lines[i].startsWith('|init|')) {
-					room.onJoin(Users.self, ' ');
-					console.log('Joined room: ' + room.id);
-					lines = lines.splice(i + 1);
+					this.parseMessage(lines[i], room);
+					lines = lines.slice(i + 1);
 					for (let i = 0, len = lines.length; i < len; i++) {
 						if (lines[i].startsWith('|users|')) {
-							let line = lines[i].split('|');
-							if (line[2] === '0') break;
-							let users = line[2].split(",");
-							for (let i = 1, len = users.length; i < len; i++) {
-								let user = Users.add(users[i].substr(1));
-								let rank = users[i].charAt(0);
-								room.users.set(user, rank);
-								user.rooms.set(room, rank);
-							}
+							this.parseMessage(lines[i], room);
 							break;
 						}
 					}
@@ -131,6 +122,9 @@ class Client {
 	parseMessage(message, room) {
 		let splitMessage = message.split('|').slice(1);
 		let messageType = splitMessage.shift();
+		if (typeof Config.parseMessage === 'function') {
+			if (Config.parseMessage(room, messageType, splitMessage) === false) return;
+		}
 		switch (messageType) {
 		case 'challstr':
 			this.challengeKeyId = splitMessage[0];
@@ -152,12 +146,26 @@ class Client {
 				}
 			}
 			break;
+		case 'init':
+			room.onJoin(Users.self, ' ');
+			console.log('Joined room: ' + room.id);
+			break;
 		case 'noinit':
 			console.log('Could not join room: ' + room.id);
 			Rooms.destroy(room);
 			break;
 		case 'deinit':
 			Rooms.destroy(room);
+			break;
+		case 'users':
+			if (splitMessage[0] === '0') return;
+			let users = splitMessage[0].split(",");
+			for (let i = 1, len = users.length; i < len; i++) {
+				let user = Users.add(users[i].substr(1));
+				let rank = users[i].charAt(0);
+				room.users.set(user, rank);
+				user.rooms.set(room, rank);
+			}
 			break;
 		case 'pm':
 			let user = Users.add(splitMessage[0]);
