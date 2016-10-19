@@ -21,9 +21,9 @@
 	"devDependencies": {
 		"eslint": "3.6.0"
 	},
-	"engineStrict": true,
+	"engine-strict": true,
 	"engines": {
-		"node": ">= 4.0.0"
+		"node": ">=6.0.0"
 	},
 	"private": true,
 	"license": "MIT"

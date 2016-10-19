@@ -6,7 +6,7 @@ A bot for [Pokemon Showdown][1].
   [1]: https://github.com/Zarel/Pokemon-Showdown
 
 ## Installation
-Cassius requires [Node.js][2] version 4.0 or later and a command line (e.g. `Command Prompt` on Windows or `Terminal` on Mac OS/Linux) to run. Once you have compatible software, complete installation by following these steps:
+Cassius requires [Node.js][2] version 6.0.0 or later and a command line (e.g. `Command Prompt` on Windows or `Terminal` on Mac OS/Linux) to run. Once you have compatible software, complete installation by following these steps:
 
 1. Obtain a copy of Cassius
 
