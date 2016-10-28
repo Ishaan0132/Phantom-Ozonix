@@ -15,6 +15,7 @@ class Player {
 	constructor(user) {
 		this.name = user.name;
 		this.id = user.id;
+		this.eliminated = false;
 	}
 
 	say(message) {
@@ -42,7 +43,7 @@ class Game {
 
 	end(forced) {
 		if (this.timeout) clearTimeout(this.timeout);
-		if (forced) this.room.say("The game was forcibly ended.");
+		if (forced) this.say("The game was forcibly ended.");
 		this.room.game = null;
 	}
 
@@ -55,9 +56,13 @@ class Game {
 	}
 
 	removePlayer(user) {
-		if (!(user.id in this.players)) return;
-		delete this.players[user.id];
-		this.playerCount--;
+		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
+		if (this.started) {
+			this.players[user.id].eliminated = true;
+		} else {
+			delete this.players[user.id];
+			this.playerCount--;
+		}
 	}
 
 	renamePlayer(user, oldName) {
