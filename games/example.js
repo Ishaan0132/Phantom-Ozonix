@@ -10,6 +10,7 @@
 'use strict';
 
 const name = "Trivia";
+const id = Tools.toId(name);
 const data = {
 	"Pokemon Moves": {},
 	"Pokemon Items": {},
@@ -41,7 +42,7 @@ class Trivia extends Games.Game {
 	constructor(room) {
 		super(room);
 		this.name = name;
-		this.id = Tools.toId(name);
+		this.id = id;
 		this.answers = null;
 		this.points = new Map();
 		this.maxPoints = 3;
@@ -97,5 +98,6 @@ class Trivia extends Games.Game {
 }
 
 exports.name = name;
+exports.id = id;
 exports.description = "Guess answers based on the given descriptions.";
 exports.game = Trivia;
