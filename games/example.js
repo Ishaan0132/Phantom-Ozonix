@@ -11,6 +11,7 @@
 
 const name = "Trivia";
 const id = Tools.toId(name);
+const description = "Guess answers based on the given descriptions.";
 const data = {
 	"Pokemon Moves": {},
 	"Pokemon Items": {},
@@ -43,6 +44,8 @@ class Trivia extends Games.Game {
 		super(room);
 		this.name = name;
 		this.id = id;
+		this.description = description;
+		this.freeJoin = true;
 		this.answers = null;
 		this.points = new Map();
 		this.maxPoints = 3;
@@ -53,11 +56,11 @@ class Trivia extends Games.Game {
 		}
 	}
 
-	onStart() {
-		this.askQuestion();
+	onSignups() {
+		this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
 	}
 
-	askQuestion() {
+	onNextRound() {
 		if (this.answers) {
 			let answers = this.answers.length;
 			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
@@ -66,7 +69,7 @@ class Trivia extends Games.Game {
 		let question = this.questions[category][Math.floor(Math.random() * this.questions[category].length)];
 		this.answers = data[category][question];
 		this.say("**" + category + "**: " + question);
-		this.timeout = setTimeout(() => this.askQuestion(), 10 * 1000);
+		this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
 	}
 
 	guess(guess, user) {
@@ -93,11 +96,11 @@ class Trivia extends Games.Game {
 		}
 		this.say("Correct! " + user.name + " advances to " + points + " point" + (points > 1 ? "s" : "") + ". (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
 		this.answers = null;
-		this.timeout = setTimeout(() => this.askQuestion(), 5 * 1000);
+		this.timeout = setTimeout(() => this.nextRound(), 5 * 1000);
 	}
 }
 
 exports.name = name;
 exports.id = id;
-exports.description = "Guess answers based on the given descriptions.";
+exports.description = description;
 exports.game = Trivia;

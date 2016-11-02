@@ -28,11 +28,21 @@ class Game {
 		this.room = room;
 		this.players = {};
 		this.playerCount = 0;
+		this.round = 0;
 		this.started = false;
+		this.ended = false;
+		this.freeJoin = false;
 	}
 
 	say(message) {
 		this.room.say(message);
+	}
+
+	signups() {
+		this.say("Hosting a game of " + this.name + "! " + (this.freeJoin ? " (free join)" : "If you would like to play, use the command ``" + Config.commandCharacter + "joingame``."));
+		if (this.description) this.say("Description: " + this.description);
+		if (typeof this.onSignups === 'function') this.onSignups();
+		if (this.freeJoin) this.started = true;
 	}
 
 	start() {
@@ -41,10 +51,26 @@ class Game {
 		if (typeof this.onStart === 'function') this.onStart();
 	}
 
-	end(forced) {
+	end() {
+		if (this.ended) return;
 		if (this.timeout) clearTimeout(this.timeout);
-		if (forced) this.say("The game was forcibly ended.");
+		if (typeof this.onEnd === 'function') this.onEnd();
+		this.ended = true;
 		this.room.game = null;
+	}
+
+	forceEnd() {
+		if (this.ended) return;
+		if (this.timeout) clearTimeout(this.timeout);
+		this.say("The game was forcibly ended.");
+		this.ended = true;
+		this.room.game = null;
+	}
+
+	nextRound() {
+		if (this.timeout) clearTimeout(this.timeout);
+		this.round++;
+		if (typeof this.onNextRound === 'function') this.onNextRound();
 	}
 
 	addPlayer(user) {
@@ -112,7 +138,7 @@ class Plugin {
 			let file = games[i];
 			if (!file.endsWith('.js')) continue;
 			file = require('./../games/' + file);
-			if (file.name && file.game) this.games[Tools.toId(file.name)] = file;
+			if (file.game && file.name && file.id) this.games[file.id] = file;
 		}
 	}
 
@@ -121,7 +147,6 @@ class Plugin {
 		let id = Tools.toId(game);
 		if (!(id in this.games)) return room.say("The game '" + game.trim() + "' was not found.");
 		room.game = new this.games[id].game(room); // eslint-disable-line new-cap
-		room.say("Hosting a game of " + this.games[id].name + "!" + (this.games[id].description ? " Description: " + this.games[id].description : ""));
 	}
 }
 
@@ -132,14 +157,15 @@ let commands = {
 	creategame: function (target, room, user) {
 		if (!user.hasRank(room, '+')) return;
 		Games.createGame(target, room);
+		room.game.signups();
 	},
 	startgame: function (target, room, user) {
-		if (!user.hasRank(room, '+') || !room.game) return;
-		if (typeof room.game.start === 'function') room.game.start();
+		if (!room.game || !user.hasRank(room, '+')) return;
+		room.game.start();
 	},
 	endgame: function (target, room, user) {
-		if (!user.hasRank(room, '+') || !room.game) return;
-		if (typeof room.game.end === 'function') room.game.end(true);
+		if (!room.game || !user.hasRank(room, '+')) return;
+		room.game.forceEnd();
 	},
 	guess: function (target, room, user) {
 		if (!room.game) return;
@@ -147,11 +173,11 @@ let commands = {
 	},
 	joingame: function (target, room, user) {
 		if (!room.game) return;
-		if (typeof room.game.join === 'function') room.game.join(user);
+		room.game.join(user);
 	},
 	leavegame: function (target, room, user) {
 		if (!room.game) return;
-		if (typeof room.game.leave === 'function') room.leave.join(user);
+		room.game.leave(user);
 	},
 };
 
