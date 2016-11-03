@@ -10,21 +10,18 @@
 'use strict';
 
 const fs = require('fs');
-const path = require('path');
 
 global.Tools = require('./tools.js');
 
 try {
-	require.resolve('./config.js');
+	fs.accessSync('./config.js');
 } catch (e) {
-	if (e.code !== 'MODULE_NOT_FOUND') throw e;
-	console.log("Creating a default config file");
-	fs.writeFileSync(path.resolve(__dirname, 'config.js'),
-		fs.readFileSync(path.resolve(__dirname, 'config-example.js'))
-	);
-} finally {
-	global.Config = require('./config.js');
+	if (e.code !== 'ENOENT') throw e;
+	console.log("Creating a default config.js file");
+	fs.writeFileSync('./config.js', fs.readFileSync('./config-example.js'));
 }
+
+global.Config = require('./config.js');
 if (!Config.username) throw new Error("Please specify a username in config.js");
 
 let commands = require('./commands.js');

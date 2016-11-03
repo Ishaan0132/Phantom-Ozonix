@@ -10,7 +10,7 @@
 'use strict';
 
 // The username and password that Cassius will use to login
-exports.username = '';
+exports.username = 'Example Username';
 // leave this blank if the username is unregistered
 exports.password = '';
 
