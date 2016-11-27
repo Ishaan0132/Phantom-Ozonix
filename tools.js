@@ -15,11 +15,11 @@ class Tools {
 	}
 
 	loadData() {
-		this.data.pokedex = require('./Pokemon-Showdown/data/pokedex.js').BattlePokedex;
-		this.data.moves = require('./Pokemon-Showdown/data/moves.js').BattleMovedex;
-		this.data.items = require('./Pokemon-Showdown/data/items.js').BattleItems;
-		this.data.abilities = require('./Pokemon-Showdown/data/abilities.js').BattleAbilities;
-		this.data.learnsets = require('./Pokemon-Showdown/data/learnsets.js').BattleLearnsets;
+		this.data.pokedex = require('./data/pokedex.js').BattlePokedex;
+		this.data.moves = require('./data/moves.js').BattleMovedex;
+		this.data.items = require('./data/items.js').BattleItems;
+		this.data.abilities = require('./data/abilities.js').BattleAbilities;
+		this.data.learnsets = require('./data/learnsets.js').BattleLearnsets;
 	}
 
 	toId(text) {
