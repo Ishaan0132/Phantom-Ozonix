@@ -1,8 +1,11 @@
 /**
- * Info
+ * Example commands
  * Cassius - https://github.com/sirDonovan/Cassius
  *
- * This file contains informational commands for Cassius.
+ * Plugins are ignored by GitHub, which makes it easier to have custom commands
+ * and modules while still being up-to-date with changes in the main repository.
+ *
+ * This file shows how to add commands.
  *
  * @license MIT license
  */

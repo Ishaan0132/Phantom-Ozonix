@@ -22,6 +22,12 @@ let commands = {
 		}
 	},
 
+	// Informational commands
+	about: function (target, room, user) {
+		if (room !== user && !user.hasRank(room, '+')) return;
+		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
+	},
+
 	// Game commands
 	signups: 'creategame',
 	creategame: function (target, room, user) {

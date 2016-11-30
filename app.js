@@ -24,6 +24,17 @@ try {
 global.Config = require('./config.js');
 if (!Config.username) throw new Error("Please specify a username in config.js");
 
+global.CommandParser = require('./command-parser.js');
+
+global.Rooms = require('./rooms.js');
+
+global.Users = require('./users.js');
+
+global.Client = require('./client.js');
+
+global.Games = require('./games.js');
+Games.loadGames();
+
 let commands = require('./commands.js');
 let plugins;
 try {
@@ -44,17 +55,6 @@ if (plugins) {
 }
 
 global.Commands = commands;
-
-global.CommandParser = require('./command-parser.js');
-
-global.Rooms = require('./rooms.js');
-
-global.Users = require('./users.js');
-
-global.Client = require('./client.js');
-
-global.Games = require('./games.js');
-Games.loadGames();
 
 if (require.main === module) {
 	Client.connect();
