@@ -53,6 +53,9 @@ global.Users = require('./users.js');
 
 global.Client = require('./client.js');
 
+global.Games = require('./games.js');
+Games.loadGames();
+
 if (require.main === module) {
 	Client.connect();
 }

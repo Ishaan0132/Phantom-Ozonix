@@ -118,14 +118,9 @@ class Game {
 	}
 }
 
-class Plugin {
+class GamesManager {
 	constructor() {
-		this.name = 'Games';
 		this.games = {};
-	}
-
-	onLoad() {
-		this.loadGames();
 	}
 
 	loadGames() {
@@ -137,7 +132,7 @@ class Plugin {
 		for (let i = 0, len = games.length; i < len; i++) {
 			let file = games[i];
 			if (!file.endsWith('.js')) continue;
-			file = require('./../games/' + file);
+			file = require('./games/' + file);
 			if (file.game && file.name && file.id) this.games[file.id] = file;
 		}
 	}
@@ -150,39 +145,9 @@ class Plugin {
 	}
 }
 
-let Games = new Plugin();
-
-let commands = {
-	gamesignups: 'creategame',
-	creategame: function (target, room, user) {
-		if (!user.hasRank(room, '+')) return;
-		Games.createGame(target, room);
-		room.game.signups();
-	},
-	startgame: function (target, room, user) {
-		if (!room.game || !user.hasRank(room, '+')) return;
-		room.game.start();
-	},
-	endgame: function (target, room, user) {
-		if (!room.game || !user.hasRank(room, '+')) return;
-		room.game.forceEnd();
-	},
-	guess: function (target, room, user) {
-		if (!room.game) return;
-		if (typeof room.game.guess === 'function') room.game.guess(target, user);
-	},
-	joingame: function (target, room, user) {
-		if (!room.game) return;
-		room.game.join(user);
-	},
-	leavegame: function (target, room, user) {
-		if (!room.game) return;
-		room.game.leave(user);
-	},
-};
+let Games = new GamesManager();
 
 Games.Game = Game;
 Games.Player = Player;
-Games.commands = commands;
 
 module.exports = Games;

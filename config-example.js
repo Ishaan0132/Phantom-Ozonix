@@ -21,6 +21,9 @@ exports.server = '';
 // example: exports.rooms = ['room1', 'room2', 'room3'];
 exports.rooms = [];
 
+// Rooms where scripted games are enabled
+exports.games = [];
+
 // The character that determines which messages are read as commands
 exports.commandCharacter = '.';
 
