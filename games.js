@@ -39,7 +39,7 @@ class Game {
 	}
 
 	signups() {
-		this.say("Hosting a game of " + this.name + "! " + (this.freeJoin ? " (free join)" : "If you would like to play, use the command ``" + Config.commandCharacter + "joingame``."));
+		this.say("Hosting a game of " + this.name + "! " + (this.freeJoin ? "(free join)" : "If you would like to play, use the command ``" + Config.commandCharacter + "join``."));
 		if (this.description) this.say("Description: " + this.description);
 		if (typeof this.onSignups === 'function') this.onSignups();
 		if (this.freeJoin) this.started = true;
@@ -105,13 +105,14 @@ class Game {
 
 	join(user) {
 		if (user.id in this.players || this.started) return;
+		if (this.freeJoin) return user.say(this.name + " does not require you to join.");
 		this.addPlayer(user);
 		user.say('You have joined the game of ' + this.name + '!');
 		if (typeof this.onJoin === 'function') this.onJoin(user);
 	}
 
 	leave(user) {
-		if (!(user.id in this.players)) return;
+		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
 		this.removePlayer(user);
 		user.say("You have left the game of " + this.name + "!");
 		if (typeof this.onLeave === 'function') this.onLeave(user);
