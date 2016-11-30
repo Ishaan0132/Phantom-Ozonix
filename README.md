@@ -10,7 +10,7 @@ Cassius requires [Node.js][2] version 6.0.0 or later and a command line (e.g. `C
 
 1. Obtain a copy of Cassius
 
-  You can do this through the [GitHub client][3] by clicking the "Save" button on the home page of the repository (which is to the left of the "Download ZIP" button), download a .zip file with the aforementioned button, or clone the repository with the following [Git][4] command:
+  You can do this through the [GitHub client][3] by clicking the "Clone or download" button on the home page of the repository and then clicking "Open in Desktop". You can also use the following [Git][4] command:
   
   `git clone https://github.com/sirDonovan/Cassius.git`
 
