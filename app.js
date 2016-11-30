@@ -44,7 +44,7 @@ try {
 if (plugins) {
 	for (let i = 0, len = plugins.length; i < len; i++) {
 		let file = plugins[i];
-		if (!file.endsWith('.js')) continue;
+		if (!file.endsWith('.js') || file === 'example-commands.js' || file === 'example-module.js') continue;
 		file = require('./plugins/' + file);
 		if (file.name) {
 			global[file.name] = file;
