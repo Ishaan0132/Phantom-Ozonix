@@ -125,6 +125,50 @@ class Game {
 		user.say("You have left the game of " + this.name + "!");
 		if (typeof this.onLeave === 'function') this.onLeave(user);
 	}
+
+	getPlayerNames(players) {
+		if (!players) players = this.players;
+		let names = [];
+		for (let i in players) {
+			names.push(players[i].name);
+		}
+		return names.join(", ");
+	}
+
+	getPoints(players) {
+		if (!players) players = this.players;
+		let list = [];
+		for (let i in players) {
+			let points = this.points.get(players[i]);
+			list.push(players[i].name + (points ? "(" + points + ")" : ""));
+		}
+		return list.join(", ");
+	}
+
+	getRemainingPlayers() {
+		let remainingPlayers = {};
+		for (let i in this.players) {
+			if (!this.players[i].eliminated) remainingPlayers[i] = this.players[i];
+		}
+		return remainingPlayers;
+	}
+
+	getRemainingPlayerCount() {
+		let count = 0;
+		for (let i in this.players) {
+			if (!this.players[i].eliminated) count++;
+		}
+		return count;
+	}
+
+	shufflePlayers(players) {
+		if (!players) players = this.players;
+		let list = [];
+		for (let i in players) {
+			list.push(players[i]);
+		}
+		return Tools.shuffle(list);
+	}
 }
 
 class GamesManager {

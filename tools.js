@@ -66,6 +66,46 @@ class Tools {
 		if (text.length > 300) text = text.substr(0, 297) + "...";
 		return text;
 	}
+
+	random(limit) {
+		if (!limit) limit = 2;
+		return Math.floor(Math.random() * limit);
+	}
+
+	shuffle(array) {
+		if (!(array instanceof Array)) return array;
+		array = array.slice();
+
+		// Fisher-Yates shuffle algorithm
+		let currentIndex = array.length;
+		let temporaryValue, randomIndex;
+
+		// While there remain elements to shuffle...
+		while (currentIndex !== 0) {
+			// Pick a remaining element...
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+
+			// And swap it with the current element.
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+		return array;
+	}
+
+	sample(array, amount) {
+		if (!(array instanceof Array)) return;
+		let len = array.length;
+		if (!len) return;
+		if (len === 1 || !amount || amount === 1) return array.slice()[Math.floor(Math.random() * len)];
+		if (amount > len) {
+			amount = len;
+		} else if (amount < 0) {
+			amount = 0;
+		}
+		return this.shuffle(array).splice(0, amount);
+	}
 }
 
 let tools = new Tools();

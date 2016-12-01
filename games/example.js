@@ -65,8 +65,8 @@ class Trivia extends Games.Game {
 			let answers = this.answers.length;
 			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
 		}
-		let category = this.categories[Math.floor(Math.random() * this.categories.length)];
-		let question = this.questions[category][Math.floor(Math.random() * this.questions[category].length)];
+		let category = Tools.sample(this.categories);
+		let question = Tools.sample(this.questions[category]);
 		this.answers = data[category][question];
 		this.say("**" + category + "**: " + question);
 		this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
