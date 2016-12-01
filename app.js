@@ -35,29 +35,22 @@ global.Client = require('./client.js');
 global.Games = require('./games.js');
 Games.loadGames();
 
-let commands = require('./commands.js');
-let plugins;
-try {
-	plugins = fs.readdirSync('./plugins');
-} catch (e) {}
-
-if (plugins) {
-	for (let i = 0, len = plugins.length; i < len; i++) {
-		let file = plugins[i];
-		if (!file.endsWith('.js') || file === 'example-commands.js' || file === 'example-module.js') continue;
-		file = require('./plugins/' + file);
-		if (file.name) {
-			global[file.name] = file;
-			if (typeof global[file.name].onLoad === 'function') global[file.name].onLoad();
-		}
-		if (file.commands) Object.assign(commands, file.commands);
 global.Storage = require('./storage.js');
 Storage.importDatabases();
 
-	}
-}
+global.Commands = require('./commands.js');
 
-global.Commands = commands;
+let plugins = fs.readdirSync('./plugins');
+for (let i = 0, len = plugins.length; i < len; i++) {
+	let file = plugins[i];
+	if (!file.endsWith('.js') || file === 'example-commands.js' || file === 'example-module.js') continue;
+	file = require('./plugins/' + file);
+	if (file.name) {
+		global[file.name] = file;
+		if (typeof global[file.name].onLoad === 'function') global[file.name].onLoad();
+	}
+	if (file.commands) Object.assign(Commands, file.commands);
+}
 
 if (require.main === module) {
 	Client.connect();
