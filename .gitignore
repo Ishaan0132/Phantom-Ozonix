@@ -38,3 +38,5 @@ config.js
 plugins/*
 !plugins/example-commands.js
 !plugins/example-module.js
+databases/*
+!databases/README.md

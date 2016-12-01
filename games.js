@@ -2,7 +2,7 @@
  * Games
  * Cassius - https://github.com/sirDonovan/Cassius
  *
- * This file contains the game system and related commands for Cassius.
+ * This file contains the base game class and games manager
  *
  * @license MIT license
  */
@@ -36,6 +36,14 @@ class Game {
 
 	say(message) {
 		this.room.say(message);
+	}
+
+	addBits(bits, user) {
+		Storage.addPoints(bits, user, this.room.id);
+	}
+
+	removeBits(bits, user) {
+		Storage.removePoints(bits, user, this.room.id);
 	}
 
 	signups() {

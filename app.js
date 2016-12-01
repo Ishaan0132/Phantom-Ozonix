@@ -51,6 +51,9 @@ if (plugins) {
 			if (typeof global[file.name].onLoad === 'function') global[file.name].onLoad();
 		}
 		if (file.commands) Object.assign(commands, file.commands);
+global.Storage = require('./storage.js');
+Storage.importDatabases();
+
 	}
 }
 

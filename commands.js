@@ -61,6 +61,20 @@ let commands = {
 		if (!room.game) return;
 		if (typeof room.game.guess === 'function') room.game.guess(target, user);
 	},
+
+	// Storage commands
+	bits: 'points',
+	points: function (target, room, user) {
+		if (room !== user) return;
+		let targetUserid = target ? Tools.toId(target) : user.id;
+		let points = [];
+		user.rooms.forEach((rank, room) => {
+			if (!(room.id in Storage.databases) || !('leaderboard' in Storage.databases[room.id])) return;
+			if (targetUserid in Storage.databases[room.id].leaderboard) points.push("**" + room.id + "**: " + Storage.databases[room.id].leaderboard[targetUserid].points);
+		});
+		if (!points.length) return this.say((target ? target.trim() + " does not" : "You do not") + " have points on any leaderboard.");
+		this.say(points.join(" | "));
+	},
 };
 
 module.exports = commands;
