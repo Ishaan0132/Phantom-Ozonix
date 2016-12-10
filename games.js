@@ -191,10 +191,17 @@ class GamesManager {
 	}
 
 	createGame(game, room) {
-		if (room.game) return room.say("A game of " + room.game.name + " is already in progress.");
+		if (room.game) {
+			room.say("A game of " + room.game.name + " is already in progress.");
+			return false;
+		}
 		let id = Tools.toId(game);
-		if (!(id in this.games)) return room.say("The game '" + game.trim() + "' was not found.");
+		if (!(id in this.games)) {
+			room.say("The game '" + game.trim() + "' was not found.");
+			return false;
+		}
 		room.game = new this.games[id].game(room); // eslint-disable-line new-cap
+		return room.game;
 	}
 }
 

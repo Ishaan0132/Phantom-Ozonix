@@ -33,7 +33,7 @@ let commands = {
 	creategame: function (target, room, user) {
 		if (!user.hasRank(room, '+')) return;
 		if (!Config.games || !Config.games.includes(room.id)) return this.say("Games are not enabled for this room.");
-		Games.createGame(target, room);
+		if (!Games.createGame(target, room)) return;
 		room.game.signups();
 	},
 	start: 'start',
