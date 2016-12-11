@@ -60,7 +60,7 @@ describe('Games', function () {
 					room.game.start();
 				}
 				room.game.nextRound();
-				room.game.end();
+				if (room.game) room.game.end();
 			});
 		});
 	}
