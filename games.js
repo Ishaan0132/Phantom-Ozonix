@@ -145,6 +145,16 @@ class Game {
 		return list.join(", ");
 	}
 
+	getLives(players) {
+		if (!players) players = this.players;
+		let list = [];
+		for (let i in players) {
+			let lives = this.lives.get(players[i]);
+			list.push(players[i].name + "(" + lives + "♥)");
+		}
+		return list.join(", ");
+	}
+
 	getRemainingPlayers() {
 		let remainingPlayers = {};
 		for (let i in this.players) {
