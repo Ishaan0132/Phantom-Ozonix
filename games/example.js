@@ -20,23 +20,29 @@ const data = {
 
 for (let i in Tools.data.moves) {
 	let move = Tools.data.moves[i];
-	if (!move.name || !move.desc) continue;
-	if (!(move.desc in data["Pokemon Moves"])) data["Pokemon Moves"][move.desc] = [];
-	data["Pokemon Moves"][move.desc].push(move.name);
+	if (!move.name) continue;
+	let desc = move.desc || move.shortDesc;
+	if (!desc) continue;
+	if (!(desc in data["Pokemon Moves"])) data["Pokemon Moves"][desc] = [];
+	data["Pokemon Moves"][desc].push(move.name);
 }
 
 for (let i in Tools.data.items) {
 	let item = Tools.data.items[i];
-	if (!item.name || !item.desc) continue;
-	if (!(item.desc in data["Pokemon Items"])) data["Pokemon Items"][item.desc] = [];
-	data["Pokemon Items"][item.desc].push(item.name);
+	if (!item.name) continue;
+	let desc = item.desc || item.shortDesc;
+	if (!desc) continue;
+	if (!(desc in data["Pokemon Items"])) data["Pokemon Items"][desc] = [];
+	data["Pokemon Items"][desc].push(item.name);
 }
 
 for (let i in Tools.data.abilities) {
 	let ability = Tools.data.abilities[i];
-	if (!ability.name || !ability.desc) continue;
-	if (!(ability.desc in data["Pokemon Abilities"])) data["Pokemon Abilities"][ability.desc] = [];
-	data["Pokemon Abilities"][ability.desc].push(ability.name);
+	if (!ability.name) continue;
+	let desc = ability.desc || ability.shortDesc;
+	if (!desc) continue;
+	if (!(desc in data["Pokemon Abilities"])) data["Pokemon Abilities"][desc] = [];
+	data["Pokemon Abilities"][desc].push(ability.name);
 }
 
 class Trivia extends Games.Game {
