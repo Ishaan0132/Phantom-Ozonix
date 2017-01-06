@@ -197,13 +197,17 @@ class GamesManager {
 			let game = games[i];
 			if (!game.endsWith('.js')) continue;
 			game = require('./games/' + game);
+			this.games[game.id] = game;
+		}
+
+		for (let i in this.games) {
+			let game = this.games[i];
 			if (game.aliases) {
 				for (let i = 0, len = game.aliases.length; i < len; i++) {
 					let alias = Tools.toId(game.aliases[i]);
 					if (!(alias in this.aliases) && !(alias in this.games)) this.aliases[alias] = game.id;
 				}
 			}
-			this.games[game.id] = game;
 		}
 	}
 
