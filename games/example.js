@@ -103,4 +103,5 @@ class Trivia extends Games.Game {
 exports.name = name;
 exports.id = id;
 exports.description = description;
+exports.aliases = ['triv'];
 exports.game = Trivia;

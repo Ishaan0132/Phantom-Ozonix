@@ -184,6 +184,7 @@ class Game {
 class GamesManager {
 	constructor() {
 		this.games = {};
+		this.aliases = {};
 	}
 
 	loadGames() {
@@ -193,10 +194,16 @@ class GamesManager {
 		} catch (e) {}
 		if (!games) return;
 		for (let i = 0, len = games.length; i < len; i++) {
-			let file = games[i];
-			if (!file.endsWith('.js')) continue;
-			file = require('./games/' + file);
-			if (file.game && file.name && file.id) this.games[file.id] = file;
+			let game = games[i];
+			if (!game.endsWith('.js')) continue;
+			game = require('./games/' + game);
+			if (game.aliases) {
+				for (let i = 0, len = game.aliases.length; i < len; i++) {
+					let alias = Tools.toId(game.aliases[i]);
+					if (!(alias in this.aliases) && !(alias in this.games)) this.aliases[alias] = game.id;
+				}
+			}
+			this.games[game.id] = game;
 		}
 	}
 
@@ -206,6 +213,7 @@ class GamesManager {
 			return false;
 		}
 		let id = Tools.toId(game);
+		if (id in this.aliases) id = this.aliases[id];
 		if (!(id in this.games)) {
 			room.say("The game '" + game.trim() + "' was not found.");
 			return false;
