@@ -208,21 +208,55 @@ class GamesManager {
 					if (!(alias in this.aliases) && !(alias in this.games)) this.aliases[alias] = game.id;
 				}
 			}
+			if (game.variations) {
+				let variations = game.variations.slice();
+				game.variations = {};
+				for (let i = 0, len = variations.length; i < len; i++) {
+					let variation = variations[i];
+					let id = Tools.toId(variation.name);
+					if (id in this.games) throw new Error(game.name + " variation '" + variation.name + "' is already a game.");
+					variation.id = id;
+					let variationId = Tools.toId(variation.variation);
+					game.variations[variationId] = variation;
+					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + variationId;
+					if (variation.aliases) {
+						for (let i = 0, len = variation.aliases.length; i < len; i++) {
+							let alias = Tools.toId(variation.aliases[i]);
+							if (!(alias in game.variations)) game.variations[alias] = variation;
+							if (!(alias in this.aliases) && !(alias in this.games)) this.aliases[alias] = game.id + ',' + variationId;
+						}
+					}
+				}
+			}
 		}
 	}
 
-	createGame(game, room) {
+	createGame(target, room) {
 		if (room.game) {
 			room.say("A game of " + room.game.name + " is already in progress.");
 			return false;
 		}
+		target = target.split(',');
+		let game = target.shift();
 		let id = Tools.toId(game);
-		if (id in this.aliases) id = this.aliases[id];
+		if (id in this.aliases) {
+			id = this.aliases[id];
+			if (id.includes(',')) return this.createGame(id, room);
+		}
 		if (!(id in this.games)) {
 			room.say("The game '" + game.trim() + "' was not found.");
 			return false;
 		}
+		game = this.games[id];
+		let variation;
+		if (game.variations) {
+			for (let i = 0, len = target.length; i < len; i++) {
+				let id = Tools.toId(target[i]);
+				if (id in game.variations) variation = game.variations[id];
+			}
+		}
 		room.game = new this.games[id].game(room); // eslint-disable-line new-cap
+		if (variation) Object.assign(room.game, variation);
 		return room.game;
 	}
 }

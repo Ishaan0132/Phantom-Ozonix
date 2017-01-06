@@ -71,7 +71,12 @@ class Trivia extends Games.Game {
 			let answers = this.answers.length;
 			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
 		}
-		let category = Tools.sample(this.categories);
+		let category;
+		if (this.variation) {
+			category = this.variation;
+		} else {
+			category = Tools.sample(this.categories);
+		}
 		let question = Tools.sample(this.questions[category]);
 		this.answers = data[category][question];
 		this.say("**" + category + "**: " + question);
@@ -110,4 +115,21 @@ exports.name = name;
 exports.id = id;
 exports.description = description;
 exports.aliases = ['triv'];
+exports.variations = [
+	{
+		name: "Move Trivia",
+		variation: "Pokemon Moves",
+		aliases: ['moves'],
+	},
+	{
+		name: "Item Trivia",
+		variation: "Pokemon Items",
+		aliases: ['items'],
+	},
+	{
+		name: "Ability Trivia",
+		variation: "Pokemon Abilities",
+		aliases: ['abilities'],
+	},
+];
 exports.game = Trivia;
