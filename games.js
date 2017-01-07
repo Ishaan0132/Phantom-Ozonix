@@ -222,7 +222,6 @@ class GamesManager {
 					if (variation.aliases) {
 						for (let i = 0, len = variation.aliases.length; i < len; i++) {
 							let alias = Tools.toId(variation.aliases[i]);
-							if (!(alias in game.variations)) game.variations[alias] = variation;
 							if (!(alias in this.aliases) && !(alias in this.games)) this.aliases[alias] = game.id + ',' + variationId;
 						}
 					}
@@ -231,32 +230,40 @@ class GamesManager {
 		}
 	}
 
+	getFormat(target) {
+		if (typeof target === 'object') return target;
+		target = target.split(',');
+		let format = target.shift();
+		let id = Tools.toId(format);
+		if (id in this.aliases) {
+			id = this.aliases[id];
+			if (id.includes(',')) return this.getFormat(id + ',' + target.join(','));
+		}
+		if (!(id in this.games)) return;
+		format = Object.assign({}, this.games[id]);
+		let variation;
+		if (format.variations) {
+			for (let i = 0, len = target.length; i < len; i++) {
+				let id = Tools.toId(target[i]);
+				if (id in format.variations) variation = format.variations[id];
+			}
+		}
+		if (variation) Object.assign(format, variation);
+		return format;
+	}
+
 	createGame(target, room) {
 		if (room.game) {
 			room.say("A game of " + room.game.name + " is already in progress.");
 			return false;
 		}
-		target = target.split(',');
-		let game = target.shift();
-		let id = Tools.toId(game);
-		if (id in this.aliases) {
-			id = this.aliases[id];
-			if (id.includes(',')) return this.createGame(id, room);
-		}
-		if (!(id in this.games)) {
-			room.say("The game '" + game.trim() + "' was not found.");
+		let format = this.getFormat(target);
+		if (!format) {
+			room.say("The game '" + target + "' was not found.");
 			return false;
 		}
-		game = this.games[id];
-		let variation;
-		if (game.variations) {
-			for (let i = 0, len = target.length; i < len; i++) {
-				let id = Tools.toId(target[i]);
-				if (id in game.variations) variation = game.variations[id];
-			}
-		}
-		room.game = new this.games[id].game(room); // eslint-disable-line new-cap
-		if (variation) Object.assign(room.game, variation);
+		room.game = new format.game(room); // eslint-disable-line new-cap
+		Object.assign(room.game, format);
 		return room.game;
 	}
 }

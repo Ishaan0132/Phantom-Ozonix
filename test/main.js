@@ -11,18 +11,34 @@ for (let i = 0; i < 4; i++) {
 	users.push(user);
 }
 
+const games = [];
+for (let i in Games.games) {
+	let game = Games.games[i];
+	games.push(game.name);
+	if (game.variations) {
+		for (let i in game.variations) {
+			games.push(game.name + ',' + i);
+		}
+	}
+}
+
 describe('Games', function () {
-	for (let i in Games.games) {
-		let game = Games.games[i];
+	for (let i = 0, len = games.length; i < len; i++) {
+		let game = Games.getFormat(games[i]);
 		describe(game.name, function () {
 			beforeEach(function () {
-				Games.createGame(game.name, room);
+				Games.createGame(game, room);
 			});
 			afterEach(function () {
 				if (room.game) room.game.forceEnd();
 			});
-			it('should properly create a game', function () {
-				assert(room.game instanceof game.game);
+			it('should have the necessary functions', function () {
+				if (room.game.freeJoin) {
+					assert(typeof room.game.onSignups === 'function');
+				} else {
+					let beginningFunction = room.game.onSignups || room.game.onStart;
+					assert(typeof beginningFunction === 'function');
+				}
 			});
 			it('should properly run through a round', function () {
 				room.game.signups();
@@ -41,7 +57,7 @@ describe('Games', function () {
 				room.game.signups();
 				room.game.end();
 
-				Games.createGame(game.id, room);
+				Games.createGame(game, room);
 				if (!room.game.freeJoin) {
 					room.game.signups();
 					for (let i = 0, len = users.length; i < len; i++) {
@@ -49,7 +65,7 @@ describe('Games', function () {
 					}
 					room.game.start();
 					room.game.end();
-					Games.createGame(game.id, room);
+					Games.createGame(game, room);
 				}
 
 				room.game.signups();
