@@ -184,6 +184,7 @@ class Game {
 class GamesManager {
 	constructor() {
 		this.games = {};
+		this.modes = {};
 		this.aliases = {};
 	}
 
@@ -198,6 +199,19 @@ class GamesManager {
 			if (!game.endsWith('.js')) continue;
 			game = require('./games/' + game);
 			this.games[game.id] = game;
+		}
+
+		let modes;
+		try {
+			modes = fs.readdirSync('./games/modes');
+		} catch (e) {}
+		if (modes) {
+			for (let i = 0, len = modes.length; i < len; i++) {
+				let mode = modes[i];
+				if (!mode.endsWith('.js')) continue;
+				mode = require('./games/modes/' + mode);
+				this.modes[mode.id] = mode;
+			}
 		}
 
 		for (let i in this.games) {
@@ -227,6 +241,17 @@ class GamesManager {
 					}
 				}
 			}
+			if (game.modes) {
+				let modes = game.modes.slice();
+				game.modes = {};
+				for (let i = 0, len = modes.length; i < len; i++) {
+					let mode = Tools.toId(modes[i]);
+					if (!(mode in this.modes)) throw new Error(mode.name + " mode '" + mode.mode + "' does not exist.");
+					game.modes[mode] = mode;
+					let id = game.id + this.modes[mode].id;
+					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + mode;
+				}
+			}
 		}
 	}
 
@@ -241,14 +266,21 @@ class GamesManager {
 		}
 		if (!(id in this.games)) return;
 		format = Object.assign({}, this.games[id]);
-		let variation;
+		let variation, mode;
 		if (format.variations) {
 			for (let i = 0, len = target.length; i < len; i++) {
 				let id = Tools.toId(target[i]);
 				if (id in format.variations) variation = format.variations[id];
 			}
 		}
+		if (format.modes) {
+			for (let i = 0, len = target.length; i < len; i++) {
+				let id = Tools.toId(target[i]);
+				if (id in format.modes) mode = format.modes[id];
+			}
+		}
 		if (variation) Object.assign(format, variation);
+		if (mode) format.modeId = mode;
 		return format;
 	}
 
@@ -264,6 +296,7 @@ class GamesManager {
 		}
 		room.game = new format.game(room); // eslint-disable-line new-cap
 		Object.assign(room.game, format);
+		if (format.modeId) this.modes[format.modeId].mode.call(room.game);
 		return room.game;
 	}
 }

@@ -20,12 +20,19 @@ for (let i in Games.games) {
 			games.push(game.name + ',' + i);
 		}
 	}
+	if (game.modes) {
+		for (let i in game.modes) {
+			games.push(game.name + ',' + i);
+		}
+	}
 }
 
 describe('Games', function () {
 	for (let i = 0, len = games.length; i < len; i++) {
 		let game = Games.getFormat(games[i]);
-		describe(game.name, function () {
+		let name = game.name;
+		if (game.modeId) name += " (" + Games.modes[game.modeId].name + ")";
+		describe(name, function () {
 			beforeEach(function () {
 				Games.createGame(game, room);
 			});
@@ -38,6 +45,14 @@ describe('Games', function () {
 				} else {
 					let beginningFunction = room.game.onSignups || room.game.onStart;
 					assert(typeof beginningFunction === 'function');
+				}
+				if (room.game.modeId) {
+					let mode = Games.modes[room.game.modeId];
+					if (mode.requiredFunctions) {
+						for (let i = 0, len = mode.requiredFunctions.length; i < len; i++) {
+							assert(typeof room.game[mode.requiredFunctions[i]] === 'function', mode.requiredFunctions[i]);
+						}
+					}
 				}
 			});
 			it('should properly run through a round', function () {

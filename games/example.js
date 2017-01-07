@@ -53,6 +53,7 @@ class Trivia extends Games.Game {
 		this.description = description;
 		this.freeJoin = true;
 		this.answers = null;
+		this.hint = null;
 		this.points = new Map();
 		this.maxPoints = 3;
 		this.categories = Object.keys(data);
@@ -66,11 +67,7 @@ class Trivia extends Games.Game {
 		this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
 	}
 
-	onNextRound() {
-		if (this.answers) {
-			let answers = this.answers.length;
-			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
-		}
+	setAnswers() {
 		let category;
 		if (this.variation) {
 			category = this.variation;
@@ -79,21 +76,31 @@ class Trivia extends Games.Game {
 		}
 		let question = Tools.sample(this.questions[category]);
 		this.answers = data[category][question];
-		this.say("**" + category + "**: " + question);
+		this.hint = "**" + category + "**: " + question;
+	}
+
+	onNextRound() {
+		if (this.answers) {
+			let answers = this.answers.length;
+			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
+		}
+		this.setAnswers();
+		this.say(this.hint);
 		this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
 	}
 
-	guess(guess, user) {
-		if (!this.answers) return;
+	checkAnswer(guess) {
 		guess = Tools.toId(guess);
-		let correct = false;
 		for (let i = 0, len = this.answers.length; i < len; i++) {
 			if (Tools.toId(this.answers[i]) === guess) {
-				correct = true;
-				break;
+				return true;
 			}
 		}
-		if (!correct) return;
+		return false;
+	}
+
+	guess(guess, user) {
+		if (!this.answers || !this.checkAnswer(guess)) return;
 		clearTimeout(this.timeout);
 		if (!(user.id in this.players)) this.addPlayer(user);
 		let player = this.players[user.id];
@@ -132,4 +139,5 @@ exports.variations = [
 		aliases: ['abilities'],
 	},
 ];
+exports.modes = ["Survival"];
 exports.game = Trivia;
