@@ -59,10 +59,15 @@ class Tools {
 		return JSON.stringify(text);
 	}
 
-	normalizeMessage(text) {
+	normalizeMessage(text, room) {
 		text = this.toString(text);
 		if (!text) return '';
 		text = text.trim();
+		if (text.startsWith("/wall ")) text = '/announce ' + text.substr(6);
+		if (text.startsWith("/announce ") && (!room || !Users.self.hasRank(room, '%'))) {
+			text = text.substr(10);
+			if (!text.includes('**') && text.length <= 296) text = '**' + text + '**';
+		}
 		if (text.length > 300) text = text.substr(0, 297) + "...";
 		return text;
 	}

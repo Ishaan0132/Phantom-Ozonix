@@ -51,13 +51,13 @@ class Room {
 	}
 
 	say(message) {
-		message = Tools.normalizeMessage(message);
+		message = Tools.normalizeMessage(message, this);
 		if (!message) return;
 		Client.send(this.clientId + '|' + message);
 	}
 
 	on(message, listener) {
-		message = Tools.normalizeMessage(message);
+		message = Tools.normalizeMessage(message, this);
 		if (!message) return;
 		this.listeners[Tools.toId(message)] = listener;
 	}
