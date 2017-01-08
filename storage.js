@@ -59,6 +59,14 @@ class StorageManager {
 	removePoints(points, user, roomid) {
 		this.addPoints(-points, user, roomid);
 	}
+
+	getPoints(user, roomid) {
+		if (!(roomid in this.databases)) this.databases[roomid] = {};
+		let database = this.databases[roomid];
+		if (!('leaderboard' in database)) database.leaderboard = {};
+		if (!(user.id in database.leaderboard)) return 0;
+		return database.leaderboard[user.id].points;
+	}
 }
 
 let Storage = new StorageManager();

@@ -50,6 +50,10 @@ class Game {
 		Storage.removePoints(bits, user, this.room.id);
 	}
 
+	getBits(user) {
+		return Storage.getPoints(user, this.room.id);
+	}
+
 	signups() {
 		this.say("Hosting a game of " + this.name + "! " + (this.freeJoin ? "(free join)" : "If you would like to play, use the command ``" + Config.commandCharacter + "join``."));
 		if (this.description) this.say("Description: " + this.description);
