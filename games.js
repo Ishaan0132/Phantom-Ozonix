@@ -38,6 +38,10 @@ class Game {
 		this.room.say(message);
 	}
 
+	on(message, listener) {
+		this.room.on(message, listener);
+	}
+
 	addBits(bits, user) {
 		Storage.addPoints(bits, user, this.room.id);
 	}

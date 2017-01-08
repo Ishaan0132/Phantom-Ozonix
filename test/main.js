@@ -4,6 +4,10 @@ const assert = require('assert');
 require('./../app.js');
 
 const room = Rooms.add('mocha');
+room.on = function (message, listener) {
+	listener();
+};
+
 const users = [];
 for (let i = 0; i < 4; i++) {
 	let user = Users.add("User " + i);

@@ -85,8 +85,10 @@ class Trivia extends Games.Game {
 			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
 		}
 		this.setAnswers();
+		this.on(this.hint, () => {
+			this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
+		});
 		this.say(this.hint);
-		this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
 	}
 
 	checkAnswer(guess) {
