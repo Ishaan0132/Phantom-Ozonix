@@ -14,6 +14,7 @@ class Room {
 		this.id = id;
 		this.clientId = id === 'lobby' ? '' : id;
 		this.users = new Map();
+		this.listeners = {};
 	}
 
 	onJoin(user, rank) {
@@ -55,6 +56,12 @@ class Room {
 		Client.send(this.clientId + '|' + message);
 	}
 
+	on(message, listener) {
+		message = Tools.normalizeMessage(message);
+		if (!message) return;
+		this.listeners[Tools.toId(message)] = listener;
+	}
+
 	parseMessage(messageType, splitMessage) {
 		let user, rank;
 		switch (messageType) {
@@ -76,22 +83,35 @@ class Room {
 			if (!user) return;
 			this.onRename(user, splitMessage[0]);
 			break;
-		case 'c':
+		case 'c': {
 			user = Users.get(splitMessage[0]);
 			if (!user) return;
 			rank = splitMessage[0].charAt(0);
 			if (user.rooms.get(this) !== rank) user.rooms.set(this, rank);
-			if (user.id === Users.self.id) return;
-			CommandParser.parse(splitMessage.slice(1).join('|'), this, user);
+			let message = splitMessage.slice(1).join('|');
+			if (user.id === Users.self.id) {
+				message = Tools.toId(message);
+				if (message in this.listeners) this.listeners[message]();
+				return;
+			}
+			CommandParser.parse(message, this, user);
 			break;
-		case 'c:':
+		}
+		case 'c:': {
 			user = Users.get(splitMessage[1]);
 			if (!user) return;
 			rank = splitMessage[1].charAt(0);
 			if (user.rooms.get(this) !== rank) user.rooms.set(this, rank);
-			if (user.id === Users.self.id) return;
-			CommandParser.parse(splitMessage.slice(2).join('|'), this, user, splitMessage[0] * 1000);
+			let message = splitMessage.slice(2).join('|');
+			if (user.id === Users.self.id) {
+				message = Tools.toId(message);
+				if (message in this.listeners) this.listeners[message]();
+				return;
+			}
+			CommandParser.parse(message, this, user, splitMessage[0] * 1000);
 			break;
+		}
+
 		}
 	}
 }
