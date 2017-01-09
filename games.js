@@ -281,7 +281,7 @@ class GamesManager {
 					if (variation.aliases) {
 						for (let i = 0, len = variation.aliases.length; i < len; i++) {
 							let alias = Tools.toId(variation.aliases[i]);
-							if (!(alias in this.aliases) && !(alias in this.games)) this.aliases[alias] = game.id + ',' + variationId;
+							if (!(alias in game.variations)) game.variations[alias] = variation;
 						}
 					}
 				}
