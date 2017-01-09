@@ -276,12 +276,13 @@ class GamesManager {
 					if (id in this.games) throw new Error(game.name + " variation '" + variation.name + "' is already a game.");
 					variation.id = id;
 					let variationId = Tools.toId(variation.variation);
+					if (variationId in this.modes) throw new Error(variation.name + "'s variation '" + variation.variation + "' exists as a mode.");
 					game.variations[variationId] = variation;
 					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + variationId;
 					if (variation.aliases) {
 						for (let i = 0, len = variation.aliases.length; i < len; i++) {
 							let alias = Tools.toId(variation.aliases[i]);
-							if (!(alias in game.variations)) game.variations[alias] = variation;
+							if (!(alias in game.variations) && !(alias in this.modes)) game.variations[alias] = variation;
 						}
 					}
 				}
