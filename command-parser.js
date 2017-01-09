@@ -68,6 +68,7 @@ class CommandParser {
 		} else {
 			command = message;
 		}
+		command = Tools.toId(command);
 		if (!Commands[command]) return;
 		let type = typeof Commands[command];
 		if (type === 'string') {
