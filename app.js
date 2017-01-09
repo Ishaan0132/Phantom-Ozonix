@@ -24,6 +24,8 @@ try {
 global.Config = require('./config.js');
 if (!Config.username) throw new Error("Please specify a username in config.js");
 
+global.Commands = require('./commands.js');
+
 global.CommandParser = require('./command-parser.js');
 
 global.Rooms = require('./rooms.js');
@@ -37,8 +39,6 @@ Games.loadGames();
 
 global.Storage = require('./storage.js');
 Storage.importDatabases();
-
-global.Commands = require('./commands.js');
 
 let plugins = fs.readdirSync('./plugins');
 for (let i = 0, len = plugins.length; i < len; i++) {

@@ -194,6 +194,7 @@ class GamesManager {
 		this.games = {};
 		this.modes = {};
 		this.aliases = {};
+		this.commands = {};
 	}
 
 	loadGames() {
@@ -219,11 +220,47 @@ class GamesManager {
 				if (!mode.endsWith('.js')) continue;
 				mode = require('./games/modes/' + mode);
 				this.modes[mode.id] = mode;
+				if (mode.commands) {
+					for (let i in mode.commands) {
+						if (i in Commands) {
+							if (i in this.commands) continue;
+							throw new Error(mode.name + " mode command '" + i + "' is already a command.");
+						}
+						let gameFunction = mode.commands[i];
+						this.commands[i] = gameFunction;
+						if (gameFunction in mode.commands && gameFunction !== i) {
+							Commands[i] = mode.commands[gameFunction];
+							continue;
+						}
+						Commands[i] = function (target, room, user, command, time) {
+							if (!room.game) return;
+							if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+						};
+					}
+				}
 			}
 		}
 
 		for (let i in this.games) {
 			let game = this.games[i];
+			if (game.commands) {
+				for (let i in game.commands) {
+					if (i in Commands) {
+						if (i in this.commands) continue;
+						throw new Error(game.name + " command '" + i + "' is already a command.");
+					}
+					let gameFunction = game.commands[i];
+					this.commands[i] = gameFunction;
+					if (gameFunction in game.commands && gameFunction !== i) {
+						Commands[i] = game.commands[gameFunction];
+						continue;
+					}
+					Commands[i] = function (target, room, user, command, time) {
+						if (!room.game) return;
+						if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+					};
+				}
+			}
 			if (game.aliases) {
 				for (let i = 0, len = game.aliases.length; i < len; i++) {
 					let alias = Tools.toId(game.aliases[i]);

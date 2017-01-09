@@ -123,6 +123,12 @@ class Trivia extends Games.Game {
 exports.name = name;
 exports.id = id;
 exports.description = description;
+exports.commands = {
+	// command: game function
+	// alias: command
+	"guess": "guess",
+	"g": "guess",
+};
 exports.aliases = ['triv'];
 exports.variations = [
 	{

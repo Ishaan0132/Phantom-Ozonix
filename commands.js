@@ -56,11 +56,6 @@ let commands = {
 		if (!room.game) return;
 		room.game.leave(user);
 	},
-	g: 'guess',
-	guess: function (target, room, user) {
-		if (!room.game) return;
-		if (typeof room.game.guess === 'function') room.game.guess(target, user);
-	},
 
 	// Storage commands
 	bits: 'points',
