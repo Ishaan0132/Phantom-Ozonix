@@ -36,7 +36,7 @@ let commands = {
 		if (!Games.createGame(target, room)) return;
 		room.game.signups();
 	},
-	start: 'start',
+	start: 'startgame',
 	startgame: function (target, room, user) {
 		if (!room.game || !user.hasRank(room, '+')) return;
 		room.game.start();
