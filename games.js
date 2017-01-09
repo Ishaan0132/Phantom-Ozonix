@@ -313,16 +313,12 @@ class GamesManager {
 		if (!(id in this.games)) return;
 		format = Object.assign({}, this.games[id]);
 		let variation, mode;
-		if (format.variations) {
-			for (let i = 0, len = target.length; i < len; i++) {
-				let id = Tools.toId(target[i]);
-				if (id in format.variations) variation = format.variations[id];
-			}
-		}
-		if (format.modes) {
-			for (let i = 0, len = target.length; i < len; i++) {
-				let id = Tools.toId(target[i]);
-				if (id in format.modes) mode = format.modes[id];
+		for (let i = 0, len = target.length; i < len; i++) {
+			let id = Tools.toId(target[i]);
+			if (format.variations && id in format.variations) {
+				variation = format.variations[id];
+			} else if (format.modes && id in format.modes) {
+				mode = format.modes[id];
 			}
 		}
 		if (variation) Object.assign(format, variation);
