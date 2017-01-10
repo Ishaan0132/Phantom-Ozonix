@@ -45,6 +45,8 @@ for (let i in Tools.data.abilities) {
 	data["Pokemon Abilities"][desc].push(ability.name);
 }
 
+// if inheriting from or inherited by another game, this class would be declared as:
+// let Trivia = base => class extends base {
 class Trivia extends Games.Game {
 	constructor(room) {
 		super(room);
@@ -148,4 +150,6 @@ exports.variations = [
 	},
 ];
 exports.modes = ["Survival"];
+// if inheriting from or inherited by another game, this game would be exported as:
+// exports.install = Trivia;
 exports.game = Trivia;

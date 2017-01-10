@@ -18,6 +18,7 @@ for (let i = 0; i < 4; i++) {
 const games = [];
 for (let i in Games.games) {
 	let game = Games.games[i];
+	if (game.inheritOnly) continue;
 	games.push(game.name);
 	if (game.variations) {
 		for (let i in game.variations) {

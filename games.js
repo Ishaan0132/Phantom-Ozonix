@@ -243,6 +243,13 @@ class GamesManager {
 
 		for (let i in this.games) {
 			let game = this.games[i];
+			if (game.inherits) {
+				if (!game.install) throw new Error(game.name + " must have an install method to inherit from other games.");
+				let parentId = Tools.toId(game.inherits);
+				if (parentId === game.id || !(parentId in this.games)) throw new Error(game.name + " inherits from an invalid game.");
+				if (!this.games[parentId].install) throw new Error(game.name + "'s parent game '" + game.inherits + "' must have an install method.");
+				game.inherits = parentId;
+			}
 			if (game.commands) {
 				for (let i in game.commands) {
 					if (i in Commands) {
@@ -334,11 +341,30 @@ class GamesManager {
 			return false;
 		}
 		let format = this.getFormat(target);
-		if (!format) {
+		if (!format || format.inheritOnly) {
 			room.say("The game '" + target + "' was not found.");
 			return false;
 		}
-		room.game = new format.game(room); // eslint-disable-line new-cap
+		let baseClass;
+		if (format.inherits) {
+			let parentFormat = format;
+			let parentFormats = [];
+			while (parentFormat.inherits) {
+				parentFormat = this.games[parentFormat.inherits];
+				if (parentFormats.includes(parentFormat)) throw new Error("Infinite inherit loop created by " + format.name + ".");
+				parentFormats.unshift(parentFormat);
+			}
+			baseClass = Game;
+			for (let i = 0, len = parentFormats.length; i < len; i++) {
+				baseClass = parentFormats[i].install(baseClass);
+			}
+			baseClass = format.install(baseClass);
+		} else if (format.install) {
+			baseClass = format.install(Game);
+		} else {
+			baseClass = format.game;
+		}
+		room.game = new baseClass(room); // eslint-disable-line new-cap
 		Object.assign(room.game, format);
 		if (format.modeId) this.modes[format.modeId].mode.call(room.game);
 		return room.game;
