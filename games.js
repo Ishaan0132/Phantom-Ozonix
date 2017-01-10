@@ -280,9 +280,10 @@ class GamesManager {
 					game.variations[variationId] = variation;
 					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + variationId;
 					if (variation.aliases) {
+						game.aliases = {};
 						for (let i = 0, len = variation.aliases.length; i < len; i++) {
 							let alias = Tools.toId(variation.aliases[i]);
-							if (!(alias in game.variations) && !(alias in this.modes)) game.variations[alias] = variation;
+							if (!(alias in game.aliases) && !(alias in this.modes)) game.aliases[alias] = variation;
 						}
 					}
 				}
@@ -315,8 +316,9 @@ class GamesManager {
 		let variation, mode;
 		for (let i = 0, len = target.length; i < len; i++) {
 			let id = Tools.toId(target[i]);
-			if (format.variations && id in format.variations) {
-				variation = format.variations[id];
+			if (format.variations) {
+				if (format.aliases && id in format.aliases) id = format.aliases[id];
+				if (id in format.variations) variation = format.variations[id];
 			} else if (format.modes && id in format.modes) {
 				mode = format.modes[id];
 			}
