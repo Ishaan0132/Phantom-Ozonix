@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 require('./../app.js');
 
 const room = Rooms.add('mocha');
@@ -99,5 +101,17 @@ describe('Games', function () {
 				if (room.game) room.game.end();
 			});
 		});
+	}
+
+	let gameTests;
+	let directory = path.resolve(__dirname, 'games');
+	try {
+		gameTests = fs.readdirSync(directory);
+	} catch (e) {}
+	if (gameTests) {
+		for (let i = 0, len = gameTests.length; i < len; i++) {
+			if (!gameTests[i].endsWith('.js')) continue;
+			require(directory + '/' + gameTests[i]);
+		}
 	}
 });
