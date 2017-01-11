@@ -351,10 +351,6 @@ class GamesManager {
 			return false;
 		}
 		let format = this.getFormat(target);
-		if (!format || format.inheritOnly) {
-			room.say("The game '" + target + "' was not found.");
-			return false;
-		}
 		let baseClass;
 		if (format.inherits) {
 			let parentFormat = format;

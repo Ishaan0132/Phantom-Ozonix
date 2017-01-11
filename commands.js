@@ -33,7 +33,10 @@ let commands = {
 	creategame: function (target, room, user) {
 		if (!user.hasRank(room, '+')) return;
 		if (!Config.games || !Config.games.includes(room.id)) return this.say("Games are not enabled for this room.");
-		if (!Games.createGame(target, room)) return;
+		let format = Games.getFormat(target);
+		if (!format || format.inheritOnly) return this.say("The game '" + target + "' was not found.");
+		if (format.internal) return this.say(format.name + " cannot be started manually.");
+		if (!Games.createGame(format, room)) return;
 		room.game.signups();
 	},
 	start: 'startgame',
