@@ -32,6 +32,9 @@ class Game {
 		this.started = false;
 		this.ended = false;
 		this.freeJoin = false;
+		this.winners = new Map();
+		this.parentGame = null;
+		this.childGame = null;
 	}
 
 	say(message) {
@@ -73,11 +76,16 @@ class Game {
 		if (typeof this.onEnd === 'function') this.onEnd();
 		this.ended = true;
 		this.room.game = null;
+		if (this.parentGame) {
+			this.room.game = this.parentGame;
+			if (typeof this.parentGame.onChildEnd === 'function') this.parentGame.onChildEnd(this.winners);
+		}
 	}
 
 	forceEnd() {
 		if (this.ended) return;
 		if (this.timeout) clearTimeout(this.timeout);
+		if (this.parentGame) return this.parentGame.forceEnd();
 		this.say("The game was forcibly ended.");
 		this.ended = true;
 		this.room.game = null;
@@ -116,7 +124,8 @@ class Game {
 		player.id = user.id;
 		this.players[user.id] = player;
 		delete this.players[oldId];
-		if (this.onRename) this.onRename(user);
+		if (typeof this.onRename === 'function') this.onRename(user);
+		if (this.parentGame && typeof this.parentGame.onRename === 'function') this.parentGame.onRename(user);
 	}
 
 	join(user) {
@@ -128,6 +137,7 @@ class Game {
 	}
 
 	leave(user) {
+		if (this.parentGame) return this.parentGame.leave(user);
 		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
 		this.removePlayer(user);
 		user.say("You have left the game of " + this.name + "!");
@@ -368,6 +378,16 @@ class GamesManager {
 		Object.assign(room.game, format);
 		if (format.modeId) this.modes[format.modeId].mode.call(room.game);
 		return room.game;
+	}
+
+	createChildGame(format, parentGame) {
+		parentGame.room.game = null;
+		let childGame = this.createGame(format, parentGame.room);
+		parentGame.childGame = childGame;
+		childGame.parentGame = parentGame;
+		childGame.players = parentGame.players;
+		childGame.playerCount = parentGame.playerCount;
+		return childGame;
 	}
 }
 

@@ -112,6 +112,7 @@ class Trivia extends Games.Game {
 		points += 1;
 		this.points.set(player, points);
 		if (points >= this.maxPoints) {
+			this.winners.set(player, points);
 			this.say("Correct! " + user.name + " wins the game! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
 			this.end();
 			return;
