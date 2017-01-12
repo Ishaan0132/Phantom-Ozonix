@@ -10,8 +10,7 @@
 'use strict';
 
 const name = "Trivia";
-const id = Tools.toId(name);
-const description = "Guess answers based on the given descriptions.";
+
 const data = {
 	"Pokemon Moves": {},
 	"Pokemon Items": {},
@@ -50,9 +49,6 @@ for (let i in Tools.data.abilities) {
 class Trivia extends Games.Game {
 	constructor(room) {
 		super(room);
-		this.name = name;
-		this.id = id;
-		this.description = description;
 		this.freeJoin = true;
 		this.answers = null;
 		this.hint = null;
@@ -124,8 +120,8 @@ class Trivia extends Games.Game {
 }
 
 exports.name = name;
-exports.id = id;
-exports.description = description;
+exports.id = Tools.toId(name);
+exports.description = "Guess answers based on the given descriptions.";
 exports.commands = {
 	// command: game function
 	// alias: command
