@@ -294,6 +294,7 @@ class GamesManager {
 					variation.id = id;
 					let variationId = Tools.toId(variation.variation);
 					if (variationId in this.modes) throw new Error(variation.name + "'s variation '" + variation.variation + "' exists as a mode.");
+					variation.variationId = variationId;
 					game.variations[variationId] = variation;
 					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + variationId;
 					if (variation.aliases) {
@@ -336,8 +337,9 @@ class GamesManager {
 			if (format.variations) {
 				if (format.aliases && id in format.aliases) id = format.aliases[id];
 				if (id in format.variations) variation = format.variations[id];
-			} else if (format.modes && id in format.modes) {
-				mode = format.modes[id];
+			}
+			if (format.modes) {
+				if (id in format.modes) mode = format.modes[id];
 			}
 		}
 		if (variation) Object.assign(format, variation);

@@ -19,24 +19,28 @@ for (let i = 0; i < 4; i++) {
 
 const games = [];
 for (let i in Games.games) {
-	let game = Games.games[i];
+	let game = Games.getFormat(i);
 	if (game.inheritOnly) continue;
-	games.push(game.name);
+	games.push(game);
 	if (game.variations) {
 		for (let i in game.variations) {
-			games.push(game.name + ',' + i);
+			let variation = Games.getFormat(game.name + ',' + i);
+			if (!variation.variationId) throw new Error("Games.getFormat('" + game.name + ',' + i + "') did not return a variation.");
+			games.push(variation);
 		}
 	}
 	if (game.modes) {
 		for (let i in game.modes) {
-			games.push(game.name + ',' + i);
+			let mode = Games.getFormat(game.name + ',' + i);
+			if (!mode.modeId) throw new Error("Games.getFormat('" + game.name + ',' + i + "') did not return a mode.");
+			games.push(mode);
 		}
 	}
 }
 
 describe('Games', function () {
 	for (let i = 0, len = games.length; i < len; i++) {
-		let game = Games.getFormat(games[i]);
+		let game = games[i];
 		let name = game.name;
 		if (game.modeId) name += " (" + Games.modes[game.modeId].name + ")";
 		describe(name, function () {
