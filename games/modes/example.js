@@ -30,7 +30,7 @@ let SurvivalMode = function () {
 		if (!this.playerList.length) {
 			if (this.getRemainingPlayerCount() < 2) return this.end();
 			this.survivalRound++;
-			this.say("/wall Round " + this.survivalRound + (this.survivalRound > 1 ? " | Remaining players: " + this.getPlayerNames() : ""));
+			this.say("/wall Round " + this.survivalRound + (this.survivalRound > 1 ? " | Remaining players: " + this.getPlayerNames(this.getRemainingPlayers()) : ""));
 			this.playerList = this.shufflePlayers();
 			if (this.roundTime > 1000) this.roundTime -= 500;
 		}
