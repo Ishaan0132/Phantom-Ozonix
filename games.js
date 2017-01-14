@@ -310,11 +310,16 @@ class GamesManager {
 				let modes = game.modes.slice();
 				game.modes = {};
 				for (let i = 0, len = modes.length; i < len; i++) {
-					let mode = Tools.toId(modes[i]);
-					if (!(mode in this.modes)) throw new Error(mode.name + " mode '" + mode.mode + "' does not exist.");
-					game.modes[mode] = mode;
-					let id = game.id + this.modes[mode].id;
-					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + mode;
+					let modeId = Tools.toId(modes[i]);
+					if (!(modeId in this.modes)) throw new Error(game.name + " mode '" + modeId + "' does not exist.");
+					game.modes[modeId] = modeId;
+					let id;
+					if (this.modes[modeId].naming === 'prefix') {
+						id = this.modes[modeId].id + game.id;
+					} else {
+						id = game.id + this.modes[modeId].id;
+					}
+					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + modeId;
 				}
 			}
 		}
