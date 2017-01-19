@@ -79,5 +79,6 @@ let SurvivalMode = function () {
 exports.name = name;
 exports.id = id;
 exports.naming = 'suffix';
+exports.aliases = ['surv'];
 exports.requiredFunctions = ['setAnswers', 'checkAnswer'];
 exports.mode = SurvivalMode;

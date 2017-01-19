@@ -132,18 +132,21 @@ exports.aliases = ['triv'];
 exports.variations = [
 	{
 		name: "Move Trivia",
+		aliases: ['Moves Trivia'],
 		variation: "Pokemon Moves",
-		aliases: ['moves'],
+		variationAliases: ['moves'],
 	},
 	{
 		name: "Item Trivia",
+		aliases: ['Items Trivia'],
 		variation: "Pokemon Items",
-		aliases: ['items'],
+		variationAliases: ['items'],
 	},
 	{
 		name: "Ability Trivia",
+		aliases: ['Abilities Trivia'],
 		variation: "Pokemon Abilities",
-		aliases: ['abilities'],
+		variationAliases: ['abilities'],
 	},
 ];
 exports.modes = ["Survival"];

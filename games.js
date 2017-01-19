@@ -249,6 +249,18 @@ class GamesManager {
 					}
 				}
 			}
+
+			for (let i in this.modes) {
+				let mode = this.modes[i];
+				if (mode.aliases) {
+					for (let i = 0, len = mode.aliases.length; i < len; i++) {
+						let alias = Tools.toId(mode.aliases[i]);
+						if (alias in this.modes) throw new Error(mode.name + " alias '" + alias + "' is already a mode.");
+						this.modes[alias] = mode;
+						mode.aliases[i] = alias;
+					}
+				}
+			}
 		}
 
 		for (let i in this.games) {
@@ -298,9 +310,15 @@ class GamesManager {
 					game.variations[variationId] = variation;
 					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + variationId;
 					if (variation.aliases) {
-						if (!game.variationAliases) game.variationAliases = {};
 						for (let i = 0, len = variation.aliases.length; i < len; i++) {
 							let alias = Tools.toId(variation.aliases[i]);
+							if (!(alias in this.aliases) && !(alias in this.modes)) this.aliases[alias] = game.id + ',' + variationId;
+						}
+					}
+					if (variation.variationAliases) {
+						if (!game.variationAliases) game.variationAliases = {};
+						for (let i = 0, len = variation.variationAliases.length; i < len; i++) {
+							let alias = Tools.toId(variation.variationAliases[i]);
 							if (!(alias in game.variationAliases) && !(alias in this.modes)) game.variationAliases[alias] = variationId;
 						}
 					}
@@ -313,13 +331,27 @@ class GamesManager {
 					let modeId = Tools.toId(modes[i]);
 					if (!(modeId in this.modes)) throw new Error(game.name + " mode '" + modeId + "' does not exist.");
 					game.modes[modeId] = modeId;
+					let prefix = this.modes[modeId].naming === 'prefix';
 					let id;
-					if (this.modes[modeId].naming === 'prefix') {
+					if (prefix) {
 						id = this.modes[modeId].id + game.id;
 					} else {
 						id = game.id + this.modes[modeId].id;
 					}
 					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + modeId;
+					if (this.modes[modeId].aliases) {
+						if (!game.modeAliases) game.modeAliases = {};
+						for (let i = 0, len = this.modes[modeId].aliases.length; i < len; i++) {
+							game.modeAliases[this.modes[modeId].aliases[i]] = modeId;
+							let id;
+							if (prefix) {
+								id = this.modes[modeId].aliases[i] + game.id;
+							} else {
+								id = game.id + this.modes[modeId].aliases[i];
+							}
+							if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + modeId;
+						}
+					}
 				}
 			}
 		}
@@ -344,6 +376,7 @@ class GamesManager {
 				if (id in format.variations) variation = format.variations[id];
 			}
 			if (format.modes) {
+				if (format.modeAliases && id in format.modeAliases) id = format.modeAliases[id];
 				if (id in format.modes) mode = format.modes[id];
 			}
 		}
