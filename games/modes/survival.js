@@ -1,8 +1,8 @@
 /**
- * Example mode
+ * Survival
  * Cassius - https://github.com/sirDonovan/Cassius
  *
- * This file contains example code for a game mode (Survival)
+ * This file contains code for the game mode Survival
  *
  * @license MIT license
  */
