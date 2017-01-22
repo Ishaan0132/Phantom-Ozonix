@@ -231,6 +231,7 @@ class GamesManager {
 				mode = require('./games/modes/' + mode);
 				this.modes[mode.id] = mode;
 				if (mode.commands) {
+					if (i in this.commands && this.commands[i] !== mode.commands[i]) throw new Error(mode.name + " command '" + i + "' is already used for a different game function (" + this.commands[i] + ").");
 					for (let i in mode.commands) {
 						if (i in Commands) {
 							if (i in this.commands) continue;
@@ -274,6 +275,7 @@ class GamesManager {
 			}
 			if (game.commands) {
 				for (let i in game.commands) {
+					if (i in this.commands && this.commands[i] !== game.commands[i]) throw new Error(game.name + " command '" + i + "' is already used for a different game function (" + this.commands[i] + ").");
 					if (i in Commands) {
 						if (i in this.commands) continue;
 						throw new Error(game.name + " command '" + i + "' is already a command.");
