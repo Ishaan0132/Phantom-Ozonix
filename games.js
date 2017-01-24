@@ -65,7 +65,7 @@ class Game {
 	}
 
 	start() {
-		if (this.started) return;
+		if (this.started || (this.modeId === 'team' && this.playerCount < 2)) return;
 		this.started = true;
 		if (typeof this.onStart === 'function') this.onStart();
 	}

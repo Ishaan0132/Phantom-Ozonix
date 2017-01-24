@@ -20,6 +20,7 @@ class Tools {
 		this.data.items = require('./data/items.js').BattleItems;
 		this.data.abilities = require('./data/abilities.js').BattleAbilities;
 		this.data.learnsets = require('./data/learnsets.js').BattleLearnsets;
+		this.data.teams = require('./data/teams.js').BattlePokeTeams;
 	}
 
 	toId(text) {
