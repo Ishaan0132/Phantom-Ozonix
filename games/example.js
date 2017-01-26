@@ -79,8 +79,7 @@ class Trivia extends Games.Game {
 
 	onNextRound() {
 		if (this.answers) {
-			let answers = this.answers.length;
-			this.say("Time's up! The answer" + (answers > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
+			this.say("Time's up! The answer" + (this.answers.length > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
 		}
 		this.setAnswers();
 		this.on(this.hint, () => {
@@ -149,7 +148,7 @@ exports.variations = [
 		variationAliases: ['abilities'],
 	},
 ];
-exports.modes = ["Survival"];
+exports.modes = ["Survival", "Team"];
 // if inheriting from or inherited by another game, this game would be exported as:
 // exports.install = Trivia;
 exports.game = Trivia;

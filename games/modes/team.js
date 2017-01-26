@@ -1,8 +1,8 @@
 /**
- * Team mode
+ * Team
  * Cassius - https://github.com/sirDonovan/Cassius
  *
- * This file contains code for a game mode (Team)
+ * This file contains code for the game mode Team
  *
  * @license MIT license
  */
@@ -11,69 +11,69 @@
 
 const name = 'Team';
 const id = Tools.toId(name);
-const data = {};
-
-data["Teams"] = Tools.data.teams;
 
 let TeamMode = function () {
-	this.name += ' ' + name;
-	this.id += id;
+	this.name = name + ' ' + this.name;
+	this.id = id + this.id;
 	this.freeJoin = false;
-	this.playerList = [];
 	this.teamA = '';
 	this.teamB = '';
-	this.teamAplayers = [];
-	this.teamBplayers = [];
 	this.points = new Map();
 	this.maxPoints = 20;
 	this.onSignups = null;
 
 	this.onStart = () => {
-		let tracker = Object.keys(this.players), str = 0, teamNames = data["Teams"];
-		this.teamA = Object.keys(teamNames)[Math.floor(Math.random() * Object.keys(teamNames).length)];
-		this.teamB = teamNames[this.teamA];
-		let randomPlayer = Tools.shuffle(tracker);
-		for (let i = 0, len = tracker.length; i < len; i++) {
-			if (str % 2 === 0) {
-				this.players[randomPlayer[i]].team = this.teamA;
-				this.teamAplayers.push(this.players[randomPlayer[i]].name);
-				str++;
+		let teamNames = Tools.sample(Tools.data.teams);
+		this.teamA = teamNames[0];
+		this.teamB = teamNames[1];
+		let teamAPlayers = [];
+		let teamBPlayers = [];
+		let players = this.shufflePlayers();
+		for (let i = 0, len = players.length; i < len; i++) {
+			if (i % 2 === 0) {
+				players[i].team = this.teamA;
+				teamAPlayers.push(players[i].name);
 			} else {
-				this.players[randomPlayer[i]].team = this.teamB;
-				this.teamBplayers.push(this.players[randomPlayer[i]].name);
-				str++;
+				players[i].team = this.teamB;
+				teamBPlayers.push(players[i].name);
 			}
 		}
-		this.say("Players (" + this.playerCount + ") **" + this.teamA + ":** " + this.teamAplayers.join(", ") + " | **" + this.teamB + ":** " + this.teamBplayers.join(", ") + ".");
+		this.say("**" + this.teamA + "**: " + teamAPlayers.join(", "));
+		this.say("**" + this.teamB + "**: " + teamBPlayers.join(", "));
 		this.nextRound();
 	};
 
 	this.onNextRound = () => {
+		if (this.answers) {
+			this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
+		}
 		this.setAnswers();
+		this.on(this.hint, () => {
+			this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
+		});
 		this.say(this.hint);
-		this.timeout = setTimeout(() => {
-			if (this.answers) {
-				this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
-			}
-			this.nextRound();
-		}, 10 * 1000);
 	};
 
 	this.guess = (guess, user) => {
-		if (!this.players[user.id] || !this.checkAnswer(guess)) return;
+		if (!(user.id in this.players) || !this.checkAnswer(guess)) return;
 		clearTimeout(this.timeout);
 		let player = this.players[user.id];
-		let playerteam = player.team;
-		let points = this.points.get(playerteam) || 0;
+		let points = this.points.get(player) || 0;
 		points += 1;
-		this.points.set(playerteam, points);
+		this.points.set(player, points);
+
+		points = this.points.get(player.team) || 0;
+		points += 1;
+		this.points.set(player.team, points);
 		if (points >= this.maxPoints) {
-			this.winners.set(playerteam, points);
-			this.say("Correct! " + user.name + " has won the game for **" + playerteam + "**! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
+			for (let i in this.players) {
+				if (this.players[i].team === player.team) this.winners.set(this.players[i], this.points.get(this.players[i]) || 0);
+			}
+			this.say("Correct! " + user.name + " has won the game for **" + player.team + "**! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
 			this.end();
 			return;
 		}
-		this.say("**" + user.name + "** advances **" + playerteam + "** to " + points + " point" + (points > 1 ? "s" : "") + "! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
+		this.say("**" + user.name + "** advances **" + player.team + "** to " + points + " point" + (points > 1 ? "s" : "") + "! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
 		this.answers = null;
 		this.timeout = setTimeout(() => this.nextRound(), 5000);
 	};
@@ -81,5 +81,6 @@ let TeamMode = function () {
 
 exports.name = name;
 exports.id = id;
+exports.naming = 'prefix';
 exports.requiredFunctions = ['setAnswers', 'checkAnswer'];
 exports.mode = TeamMode;
