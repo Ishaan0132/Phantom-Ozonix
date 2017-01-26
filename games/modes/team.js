@@ -24,8 +24,8 @@ let TeamMode = function () {
 
 	this.onStart = () => {
 		let teamNames = Tools.sample(Tools.data.teams);
-		this.teamA = teamNames[0];
-		this.teamB = teamNames[1];
+		this.teamA = "Team " + teamNames[0];
+		this.teamB = "Team " + teamNames[1];
 		let teamAPlayers = [];
 		let teamBPlayers = [];
 		let players = this.shufflePlayers();
