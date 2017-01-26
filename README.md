@@ -44,7 +44,7 @@ From this point on, you can start the bot by running the following command:
 
 ## Development
 
-  Issues and pull requests are welcomed! When submitting a pull request, be sure that you have installed and ran ESLint to check for errors in your code.
+  Issues and pull requests are welcomed! When submitting a pull request, be sure that you have installed development dependencies and ran `npm test` to check for errors in your code.
 
 #### Credits
 
