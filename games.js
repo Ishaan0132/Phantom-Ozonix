@@ -240,7 +240,7 @@ class GamesManager {
 						let gameFunction = mode.commands[i];
 						this.commands[i] = gameFunction;
 						if (gameFunction in mode.commands && gameFunction !== i) {
-							Commands[i] = mode.commands[gameFunction];
+							Commands[i] = gameFunction;
 							continue;
 						}
 						Commands[i] = function (target, room, user, command, time) {
@@ -283,7 +283,7 @@ class GamesManager {
 					let gameFunction = game.commands[i];
 					this.commands[i] = gameFunction;
 					if (gameFunction in game.commands && gameFunction !== i) {
-						Commands[i] = game.commands[gameFunction];
+						Commands[i] = gameFunction;
 						continue;
 					}
 					Commands[i] = function (target, room, user, command, time) {
