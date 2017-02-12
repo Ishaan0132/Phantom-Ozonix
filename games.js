@@ -244,8 +244,13 @@ class GamesManager {
 							continue;
 						}
 						Commands[i] = function (target, room, user, command, time) {
-							if (!room.game) return;
-							if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+							if (room.game) {
+								if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+							} else if (room === user) {
+								user.rooms.forEach(function (value, room) {
+									if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+								});
+							}
 						};
 					}
 				}
@@ -287,8 +292,13 @@ class GamesManager {
 						continue;
 					}
 					Commands[i] = function (target, room, user, command, time) {
-						if (!room.game) return;
-						if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+						if (room.game) {
+							if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+						} else if (room === user) {
+							user.rooms.forEach(function (value, room) {
+								if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+							});
+						}
 					};
 				}
 			}
