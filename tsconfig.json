@@ -1,0 +1,24 @@
+﻿{
+    "compilerOptions": {
+		"target": "es2016",
+		"noEmit": true,
+		"allowJs": true,
+		"checkJs": true,
+		"typeRoots": [
+		    "node_modules/@types"
+		],
+		"types": [
+		    "node",
+		    "websocket",
+		    "mocha"
+		],
+		"lib": [
+		    "es2016",
+		    "es2017.object"
+		]
+    },
+    "exclude": [
+		"node_modules",
+		"databases"
+    ]
+}

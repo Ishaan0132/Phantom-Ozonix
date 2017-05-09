@@ -18,16 +18,26 @@ class User {
 		this.rooms = new Map();
 	}
 
+	/**
+	 * @param {string} targetRank
+	 * @return {boolean}
+	 */
 	hasRank(room, targetRank) {
 		if (!Config.groups) return false;
 		let rank = this.rooms.get(room) || room;
 		return Config.groups[rank] >= Config.groups[targetRank];
 	}
 
+	/**
+	 * @return {boolean}
+	 */
 	isDeveloper() {
 		return Config.developers && Config.developers.indexOf(this.id) !== -1;
 	}
 
+	/**
+	 * @param {string} message
+	 */
 	say(message) {
 		message = Tools.normalizeMessage(message);
 		if (!message) return;
@@ -40,13 +50,21 @@ class Users {
 		this.users = {};
 		this.self = this.add(Config.username);
 		this.pruneUsersInterval = setInterval(() => this.pruneUsers(), PRUNE_INTERVAL);
+
+		this.User = User;
 	}
 
+	/**
+	 * @return {User}
+	 */
 	get(name) {
 		if (name && name.rooms) return name;
 		return this.users[Tools.toId(name)];
 	}
 
+	/**
+	 * @return {User}
+	 */
 	add(name) {
 		let id = Tools.toId(name);
 		if (!id) return;

@@ -1,5 +1,5 @@
 ﻿{
-	"name": "Cassius",
+	"name": "cassius",
 	"version": "0.0.1",
 	"description": "A bot for Pokemon Showdown",
 	"author": {
@@ -16,11 +16,14 @@
 		"url": "https://github.com/sirDonovan/Cassius.git"
 	},
 	"dependencies": {
-		"websocket": "1.0.23"
+		"@types/mocha": "^2.2.41",
+		"@types/node": "^7.0.18",
+		"@types/websocket": "0.0.33",
+		"websocket": "1.0.24"
 	},
 	"devDependencies": {
-		"eslint": "3.11.1",
-		"mocha": "3.2.0"
+		"eslint": "3.19.0",
+		"mocha": "3.3.0"
 	},
 	"engine-strict": true,
 	"engines": {

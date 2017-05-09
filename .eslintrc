@@ -7,6 +7,7 @@
 	"globals": {
 		"Client": false, "Commands": false, "CommandParser": false, "Config": false,
 		"Rooms": false, "Tools": false, "Users": false, "Games": false, "Storage": false,
+		"toId": false
 	},
 	"extends": "eslint:recommended",
 	"rules": {

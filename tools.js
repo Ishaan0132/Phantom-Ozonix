@@ -23,6 +23,9 @@ class Tools {
 		this.data.teams = require('./data/teams.js').BattlePokeTeams;
 	}
 
+	/**
+	 * @return {string}
+	 */
 	toId(text) {
 		if (!text) return '';
 		if (text.id) text = text.id;
@@ -37,6 +40,9 @@ class Tools {
 		return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 	}
 
+	/**
+	 * @return {string}
+	 */
 	toName(text) {
 		if (!text) return '';
 		if (text.name) text = text.name;
@@ -52,6 +58,9 @@ class Tools {
 		return text.trim();
 	}
 
+	/**
+	 * @return {string}
+	 */
 	toString(text) {
 		if (!text) return '';
 		let type = typeof text;
@@ -60,6 +69,9 @@ class Tools {
 		return JSON.stringify(text);
 	}
 
+	/**
+	 * @return {string}
+	 */
 	normalizeMessage(text, room) {
 		text = this.toString(text);
 		if (!text) return '';
@@ -73,11 +85,19 @@ class Tools {
 		return text;
 	}
 
+	/**
+	 * @param {number} [limit]
+	 * @return {number}
+	 */
 	random(limit) {
 		if (!limit) limit = 2;
 		return Math.floor(Math.random() * limit);
 	}
 
+	/**
+	 * @param {Array} array
+	 * @return {Array}
+	 */
 	shuffle(array) {
 		if (!(array instanceof Array)) return array;
 		array = array.slice();
@@ -100,6 +120,10 @@ class Tools {
 		return array;
 	}
 
+	/**
+	 * @param {Array} array
+	 * @param {number} [amount]
+	 */
 	sample(array, amount) {
 		if (!(array instanceof Array)) return;
 		let len = array.length;
@@ -112,9 +136,26 @@ class Tools {
 		}
 		return this.shuffle(array).splice(0, amount);
 	}
+
+	getTemplate(name) {
+		return this.data.pokedex[this.toId(name)];
+	}
+
+	getMove(name) {
+		return this.data.moves[this.toId(name)];
+	}
+
+	getItem(name) {
+		return this.data.items[this.toId(name)];
+	}
+
+	getAbility(name) {
+		return this.data.abilities[this.toId(name)];
+	}
 }
 
 let tools = new Tools();
+global.toId = tools.toId;
 tools.loadData();
 
 module.exports = tools;

@@ -10,13 +10,21 @@
 'use strict';
 
 class Room {
+	/**
+	 * @param {string} id
+	 */
 	constructor(id) {
 		this.id = id;
 		this.clientId = id === 'lobby' ? '' : id;
 		this.users = new Map();
 		this.listeners = {};
+		this.game = new Games.Game(this); // typescript hack until it supports more JSDoc tags
+		this.game = null;
 	}
 
+	/**
+	 * @param {string} rank
+	 */
 	onJoin(user, rank) {
 		this.users.set(user, rank);
 		user.rooms.set(this, rank);
@@ -27,6 +35,9 @@ class Room {
 		user.rooms.delete(this);
 	}
 
+	/**
+	 * @param {string} newName
+	 */
 	onRename(user, newName) {
 		let rank = newName.charAt(0);
 		newName = Tools.toName(newName);
@@ -50,18 +61,29 @@ class Room {
 		if (this.game) this.game.renamePlayer(user, oldName);
 	}
 
+	/**
+	 * @param {string} message
+	 */
 	say(message) {
 		message = Tools.normalizeMessage(message, this);
 		if (!message) return;
 		Client.send(this.clientId + '|' + message);
 	}
 
+	/**
+	 * @param {string} message
+	 * @param {Function} listener
+	 */
 	on(message, listener) {
 		message = Tools.normalizeMessage(message, this);
 		if (!message) return;
 		this.listeners[Tools.toId(message)] = listener;
 	}
 
+	/**
+	 * @param {string} messageType
+	 * @param {Array<string>} splitMessage
+	 */
 	parseMessage(messageType, splitMessage) {
 		let user, rank;
 		switch (messageType) {
@@ -108,7 +130,7 @@ class Room {
 				if (message in this.listeners) this.listeners[message]();
 				return;
 			}
-			CommandParser.parse(message, this, user, splitMessage[0] * 1000);
+			CommandParser.parse(message, this, user, parseInt(splitMessage[0]) * 1000);
 			break;
 		}
 
@@ -119,13 +141,21 @@ class Room {
 class Rooms {
 	constructor() {
 		this.rooms = {};
+
+		this.Room = Room;
 	}
 
+	/**
+	 * @return {Room}
+	 */
 	get(id) {
 		if (id && id.users) return id;
 		return this.rooms[id];
 	}
 
+	/**
+	 * @return {Room}
+	 */
 	add(id) {
 		let room = this.get(id);
 		if (!room) {
@@ -135,8 +165,8 @@ class Rooms {
 		return room;
 	}
 
-	destroy(room) {
-		room = this.get(room);
+	destroy(id) {
+		let room = this.get(id);
 		if (!room) return;
 		room.users.forEach(function (value, user) {
 			user.rooms.delete(room);

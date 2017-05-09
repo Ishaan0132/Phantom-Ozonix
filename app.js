@@ -42,9 +42,9 @@ Storage.importDatabases();
 
 let plugins = fs.readdirSync('./plugins');
 for (let i = 0, len = plugins.length; i < len; i++) {
-	let file = plugins[i];
-	if (!file.endsWith('.js') || file === 'example-commands.js' || file === 'example-module.js') continue;
-	file = require('./plugins/' + file);
+	let fileName = plugins[i];
+	if (!fileName.endsWith('.js') || fileName === 'example-commands.js' || fileName === 'example-module.js') continue;
+	let file = require('./plugins/' + fileName);
 	if (file.name) {
 		global[file.name] = file;
 		if (typeof global[file.name].onLoad === 'function') global[file.name].onLoad();

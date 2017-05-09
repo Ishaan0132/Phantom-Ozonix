@@ -12,10 +12,16 @@
 
 'use strict';
 
-class PluginManager {
+class Plugin {
 	constructor() {
 		this.name = "Example";
 		this.data = {};
+		this.commands = {
+			about: function (target, room, user) {
+				if (room !== user && !user.hasRank(room, '+')) return;
+				this.say("test");
+			},
+		};
 	}
 
 	onLoad() {
@@ -28,14 +34,4 @@ class PluginManager {
 
 }
 
-let Plugin = new PluginManager();
-
-let commands = {
-	about: function (target, room, user) {
-		if (room !== user && !user.hasRank(room, '+')) return;
-		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
-	},
-};
-Plugin.commands = commands;
-
-module.exports = Plugin;
+module.exports = new Plugin();

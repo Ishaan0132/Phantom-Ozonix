@@ -9,11 +9,29 @@
 
 'use strict';
 
+/**
+ * @typedef {Object} format
+ * @property {string} name
+ * @property {string} id
+ * @property {string} inherits
+ * @property {string} variationId
+ * @property {string} modeId
+ * @property {boolean} inheritOnly
+ * @property {boolean} internal
+ * @property {Object} variations
+ * @property {Object} modes
+ * @property {Function} game
+ * @property {Function} install
+ */
+
 const fs = require('fs');
 
 class Player {
 	constructor(user) {
+		/**@type {string} */
 		this.name = user.name;
+
+		/**@type {string} */
 		this.id = user.id;
 		this.eliminated = false;
 	}
@@ -25,7 +43,11 @@ class Player {
 
 class Game {
 	constructor(room) {
-		this.room = room;
+		this.room = Rooms.get(room); // typescript hack until it supports more JSDoc tags
+		this.name = '';
+		this.id = '';
+		this.modeId = '';
+		this.description = '';
 		this.players = {};
 		this.playerCount = 0;
 		this.round = 0;
@@ -33,22 +55,49 @@ class Game {
 		this.ended = false;
 		this.freeJoin = false;
 		this.winners = new Map();
+		this.points = null;
+		this.lives = null;
 		this.parentGame = null;
 		this.childGame = null;
+		this.timeout = null;
+		this.variation = null;
 	}
 
+	// typescript hack until it supports more JSDoc tags
+	onSignups() {}
+	onStart() {}
+	onNextRound() {}
+	onEnd() {}
+	onChildEnd() {}
+	onJoin(user) {}
+	onLeave(user) {}
+	onRename(user) {}
+
+	/**
+	 * @param {string} message;
+	 */
 	say(message) {
 		this.room.say(message);
 	}
 
+	/**
+	 * @param {string} message
+	 * @param {Function} listener
+	 */
 	on(message, listener) {
 		this.room.on(message, listener);
 	}
 
+	/**
+	 * @param {number} bits
+	 */
 	addBits(bits, user) {
 		Storage.addPoints(bits, user, this.room.id);
 	}
 
+	/**
+	 * @param {number} bits
+	 */
 	removeBits(bits, user) {
 		Storage.removePoints(bits, user, this.room.id);
 	}
@@ -97,6 +146,9 @@ class Game {
 		if (typeof this.onNextRound === 'function') this.onNextRound();
 	}
 
+	/**
+	 * @return {Player}
+	 */
 	addPlayer(user) {
 		if (user.id in this.players) return;
 		let player = new Player(user);
@@ -115,6 +167,9 @@ class Game {
 		}
 	}
 
+	/**
+	 * @param {string} oldName
+	 */
 	renamePlayer(user, oldName) {
 		let oldId = Tools.toId(oldName);
 		if (!(oldId in this.players)) return;
@@ -144,6 +199,10 @@ class Game {
 		if (typeof this.onLeave === 'function') this.onLeave(user);
 	}
 
+	/**
+	 * @param {Object} [players]
+	 * @return {string}
+	 */
 	getPlayerNames(players) {
 		if (!players) players = this.players;
 		let names = [];
@@ -153,6 +212,10 @@ class Game {
 		return names.join(", ");
 	}
 
+	/**
+	 * @param {Object} [players]
+	 * @return {string}
+	 */
 	getPoints(players) {
 		if (!players) players = this.players;
 		let list = [];
@@ -163,6 +226,10 @@ class Game {
 		return list.join(", ");
 	}
 
+	/**
+	 * @param {Object} [players]
+	 * @return {string}
+	 */
 	getLives(players) {
 		if (!players) players = this.players;
 		let list = [];
@@ -173,6 +240,9 @@ class Game {
 		return list.join(", ");
 	}
 
+	/**
+	 * @return {Object}
+	 */
 	getRemainingPlayers() {
 		let remainingPlayers = {};
 		for (let i in this.players) {
@@ -181,6 +251,9 @@ class Game {
 		return remainingPlayers;
 	}
 
+	/**
+	 * @return {number}
+	 */
 	getRemainingPlayerCount() {
 		let count = 0;
 		for (let i in this.players) {
@@ -189,6 +262,10 @@ class Game {
 		return count;
 	}
 
+	/**
+	 * @param {Object} [players]
+	 * @return {Array<Player>}
+	 */
 	shufflePlayers(players) {
 		if (!players) players = this.players;
 		let list = [];
@@ -199,12 +276,15 @@ class Game {
 	}
 }
 
-class GamesManager {
+class Games {
 	constructor() {
 		this.games = {};
 		this.modes = {};
 		this.aliases = {};
 		this.commands = {};
+
+		this.Game = Game;
+		this.Player = Player;
 	}
 
 	loadGames() {
@@ -214,9 +294,9 @@ class GamesManager {
 		} catch (e) {}
 		if (!games) return;
 		for (let i = 0, len = games.length; i < len; i++) {
-			let game = games[i];
-			if (!game.endsWith('.js')) continue;
-			game = require('./games/' + game);
+			let fileName = games[i];
+			if (!fileName.endsWith('.js')) continue;
+			let game = require('./games/' + fileName);
 			this.games[game.id] = game;
 		}
 
@@ -226,9 +306,9 @@ class GamesManager {
 		} catch (e) {}
 		if (modes) {
 			for (let i = 0, len = modes.length; i < len; i++) {
-				let mode = modes[i];
-				if (!mode.endsWith('.js')) continue;
-				mode = require('./games/modes/' + mode);
+				let fileName = modes[i];
+				if (!fileName.endsWith('.js')) continue;
+				let mode = require('./games/modes/' + fileName);
 				this.modes[mode.id] = mode;
 				if (mode.commands) {
 					if (i in this.commands && this.commands[i] !== mode.commands[i]) throw new Error(mode.name + " command '" + i + "' is already used for a different game function (" + this.commands[i] + ").");
@@ -369,20 +449,23 @@ class GamesManager {
 		}
 	}
 
+	/**
+	 * @param {string} target
+	 * @return {format}
+	 */
 	getFormat(target) {
 		if (typeof target === 'object') return target;
-		target = target.split(',');
-		let format = target.shift();
-		let id = Tools.toId(format);
+		let targets = target.split(',');
+		let id = Tools.toId(targets.shift());
 		if (id in this.aliases) {
 			id = this.aliases[id];
-			if (id.includes(',')) return this.getFormat(id + ',' + target.join(','));
+			if (id.includes(',')) return this.getFormat(id + ',' + targets.join(','));
 		}
 		if (!(id in this.games)) return;
-		format = Object.assign({}, this.games[id]);
+		let format = Object.assign({}, this.games[id]);
 		let variation, mode;
-		for (let i = 0, len = target.length; i < len; i++) {
-			let id = Tools.toId(target[i]);
+		for (let i = 0, len = targets.length; i < len; i++) {
+			let id = Tools.toId(targets[i]);
 			if (format.variations) {
 				if (format.variationAliases && id in format.variationAliases) id = format.variationAliases[id];
 				if (id in format.variations) variation = format.variations[id];
@@ -397,6 +480,9 @@ class GamesManager {
 		return format;
 	}
 
+	/**
+	 * @return {Game}
+	 */
 	createGame(target, room) {
 		if (room.game) {
 			room.say("A game of " + room.game.name + " is already in progress.");
@@ -428,6 +514,11 @@ class GamesManager {
 		return room.game;
 	}
 
+	/**
+	 * @param {string} format
+	 * @param {Game} parentGame
+	 * @return {Game}
+	 */
 	createChildGame(format, parentGame) {
 		parentGame.room.game = null;
 		let childGame = this.createGame(format, parentGame.room);
@@ -439,9 +530,4 @@ class GamesManager {
 	}
 }
 
-let Games = new GamesManager();
-
-Games.Game = Game;
-Games.Player = Player;
-
-module.exports = Games;
+module.exports = new Games();

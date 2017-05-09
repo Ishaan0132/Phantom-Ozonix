@@ -55,7 +55,7 @@ class Trivia extends Games.Game {
 		this.points = new Map();
 		this.maxPoints = 3;
 		this.categories = Object.keys(data);
-		this.questions = [];
+		this.questions = {};
 		for (let i = 0, len = this.categories.length; i < len; i++) {
 			this.questions[this.categories[i]] = Object.keys(data[this.categories[i]]);
 		}

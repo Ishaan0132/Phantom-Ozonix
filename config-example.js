@@ -44,3 +44,6 @@ exports.groups = {
 // Userids of those who have debug access to Cassius
 // example: exports.developers = ['devuser1', 'devuser2', 'devuser3'];
 exports.developers = [];
+
+// Custom function
+exports.parseMessage = null;

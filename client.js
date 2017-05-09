@@ -24,34 +24,34 @@ let serverId = 'showdown';
 
 class Client {
 	constructor() {
-		this.connection = null;
 		this.challengeKeyId = '';
 		this.challenge = '';
+		/**@type {Array<string>} */
 		this.messageQueue = [];
 		this.messageQueueTimeout = null;
 
-		let client = new WebSocketClient();
-		client.on('connect', connection => this.onConnect(connection));
-		client.on('connectFailed', error => this.onConnectFail(error));
-		this.client = client;
+		this.client = new WebSocketClient();
+		this.client.on('connect', connection => {
+			this.connection = connection;
+			this.onConnect();
+		});
+		this.client.on('connectFailed', error => this.onConnectFail(error));
 	}
 
-	onConnect(connection) {
+	onConnect() {
 		console.log('Successfully connected to server ' + server);
 
-		connection.on('message', message => {
+		this.connection.on('message', message => {
 			if (message.type !== 'utf8' || message.utf8Data.charAt(0) !== 'a') return;
 			this.onMessage(message.utf8Data);
 		});
 
-		connection.on('error', error => console.log('Connection error: ' + error.stack));
+		this.connection.on('error', error => console.log('Connection error: ' + error.stack));
 
-		connection.on('close', (code, description) => {
+		this.connection.on('close', (code, description) => {
 			console.log('Connection closed: ' + description + ' (' + code + ')\nReconnecting in ' + RETRY_SECONDS + ' seconds');
 			setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
 		});
-
-		this.connection = connection;
 	}
 
 	onConnectFail(error) {
@@ -73,9 +73,9 @@ class Client {
 				data += chunk;
 			});
 			response.on('end', () => {
-				let config = data.split('var config = ')[1];
-				if (config) {
-					config = JSON.parse(config.split(';')[0]);
+				let configData = data.split('var config = ')[1];
+				if (configData) {
+					let config = JSON.parse(configData.split(';')[0]);
 					if (typeof config === 'string') config = JSON.parse(config); // encoded twice by the server
 					if (config.host) {
 						if (config.id) serverId = config.id;
@@ -90,36 +90,47 @@ class Client {
 		});
 	}
 
-	onMessage(message) {
-		message = JSON.parse(message.substr(1));
+	/**
+	 * @param {string} messageData
+	 */
+	onMessage(messageData) {
+		/**
+		 * @type {Array<string>}
+		 */
+		let message = JSON.parse(messageData.substr(1));
 		if (!(message instanceof Array)) message = [message];
 		for (let i = 0, len = message.length; i < len; i++) {
 			if (!message[i]) continue;
-			let room = Rooms.add('lobby');
-			if (!message[i].includes('\n')) return this.parseMessage(message[i], room);
+			let roomid = 'lobby';
+			if (!message[i].includes('\n')) return this.parseMessage(message[i], roomid);
 
 			let lines = message[i].split('\n');
 			if (lines[0].charAt(0) === '>') {
-				room = Rooms.add(lines.shift().substr(1));
+				roomid = lines.shift().substr(1);
 			}
 			for (let i = 0, len = lines.length; i < len; i++) {
 				if (lines[i].startsWith('|init|')) {
-					this.parseMessage(lines[i], room);
+					this.parseMessage(lines[i], roomid);
 					lines = lines.slice(i + 1);
 					for (let i = 0, len = lines.length; i < len; i++) {
 						if (lines[i].startsWith('|users|')) {
-							this.parseMessage(lines[i], room);
+							this.parseMessage(lines[i], roomid);
 							break;
 						}
 					}
 					return;
 				}
-				this.parseMessage(lines[i], room);
+				this.parseMessage(lines[i], roomid);
 			}
 		}
 	}
 
-	parseMessage(message, room) {
+	/**
+	 * @param {string} message
+	 * @param {string} roomid
+	 */
+	parseMessage(message, roomid) {
+		let room = Rooms.add(roomid);
 		let splitMessage = message.split('|').slice(1);
 		let messageType = splitMessage.shift();
 		if (typeof Config.parseMessage === 'function') {
@@ -182,7 +193,7 @@ class Client {
 		let action = url.parse('https://play.pokemonshowdown.com/~~' + serverId + '/action.php');
 		let options = {
 			hostname: action.hostname,
-			port: action.port,
+			port: parseInt(action.port),
 			path: action.pathname,
 			agent: false,
 		};
@@ -233,11 +244,11 @@ class Client {
 					process.exit();
 				} else {
 					if (Config.password) {
-						data = JSON.parse(data.substr(1));
-						if (data.actionsuccess) {
-							data = data.assertion;
+						let assertion = JSON.parse(data.substr(1));
+						if (assertion.actionsuccess) {
+							data = assertion.assertion;
 						} else {
-							console.log('Failed to log in: ' + JSON.stringify(data));
+							console.log('Failed to log in: ' + JSON.stringify(assertion));
 							process.exit();
 						}
 					}
@@ -252,6 +263,9 @@ class Client {
 		request.end();
 	}
 
+	/**
+	 * @param {string} message
+	 */
 	send(message) {
 		if (!message || !this.connection || !this.connection.connected) return;
 		if (this.messageQueueTimeout) {
