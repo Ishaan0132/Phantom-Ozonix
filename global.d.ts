@@ -10,13 +10,13 @@ import * as UsersType from './users'
 
 declare global {
     const Client:typeof ClientType
-    const CommandParser:typeof CommandParserType
+    const CommandParser:typeof CommandParserType.CommandParser
     const Commands: typeof CommandsType
     const Config:typeof ConfigType
-    const Games:typeof GamesType
-    const Rooms:typeof RoomsType
+    const Games:typeof GamesType.Games
+    const Rooms:typeof RoomsType.Rooms
     const Storage:typeof StorageType
     const Tools:typeof ToolsType
-    const Users:typeof UsersType
+    const Users:typeof UsersType.Users
     const toId:Function
 }

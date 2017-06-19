@@ -10,6 +10,7 @@
 'use strict';
 
 const fs = require('fs');
+const User = require('./users').User; // eslint-disable-line no-unused-vars
 const BACKUP_INTERVAL = 60 * 60 * 1000;
 
 class Storage {
@@ -54,6 +55,7 @@ class Storage {
 
 	/**
 	 * @param {number} points
+	 * @param {User} user
 	 * @param {string} roomid
 	 */
 	addPoints(points, user, roomid) {
@@ -68,6 +70,7 @@ class Storage {
 
 	/**
 	 * @param {number} points
+	 * @param {User} user
 	 * @param {string} roomid
 	 */
 	removePoints(points, user, roomid) {
@@ -75,6 +78,7 @@ class Storage {
 	}
 
 	/**
+	 * @param {User} user
 	 * @param {string} roomid
 	 */
 	getPoints(user, roomid) {

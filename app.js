@@ -26,15 +26,15 @@ if (!Config.username) throw new Error("Please specify a username in config.js");
 
 global.Commands = require('./commands.js');
 
-global.CommandParser = require('./command-parser.js');
+global.CommandParser = require('./command-parser.js').CommandParser;
 
-global.Rooms = require('./rooms.js');
+global.Rooms = require('./rooms.js').Rooms;
 
-global.Users = require('./users.js');
+global.Users = require('./users.js').Users;
 
 global.Client = require('./client.js');
 
-global.Games = require('./games.js');
+global.Games = require('./games.js').Games;
 Games.loadGames();
 
 global.Storage = require('./storage.js');

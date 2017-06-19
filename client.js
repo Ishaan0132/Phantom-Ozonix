@@ -13,6 +13,7 @@ const WebSocketClient = require('websocket').client;
 const https = require('https');
 const url = require('url');
 const querystring = require('querystring');
+const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
 const MESSAGE_THROTTLE = 600;
 const RETRY_SECONDS = 60;
 
@@ -66,7 +67,12 @@ class Client {
 			string += characters[Math.floor((Math.random() * len))];
 		}
 
-		https.get('https://play.pokemonshowdown.com/crossdomain.php?' + querystring.stringify({host: server, path: ''}), response => {
+		let options = {
+			url: 'https://play.pokemonshowdown.com/crossdomain.php?' + querystring.stringify({host: server, path: ''}),
+			method: 'GET',
+		};
+
+		https.get(options, response => {
 			response.setEncoding('utf8');
 			let data = '';
 			response.on('data', chunk => {
@@ -94,43 +100,40 @@ class Client {
 	 * @param {string} messageData
 	 */
 	onMessage(messageData) {
-		/**
-		 * @type {Array<string>}
-		 */
+		/**@type {Array<string>} */
 		let message = JSON.parse(messageData.substr(1));
 		if (!(message instanceof Array)) message = [message];
 		for (let i = 0, len = message.length; i < len; i++) {
 			if (!message[i]) continue;
-			let roomid = 'lobby';
-			if (!message[i].includes('\n')) return this.parseMessage(message[i], roomid);
+			let room = Rooms.add('lobby');
+			if (!message[i].includes('\n')) return this.parseMessage(message[i], room);
 
 			let lines = message[i].split('\n');
 			if (lines[0].charAt(0) === '>') {
-				roomid = lines.shift().substr(1);
+				room = Rooms.add(lines.shift().substr(1));
 			}
 			for (let i = 0, len = lines.length; i < len; i++) {
 				if (lines[i].startsWith('|init|')) {
-					this.parseMessage(lines[i], roomid);
+					this.parseMessage(lines[i], room);
 					lines = lines.slice(i + 1);
 					for (let i = 0, len = lines.length; i < len; i++) {
 						if (lines[i].startsWith('|users|')) {
-							this.parseMessage(lines[i], roomid);
+							this.parseMessage(lines[i], room);
 							break;
 						}
 					}
 					return;
 				}
-				this.parseMessage(lines[i], roomid);
+				this.parseMessage(lines[i], room);
 			}
 		}
 	}
 
 	/**
 	 * @param {string} message
-	 * @param {string} roomid
+	 * @param {Room} room
 	 */
-	parseMessage(message, roomid) {
-		let room = Rooms.add(roomid);
+	parseMessage(message, room) {
 		let splitMessage = message.split('|').slice(1);
 		let messageType = splitMessage.shift();
 		if (typeof Config.parseMessage === 'function') {

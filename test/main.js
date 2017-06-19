@@ -22,15 +22,15 @@ for (let i in Games.games) {
 	let game = Games.getFormat(i);
 	if (game.inheritOnly) continue;
 	games.push(game);
-	if (game.variations) {
-		for (let i in game.variations) {
+	if (game.variationIds) {
+		for (let i in game.variationIds) {
 			let variation = Games.getFormat(game.name + ',' + i);
 			if (!variation.variationId) throw new Error("Games.getFormat('" + game.name + ',' + i + "') did not return a variation.");
 			games.push(variation);
 		}
 	}
-	if (game.modes) {
-		for (let i in game.modes) {
+	if (game.modeIds) {
+		for (let i in game.modeIds) {
 			let mode = Games.getFormat(game.name + ',' + i);
 			if (!mode.modeId) throw new Error("Games.getFormat('" + game.name + ',' + i + "') did not return a mode.");
 			games.push(mode);

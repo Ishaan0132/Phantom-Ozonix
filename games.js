@@ -10,7 +10,8 @@
 'use strict';
 
 /**
- * @typedef {Object} format
+ * @typedef GameFormat
+ * @type {Object}
  * @property {string} name
  * @property {string} id
  * @property {string} inherits
@@ -18,60 +19,139 @@
  * @property {string} modeId
  * @property {boolean} inheritOnly
  * @property {boolean} internal
- * @property {Object} variations
- * @property {Object} modes
+ * @property {Array<GameVariation>} variations
+ * @property {{[k: string]: GameFormat}} variationIds
+ * @property {Array<string>} modes
+ * @property {{[k: string]: string}} modeIds
  * @property {Function} game
  * @property {Function} install
+ * @property {{[k: string]: string}} commands
+ * @property {Array<string>} aliases
+ * @property {{[k: string]: string}} variationAliases
+ * @property {{[k: string]: string}} modeAliases
+ */
+
+/**
+ * @typedef GameVariation
+ * @type {Object}
+ * @property {string} name
+ * @property {string} id
+ * @property {string} description
+ * @property {string} variation
+ * @property {string} variationId
+ * @property {Array<string>} aliases
+ * @property {Array<string>} variationAliases
+ */
+
+/**
+ * @typedef GameMode
+ * @type {Object}
+ * @property {string} name
+ * @property {string} id
+ * @property {string} description
+ * @property {string} naming
+ * @property {{[k: string]: string}} commands
+ * @property {Function} mode
+ * @property {Game} game
+ * @property {string} modeId
+ * @property {Array<string>} aliases
+ * @property {boolean} disabled
+ * @property {Array<string>} requiredProperties
  */
 
 const fs = require('fs');
+const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
+const User = require('./users').User; // eslint-disable-line no-unused-vars
 
 class Player {
+	/**
+	 * @param {User} user
+	 */
 	constructor(user) {
-		/**@type {string} */
 		this.name = user.name;
-
-		/**@type {string} */
 		this.id = user.id;
 		this.eliminated = false;
+		/**@type {string} */
+		this.team = null;
 	}
 
+	/**
+	 * @param {string} message
+	 */
 	say(message) {
 		Users.add(this.name).say(message);
 	}
 }
 
+exports.Player = Player;
+
 class Game {
+	/**
+	 * @param {Room} room
+	 */
 	constructor(room) {
-		this.room = Rooms.get(room); // typescript hack until it supports more JSDoc tags
+		this.room = room;
 		this.name = '';
 		this.id = '';
 		this.modeId = '';
 		this.description = '';
+		/**@type {{[k: string]: Player}} */
 		this.players = {};
 		this.playerCount = 0;
 		this.round = 0;
 		this.started = false;
 		this.ended = false;
 		this.freeJoin = false;
+		/**@type {Map<Player, number>} */
 		this.winners = new Map();
+		/**@type {Map<Player, number>} */
 		this.points = null;
+		/**@type {Map<Player, number>} */
 		this.lives = null;
+		/**@type {Game} */
 		this.parentGame = null;
+		/**@type {Game} */
 		this.childGame = null;
+		/**@type {NodeJS.Timer} */
 		this.timeout = null;
+		/**@type {string} */
 		this.variation = null;
 	}
 
-	// typescript hack until it supports more JSDoc tags
 	onSignups() {}
+
 	onStart() {}
+
 	onNextRound() {}
+
 	onEnd() {}
-	onChildEnd() {}
+
+	/**
+	 * @param {Map<Player, number>} winners
+	 */
+	onChildEnd(winners) {}
+
+	/**
+	 * @param {User} user
+	 */
 	onJoin(user) {}
+
+	/**
+	 * @param {User} user
+	 */
 	onLeave(user) {}
+
+	/**
+	 * @param {User} user
+	 */
 	onRename(user) {}
+
+	setAnswers() {}
+
+	/**
+	 * @param {string} guess
+	 */
+	checkAnswer(guess) {}
 
 	/**
 	 * @param {string} message;
@@ -90,6 +170,7 @@ class Game {
 
 	/**
 	 * @param {number} bits
+	 * @param {User} user
 	 */
 	addBits(bits, user) {
 		Storage.addPoints(bits, user, this.room.id);
@@ -97,11 +178,15 @@ class Game {
 
 	/**
 	 * @param {number} bits
+	 * @param {User} user
 	 */
 	removeBits(bits, user) {
 		Storage.removePoints(bits, user, this.room.id);
 	}
 
+	/**
+	 * @param {User} user
+	 */
 	getBits(user) {
 		return Storage.getPoints(user, this.room.id);
 	}
@@ -147,6 +232,7 @@ class Game {
 	}
 
 	/**
+	 * @param {User} user
 	 * @return {Player}
 	 */
 	addPlayer(user) {
@@ -157,6 +243,9 @@ class Game {
 		return player;
 	}
 
+	/**
+	 * @param {User} user
+	 */
 	removePlayer(user) {
 		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
 		if (this.started) {
@@ -168,6 +257,7 @@ class Game {
 	}
 
 	/**
+	 * @param {User} user
 	 * @param {string} oldName
 	 */
 	renamePlayer(user, oldName) {
@@ -183,6 +273,9 @@ class Game {
 		if (this.parentGame && typeof this.parentGame.onRename === 'function') this.parentGame.onRename(user);
 	}
 
+	/**
+	 * @param {User} user
+	 */
 	join(user) {
 		if (user.id in this.players || this.started) return;
 		if (this.freeJoin) return user.say(this.name + " does not require you to join.");
@@ -191,6 +284,9 @@ class Game {
 		if (typeof this.onJoin === 'function') this.onJoin(user);
 	}
 
+	/**
+	 * @param {User} user
+	 */
 	leave(user) {
 		if (this.parentGame) return this.parentGame.leave(user);
 		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
@@ -200,7 +296,7 @@ class Game {
 	}
 
 	/**
-	 * @param {Object} [players]
+	 * @param {{[k: string]: Player}} [players]
 	 * @return {string}
 	 */
 	getPlayerNames(players) {
@@ -213,7 +309,7 @@ class Game {
 	}
 
 	/**
-	 * @param {Object} [players]
+	 * @param {{[k: string]: Player}} [players]
 	 * @return {string}
 	 */
 	getPoints(players) {
@@ -227,7 +323,7 @@ class Game {
 	}
 
 	/**
-	 * @param {Object} [players]
+	 * @param {{[k: string]: Player}} [players]
 	 * @return {string}
 	 */
 	getLives(players) {
@@ -241,7 +337,7 @@ class Game {
 	}
 
 	/**
-	 * @return {Object}
+	 * @return {{[k: string]: Player}}
 	 */
 	getRemainingPlayers() {
 		let remainingPlayers = {};
@@ -263,7 +359,7 @@ class Game {
 	}
 
 	/**
-	 * @param {Object} [players]
+	 * @param {{[k: string]: Player}} [players]
 	 * @return {Array<Player>}
 	 */
 	shufflePlayers(players) {
@@ -276,11 +372,17 @@ class Game {
 	}
 }
 
+exports.Game = Game;
+
 class Games {
 	constructor() {
+		/**@type {{[k: string]: GameFormat}} */
 		this.games = {};
+		/**@type {{[k: string]: GameMode}} */
 		this.modes = {};
+		/**@type {{[k: string]: string}} */
 		this.aliases = {};
+		/**@type {{[k: string]: string}} */
 		this.commands = {};
 
 		this.Game = Game;
@@ -308,6 +410,7 @@ class Games {
 			for (let i = 0, len = modes.length; i < len; i++) {
 				let fileName = modes[i];
 				if (!fileName.endsWith('.js')) continue;
+				/**@type {GameMode} */
 				let mode = require('./games/modes/' + fileName);
 				this.modes[mode.id] = mode;
 				if (mode.commands) {
@@ -389,17 +492,16 @@ class Games {
 				}
 			}
 			if (game.variations) {
-				let variations = game.variations.slice();
-				game.variations = {};
-				for (let i = 0, len = variations.length; i < len; i++) {
-					let variation = variations[i];
+				game.variationIds = {};
+				for (let i = 0, len = game.variations.length; i < len; i++) {
+					/**@type {GameVariation} */
+					let variation = game.variations[i];
 					let id = Tools.toId(variation.name);
 					if (id in this.games) throw new Error(game.name + " variation '" + variation.name + "' is already a game.");
 					variation.id = id;
 					let variationId = Tools.toId(variation.variation);
 					if (variationId in this.modes) throw new Error(variation.name + "'s variation '" + variation.variation + "' exists as a mode.");
 					variation.variationId = variationId;
-					game.variations[variationId] = variation;
 					if (!(id in this.aliases)) this.aliases[id] = game.id + ',' + variationId;
 					if (variation.aliases) {
 						for (let i = 0, len = variation.aliases.length; i < len; i++) {
@@ -414,15 +516,15 @@ class Games {
 							if (!(alias in game.variationAliases) && !(alias in this.modes)) game.variationAliases[alias] = variationId;
 						}
 					}
+					game.variationIds[variationId] = Object.assign(Object.assign({}, game), variation);
 				}
 			}
 			if (game.modes) {
-				let modes = game.modes.slice();
-				game.modes = {};
-				for (let i = 0, len = modes.length; i < len; i++) {
-					let modeId = Tools.toId(modes[i]);
+				game.modeIds = {};
+				for (let i = 0, len = game.modes.length; i < len; i++) {
+					let modeId = Tools.toId(game.modes[i]);
 					if (!(modeId in this.modes)) throw new Error(game.name + " mode '" + modeId + "' does not exist.");
-					game.modes[modeId] = modeId;
+					game.modeIds[modeId] = modeId;
 					let prefix = this.modes[modeId].naming === 'prefix';
 					let id;
 					if (prefix) {
@@ -451,7 +553,7 @@ class Games {
 
 	/**
 	 * @param {string} target
-	 * @return {format}
+	 * @return {GameFormat}
 	 */
 	getFormat(target) {
 		if (typeof target === 'object') return target;
@@ -466,16 +568,16 @@ class Games {
 		let variation, mode;
 		for (let i = 0, len = targets.length; i < len; i++) {
 			let id = Tools.toId(targets[i]);
-			if (format.variations) {
+			if (format.variationIds) {
 				if (format.variationAliases && id in format.variationAliases) id = format.variationAliases[id];
-				if (id in format.variations) variation = format.variations[id];
+				if (id in format.variationIds) variation = format.variationIds[id];
 			}
-			if (format.modes) {
+			if (format.modeIds) {
 				if (format.modeAliases && id in format.modeAliases) id = format.modeAliases[id];
-				if (id in format.modes) mode = format.modes[id];
+				if (id in format.modeIds) mode = format.modeIds[id];
 			}
 		}
-		if (variation) Object.assign(format, variation);
+		if (variation) format = Object.assign({}, variation);
 		if (mode) format.modeId = mode;
 		return format;
 	}
@@ -486,7 +588,7 @@ class Games {
 	createGame(target, room) {
 		if (room.game) {
 			room.say("A game of " + room.game.name + " is already in progress.");
-			return false;
+			return null;
 		}
 		let format = this.getFormat(target);
 		let baseClass;
@@ -530,4 +632,4 @@ class Games {
 	}
 }
 
-module.exports = new Games();
+exports.Games = new Games();

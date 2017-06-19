@@ -9,6 +9,9 @@
 
 'use strict';
 
+const Game = require('./games').Game; // eslint-disable-line no-unused-vars
+const User = require('./users').User; // eslint-disable-line no-unused-vars
+
 class Room {
 	/**
 	 * @param {string} id
@@ -16,13 +19,16 @@ class Room {
 	constructor(id) {
 		this.id = id;
 		this.clientId = id === 'lobby' ? '' : id;
+		/**@type {Map<User, string>} */
 		this.users = new Map();
+		/**@type {{[k: string]: Function}} */
 		this.listeners = {};
-		this.game = new Games.Game(this); // typescript hack until it supports more JSDoc tags
+		/**@type {Game} */
 		this.game = null;
 	}
 
 	/**
+	 * @param {User} user
 	 * @param {string} rank
 	 */
 	onJoin(user, rank) {
@@ -30,12 +36,16 @@ class Room {
 		user.rooms.set(this, rank);
 	}
 
+	/**
+	 * @param {User} user
+	 */
 	onLeave(user) {
 		this.users.delete(user);
 		user.rooms.delete(this);
 	}
 
 	/**
+	 * @param {User} user
 	 * @param {string} newName
 	 */
 	onRename(user, newName) {
@@ -138,6 +148,8 @@ class Room {
 	}
 }
 
+exports.Room = Room;
+
 class Rooms {
 	constructor() {
 		this.rooms = {};
@@ -146,14 +158,16 @@ class Rooms {
 	}
 
 	/**
+	 * @param {Room | string} id
 	 * @return {Room}
 	 */
 	get(id) {
-		if (id && id.users) return id;
+		if (id instanceof Room) return id;
 		return this.rooms[id];
 	}
 
 	/**
+	 * @param {string} id
 	 * @return {Room}
 	 */
 	add(id) {
@@ -165,6 +179,9 @@ class Rooms {
 		return room;
 	}
 
+	/**
+	 * @param {Room | string} id
+	 */
 	destroy(id) {
 		let room = this.get(id);
 		if (!room) return;
@@ -175,4 +192,4 @@ class Rooms {
 	}
 }
 
-module.exports = new Rooms();
+exports.Rooms = new Rooms();

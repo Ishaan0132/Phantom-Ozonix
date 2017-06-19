@@ -9,22 +9,31 @@
 
 'use strict';
 
+const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
+
 const PRUNE_INTERVAL = 60 * 60 * 1000;
 
 class User {
 	constructor(name, id) {
 		this.name = Tools.toName(name);
 		this.id = id;
+		/**@type {Map<Room, string>} */
 		this.rooms = new Map();
 	}
 
 	/**
+	 * @param {Room | string} room
 	 * @param {string} targetRank
 	 * @return {boolean}
 	 */
 	hasRank(room, targetRank) {
 		if (!Config.groups) return false;
-		let rank = this.rooms.get(room) || room;
+		let rank;
+		if (typeof room === 'string') {
+			rank = room;
+		} else {
+			rank = this.rooms.get(room);
+		}
 		return Config.groups[rank] >= Config.groups[targetRank];
 	}
 
@@ -45,6 +54,8 @@ class User {
 	}
 }
 
+exports.User = User;
+
 class Users {
 	constructor() {
 		this.users = {};
@@ -55,14 +66,16 @@ class Users {
 	}
 
 	/**
+	 * @param {User | string} name
 	 * @return {User}
 	 */
 	get(name) {
-		if (name && name.rooms) return name;
+		if (name instanceof User) return name;
 		return this.users[Tools.toId(name)];
 	}
 
 	/**
+	 * @param {string} name
 	 * @return {User}
 	 */
 	add(name) {
@@ -88,4 +101,4 @@ class Users {
 	}
 }
 
-module.exports = new Users();
+exports.Users = new Users();

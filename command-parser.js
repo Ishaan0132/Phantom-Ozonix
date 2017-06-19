@@ -9,16 +9,21 @@
 
 'use strict';
 
+const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
+const User = require('./users').User; // eslint-disable-line no-unused-vars
+
 class Context {
 	/**
 	 * @param {string} target
+	 * @param {Room | User} room
+	 * @param {User} user
 	 * @param {string} command
 	 * @param {number} [time]
 	 */
 	constructor(target, room, user, command, time) {
 		this.target = target ? target.trim() : '';
-		this.room = Rooms.get(room) || Users.get(room); // typescript hack until it supports more JSDoc tags
-		this.user = Users.get(user); // typescript hack until it supports more JSDoc tags
+		this.room = room;
+		this.user = user;
 		this.command = command;
 		this.time = time || Date.now();
 	}
@@ -65,9 +70,13 @@ class Context {
 	}
 }
 
+exports.Context = Context;
+
 class CommandParser {
 	/**
 	 * @param {string} message
+	 * @param {Room | User} room
+	 * @param {User} user
 	 * @param {number} [time]
 	 */
 	parse(message, room, user, time) {
@@ -97,4 +106,4 @@ class CommandParser {
 	}
 }
 
-module.exports = new CommandParser();
+exports.CommandParser = new CommandParser();
