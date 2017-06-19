@@ -12,17 +12,24 @@
 const name = 'Team';
 const id = Tools.toId(name);
 
-let TeamMode = function () {
-	this.name = name + ' ' + this.name;
-	this.id = id + this.id;
-	this.freeJoin = false;
-	this.teamA = '';
-	this.teamB = '';
-	this.points = new Map();
-	this.maxPoints = 20;
-	this.onSignups = null;
+class TeamGame extends Games.Game {
+	constructor(game) {
+		super(game.room);
+		this.name = name + ' ' + game.name;
+		this.id = id + game.id;
+		this.freeJoin = false;
+		this.teamA = '';
+		this.teamB = '';
+		this.points = new Map();
+		this.maxPoints = 20;
+		this.hint = '';
 
-	this.onStart = () => {
+		this.override = ['name', 'id', 'freeJoin', 'teamA', 'teamB', 'points', 'maxPoints', 'onSignups', 'onStart', 'onNextRound', 'guess'];
+	}
+
+	onSignups() {}
+
+	onStart() {
 		let teamNames = Tools.sample(Tools.data.teams);
 		this.teamA = "Team " + teamNames[0];
 		this.teamB = "Team " + teamNames[1];
@@ -41,9 +48,9 @@ let TeamMode = function () {
 		this.say("**" + this.teamA + "**: " + teamAPlayers.join(", "));
 		this.say("**" + this.teamB + "**: " + teamBPlayers.join(", "));
 		this.nextRound();
-	};
+	}
 
-	this.onNextRound = () => {
+	onNextRound() {
 		if (this.answers) {
 			this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
 		}
@@ -52,9 +59,9 @@ let TeamMode = function () {
 			this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);
 		});
 		this.say(this.hint);
-	};
+	}
 
-	this.guess = (guess, user) => {
+	guess(guess, user) {
 		if (!(user.id in this.players) || !this.checkAnswer(guess)) return;
 		clearTimeout(this.timeout);
 		let player = this.players[user.id];
@@ -76,11 +83,19 @@ let TeamMode = function () {
 		this.say("**" + user.name + "** advances **" + player.team + "** to " + points + " point" + (points > 1 ? "s" : "") + "! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
 		this.answers = null;
 		this.timeout = setTimeout(() => this.nextRound(), 5000);
-	};
+	}
+}
+
+let TeamMode = function (game) {
+	let mode = new TeamGame(game);
+	for (let i = 0, len = mode.override.length; i < len; i++) {
+		game[mode.override[i]] = mode[mode.override[i]];
+	}
 };
 
 exports.name = name;
 exports.id = id;
 exports.naming = 'prefix';
-exports.requiredFunctions = ['setAnswers', 'checkAnswer'];
+exports.requiredProperties = ['setAnswers', 'checkAnswer'];
+exports.game = TeamGame;
 exports.mode = TeamMode;

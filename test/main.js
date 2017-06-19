@@ -59,9 +59,9 @@ describe('Games', function () {
 				}
 				if (room.game.modeId) {
 					let mode = Games.modes[room.game.modeId];
-					if (mode.requiredFunctions) {
-						for (let i = 0, len = mode.requiredFunctions.length; i < len; i++) {
-							assert(typeof room.game[mode.requiredFunctions[i]] === 'function', mode.requiredFunctions[i]);
+					if (mode.requiredProperties) {
+						for (let i = 0, len = mode.requiredProperties.length; i < len; i++) {
+							assert(mode.requiredProperties[i] in room.game, mode.requiredProperties[i]);
 						}
 					}
 				}

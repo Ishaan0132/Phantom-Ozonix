@@ -510,7 +510,7 @@ class Games {
 		}
 		room.game = new baseClass(room); // eslint-disable-line new-cap
 		Object.assign(room.game, format);
-		if (format.modeId) this.modes[format.modeId].mode.call(room.game);
+		if (format.modeId) this.modes[format.modeId].mode(room.game);
 		return room.game;
 	}
 
