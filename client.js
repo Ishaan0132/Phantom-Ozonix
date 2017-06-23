@@ -68,7 +68,8 @@ class Client {
 		}
 
 		let options = {
-			url: 'https://play.pokemonshowdown.com/crossdomain.php?' + querystring.stringify({host: server, path: ''}),
+			hostname: 'play.pokemonshowdown.com',
+			path: '/crossdomain.php?' + querystring.stringify({host: server, path: ''}),
 			method: 'GET',
 		};
 
