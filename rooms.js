@@ -143,7 +143,6 @@ class Room {
 			CommandParser.parse(message, this, user, parseInt(splitMessage[0]) * 1000);
 			break;
 		}
-
 		}
 	}
 }

@@ -31,7 +31,6 @@ class Plugin {
 	loadData() {
 		// initialization that requires the plugin to be in the global namespace
 	}
-
 }
 
 module.exports = new Plugin();

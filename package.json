@@ -22,8 +22,8 @@
 		"websocket": "1.0.24"
 	},
 	"devDependencies": {
-		"eslint": "3.19.0",
-		"mocha": "3.3.0"
+		"eslint": "4.0.0",
+		"mocha": "3.4.2"
 	},
 	"engine-strict": true,
 	"engines": {
