@@ -10,28 +10,6 @@
 'use strict';
 
 /**
- * @typedef GameFormat
- * @type {Object}
- * @property {string} name
- * @property {string} id
- * @property {string} inherits
- * @property {string} variationId
- * @property {string} modeId
- * @property {boolean} inheritOnly
- * @property {boolean} internal
- * @property {Array<GameVariation>} variations
- * @property {{[k: string]: GameFormat}} variationIds
- * @property {Array<string>} modes
- * @property {{[k: string]: string}} modeIds
- * @property {Function} game
- * @property {Function} install
- * @property {{[k: string]: string}} commands
- * @property {Array<string>} aliases
- * @property {{[k: string]: string}} variationAliases
- * @property {{[k: string]: string}} modeAliases
- */
-
-/**
  * @typedef GameVariation
  * @type {Object}
  * @property {string} name
@@ -71,7 +49,7 @@ class Player {
 		this.name = user.name;
 		this.id = user.id;
 		this.eliminated = false;
-		/**@type {string} */
+		/**@type {?string} */
 		this.team = null;
 	}
 
@@ -104,18 +82,20 @@ class Game {
 		this.freeJoin = false;
 		/**@type {Map<Player, number>} */
 		this.winners = new Map();
-		/**@type {Map<Player, number>} */
+		/**@type {?Map<Player, number>} */
 		this.points = null;
-		/**@type {Map<Player, number>} */
+		/**@type {?Map<Player, number>} */
 		this.lives = null;
-		/**@type {Game} */
+		/**@type {?Game} */
 		this.parentGame = null;
-		/**@type {Game} */
+		/**@type {?Game} */
 		this.childGame = null;
-		/**@type {NodeJS.Timer} */
+		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
-		/**@type {string} */
+		/**@type {?string} */
 		this.variation = null;
+		/**@type {?boolean | {[k: string]: boolean}} */
+		this.pmCommands = null;
 	}
 
 	onSignups() {}
@@ -219,7 +199,10 @@ class Game {
 	forceEnd() {
 		if (this.ended) return;
 		if (this.timeout) clearTimeout(this.timeout);
-		if (this.parentGame) return this.parentGame.forceEnd();
+		if (this.parentGame) {
+			this.parentGame.forceEnd();
+			return;
+		}
 		this.say("The game was forcibly ended.");
 		this.ended = true;
 		this.room.game = null;
@@ -236,7 +219,7 @@ class Game {
 	 * @return {Player}
 	 */
 	addPlayer(user) {
-		if (user.id in this.players) return;
+		if (user.id in this.players) return this.players[user.id];
 		let player = new Player(user);
 		this.players[user.id] = player;
 		this.playerCount++;
@@ -288,7 +271,10 @@ class Game {
 	 * @param {User} user
 	 */
 	leave(user) {
-		if (this.parentGame) return this.parentGame.leave(user);
+		if (this.parentGame) {
+			this.parentGame.leave(user);
+			return;
+		}
 		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
 		this.removePlayer(user);
 		user.say("You have left the game of " + this.name + "!");
@@ -313,6 +299,7 @@ class Game {
 	 * @return {string}
 	 */
 	getPoints(players) {
+		if (!this.points) return '';
 		if (!players) players = this.players;
 		let list = [];
 		for (let i in players) {
@@ -327,6 +314,7 @@ class Game {
 	 * @return {string}
 	 */
 	getLives(players) {
+		if (!this.lives) return '';
 		if (!players) players = this.players;
 		let list = [];
 		for (let i in players) {
@@ -373,6 +361,28 @@ class Game {
 }
 
 exports.Game = Game;
+
+/**
+ * @typedef GameFormat
+ * @type {Object}
+ * @property {string} name
+ * @property {string} id
+ * @property {string} inherits
+ * @property {string} variationId
+ * @property {string} modeId
+ * @property {boolean} inheritOnly
+ * @property {boolean} internal
+ * @property {Array<GameVariation>} variations
+ * @property {{[k: string]: GameFormat}} variationIds
+ * @property {Array<string>} modes
+ * @property {{[k: string]: string}} modeIds
+ * @property {Game} game
+ * @property {Function} install
+ * @property {{[k: string]: string}} commands
+ * @property {Array<string>} aliases
+ * @property {{[k: string]: string}} variationAliases
+ * @property {{[k: string]: string}} modeAliases
+ */
 
 class Games {
 	constructor() {
@@ -428,9 +438,11 @@ class Games {
 						}
 						Commands[i] = function (target, room, user, command, time) {
 							if (room.game) {
+								// @ts-ignore
 								if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
 							} else if (room === user) {
 								user.rooms.forEach(function (value, room) {
+									// @ts-ignore
 									if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
 								});
 							}
@@ -476,9 +488,11 @@ class Games {
 					}
 					Commands[i] = function (target, room, user, command, time) {
 						if (room.game) {
+							// @ts-ignore
 							if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
 						} else if (room === user) {
 							user.rooms.forEach(function (value, room) {
+								// @ts-ignore
 								if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
 							});
 						}
@@ -552,8 +566,8 @@ class Games {
 	}
 
 	/**
-	 * @param {string} target
-	 * @return {GameFormat}
+	 * @param {string | GameFormat} target
+	 * @return {?GameFormat}
 	 */
 	getFormat(target) {
 		if (typeof target === 'object') return target;
@@ -563,7 +577,7 @@ class Games {
 			id = this.aliases[id];
 			if (id.includes(',')) return this.getFormat(id + ',' + targets.join(','));
 		}
-		if (!(id in this.games)) return;
+		if (!(id in this.games)) return null;
 		let format = Object.assign({}, this.games[id]);
 		let variation, mode;
 		for (let i = 0, len = targets.length; i < len; i++) {
@@ -583,7 +597,9 @@ class Games {
 	}
 
 	/**
-	 * @return {Game}
+	 * @param {string | GameFormat} target
+	 * @param {Room} room
+	 * @return {?Game}
 	 */
 	createGame(target, room) {
 		if (room.game) {
@@ -591,9 +607,11 @@ class Games {
 			return null;
 		}
 		let format = this.getFormat(target);
+		if (!format) return null;
 		let baseClass;
 		if (format.inherits) {
 			let parentFormat = format;
+			/**@type {Array<GameFormat>} */
 			let parentFormats = [];
 			while (parentFormat.inherits) {
 				parentFormat = this.games[parentFormat.inherits];
@@ -610,6 +628,7 @@ class Games {
 		} else {
 			baseClass = format.game;
 		}
+		if (!baseClass) throw new Error(target + " has no base class.");
 		room.game = new baseClass(room); // eslint-disable-line new-cap
 		Object.assign(room.game, format);
 		if (format.modeId) this.modes[format.modeId].mode(room.game);
@@ -619,11 +638,15 @@ class Games {
 	/**
 	 * @param {string} format
 	 * @param {Game} parentGame
-	 * @return {Game}
+	 * @return {?Game}
 	 */
 	createChildGame(format, parentGame) {
 		parentGame.room.game = null;
 		let childGame = this.createGame(format, parentGame.room);
+		if (!childGame) {
+			parentGame.room.game = parentGame;
+			return null;
+		}
 		parentGame.childGame = childGame;
 		childGame.parentGame = parentGame;
 		childGame.players = parentGame.players;

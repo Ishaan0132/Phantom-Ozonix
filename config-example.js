@@ -19,9 +19,11 @@ exports.server = '';
 
 // Rooms that Cassius will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
+/**@type {Array<string>} */
 exports.rooms = [];
 
 // Rooms where scripted games are enabled
+/**@type {Array<string>} */
 exports.games = [];
 
 // The character that determines which messages are read as commands
@@ -43,7 +45,9 @@ exports.groups = {
 
 // Userids of those who have debug access to Cassius
 // example: exports.developers = ['devuser1', 'devuser2', 'devuser3'];
+/**@type {Array<string>} */
 exports.developers = [];
 
 // Custom function
+/**@type {?Function} */
 exports.parseMessage = null;

@@ -9,16 +9,23 @@
 
 'use strict';
 
+const Game = require('./games').Game; // eslint-disable-line no-unused-vars
 const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
 
 const PRUNE_INTERVAL = 60 * 60 * 1000;
 
 class User {
+	/**
+	 * @param {string} name
+	 * @param {string} id
+	 */
 	constructor(name, id) {
 		this.name = Tools.toName(name);
 		this.id = id;
 		/**@type {Map<Room, string>} */
 		this.rooms = new Map();
+		/**@type {?Game} */
+		this.game = null;
 	}
 
 	/**
@@ -34,6 +41,7 @@ class User {
 		} else {
 			rank = this.rooms.get(room);
 		}
+		if (!rank) return false;
 		return Config.groups[rank] >= Config.groups[targetRank];
 	}
 
@@ -80,7 +88,6 @@ class Users {
 	 */
 	add(name) {
 		let id = Tools.toId(name);
-		if (!id) return;
 		let user = this.get(id);
 		if (!user) {
 			user = new User(name, id);

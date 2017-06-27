@@ -23,7 +23,7 @@ class Room {
 		this.users = new Map();
 		/**@type {{[k: string]: Function}} */
 		this.listeners = {};
-		/**@type {Game} */
+		/**@type {?Game} */
 		this.game = null;
 	}
 
@@ -154,6 +154,7 @@ class Rooms {
 		this.rooms = {};
 
 		this.Room = Room;
+		this.globalRoom = this.add('global');
 	}
 
 	/**

@@ -9,10 +9,16 @@
 
 'use strict';
 
+const Game = require('./../../games').Game; // eslint-disable-line no-unused-vars
+const User = require('./../../users').User; // eslint-disable-line no-unused-vars
+
 const name = 'Team';
 const id = Tools.toId(name);
 
 class TeamGame extends Games.Game {
+	/**
+	 * @param {Game} game
+	 */
 	constructor(game) {
 		super(game.room);
 		this.name = name + ' ' + game.name;
@@ -23,6 +29,10 @@ class TeamGame extends Games.Game {
 		this.points = new Map();
 		this.maxPoints = 20;
 		this.hint = '';
+		/**@type {?Array<string>} */
+		this.answers = null;
+		/**@type {?NodeJS.Timer} */
+		this.timeout = null;
 
 		this.override = ['name', 'id', 'freeJoin', 'teamA', 'teamB', 'points', 'maxPoints', 'onSignups', 'onStart', 'onNextRound', 'guess'];
 	}
@@ -61,9 +71,13 @@ class TeamGame extends Games.Game {
 		this.say(this.hint);
 	}
 
+	/**
+	 * @param {string} guess
+	 * @param {User} user
+	 */
 	guess(guess, user) {
-		if (!(user.id in this.players) || !this.checkAnswer(guess)) return;
-		clearTimeout(this.timeout);
+		if (!(user.id in this.players) || !this.answers || !this.checkAnswer(guess)) return;
+		if (this.timeout) clearTimeout(this.timeout);
 		let player = this.players[user.id];
 		let points = this.points.get(player) || 0;
 		points += 1;
@@ -86,9 +100,13 @@ class TeamGame extends Games.Game {
 	}
 }
 
+/**
+ * @param {Game} game
+ */
 let TeamMode = function (game) {
 	let mode = new TeamGame(game);
 	for (let i = 0, len = mode.override.length; i < len; i++) {
+		// @ts-ignore
 		game[mode.override[i]] = mode[mode.override[i]];
 	}
 };

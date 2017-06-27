@@ -43,19 +43,20 @@ class Context {
 		if (command) {
 			command = Tools.toId(command);
 			if (!Commands[command]) return;
-			let type = typeof Commands[command];
-			if (type === 'string') {
+			if (typeof Commands[command] === 'string') {
+				// @ts-ignore Typescript bug - issue #10530
 				command = Commands[command];
-				type = typeof Commands[command];
 			}
-			if (type !== 'function') return;
 			target = target.trim();
 		} else {
 			command = this.command;
 			target = this.target;
 		}
 
+		if (typeof Commands[command] !== 'function') return;
+
 		try {
+			// @ts-ignore Typescript bug - issue #10530
 			Commands[command].call(this, target, this.room, this.user, this.command, this.time);
 		} catch (e) {
 			let stack = e.stack;
@@ -73,6 +74,10 @@ class Context {
 exports.Context = Context;
 
 class CommandParser {
+	constructor() {
+		this.globalContext = new Context('', Rooms.globalRoom, Users.self, '');
+	}
+
 	/**
 	 * @param {string} message
 	 * @param {Room | User} room
@@ -95,12 +100,11 @@ class CommandParser {
 		}
 		command = Tools.toId(command);
 		if (!Commands[command]) return;
-		let type = typeof Commands[command];
-		if (type === 'string') {
+		if (typeof Commands[command] === 'string') {
+			// @ts-ignore Typescript bug - issue #10530
 			command = Commands[command];
-			type = typeof Commands[command];
 		}
-		if (type !== 'function') return;
+		if (typeof Commands[command] !== 'function') return;
 
 		new Context(target, room, user, command, time).run();
 	}

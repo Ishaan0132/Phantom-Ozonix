@@ -43,7 +43,7 @@ class Client {
 		console.log('Successfully connected to server ' + server);
 
 		this.connection.on('message', message => {
-			if (message.type !== 'utf8' || message.utf8Data.charAt(0) !== 'a') return;
+			if (message.type !== 'utf8' || !message.utf8Data || message.utf8Data.charAt(0) !== 'a') return;
 			this.onMessage(message.utf8Data);
 		});
 
@@ -55,6 +55,9 @@ class Client {
 		});
 	}
 
+	/**
+	 * @param {Error} error
+	 */
 	onConnectFail(error) {
 		console.log('Failed to connect to server ' + server + ':\n' + error.stack + '\nRetrying in ' + RETRY_SECONDS + ' seconds');
 		setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
@@ -111,7 +114,8 @@ class Client {
 
 			let lines = message[i].split('\n');
 			if (lines[0].charAt(0) === '>') {
-				room = Rooms.add(lines.shift().substr(1));
+				room = Rooms.add(lines[0].substr(1));
+				lines.shift();
 			}
 			for (let i = 0, len = lines.length; i < len; i++) {
 				if (lines[i].startsWith('|init|')) {
@@ -136,7 +140,8 @@ class Client {
 	 */
 	parseMessage(message, room) {
 		let splitMessage = message.split('|').slice(1);
-		let messageType = splitMessage.shift();
+		let messageType = splitMessage[0];
+		splitMessage.shift();
 		if (typeof Config.parseMessage === 'function') {
 			if (Config.parseMessage(room, messageType, splitMessage) === false) return;
 		}
@@ -197,10 +202,11 @@ class Client {
 		let action = url.parse('https://play.pokemonshowdown.com/~~' + serverId + '/action.php');
 		let options = {
 			hostname: action.hostname,
-			port: parseInt(action.port),
 			path: action.pathname,
 			agent: false,
 		};
+		if (action.port) options.port = parseInt(action.port);
+
 		let postData;
 		if (Config.password) {
 			options.method = 'POST';
@@ -280,7 +286,8 @@ class Client {
 		this.connection.send(message);
 		this.messageQueueTimeout = setTimeout(() => {
 			this.messageQueueTimeout = null;
-			this.send(this.messageQueue.shift());
+			let message = this.messageQueue.shift();
+			if (message) this.send(message);
 		}, MESSAGE_THROTTLE);
 	}
 }

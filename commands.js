@@ -9,6 +9,7 @@
 
 'use strict';
 
+/**@type {{[k: string]: Command | string}} */
 let commands = {
 	// Developer commands
 	js: 'eval',
@@ -24,39 +25,41 @@ let commands = {
 
 	// Informational commands
 	about: function (target, room, user) {
-		if (room !== user && !user.hasRank(room, '+')) return;
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
 	},
 
 	// Game commands
 	signups: 'creategame',
 	creategame: function (target, room, user) {
+		if (room instanceof Users.User) return;
 		if (!user.hasRank(room, '+')) return;
 		if (!Config.games || !Config.games.includes(room.id)) return this.say("Games are not enabled for this room.");
 		let format = Games.getFormat(target);
 		if (!format || format.inheritOnly) return this.say("The game '" + target + "' was not found.");
 		if (format.internal) return this.say(format.name + " cannot be started manually.");
-		if (!Games.createGame(format, room)) return;
+		Games.createGame(format, room);
+		if (!room.game) return;
 		room.game.signups();
 	},
 	start: 'startgame',
 	startgame: function (target, room, user) {
-		if (!room.game || !user.hasRank(room, '+')) return;
-		room.game.start();
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		if (room.game) room.game.start();
 	},
 	end: 'endgame',
 	endgame: function (target, room, user) {
-		if (!room.game || !user.hasRank(room, '+')) return;
-		room.game.forceEnd();
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		if (room.game) room.game.forceEnd();
 	},
 	join: 'joingame',
 	joingame: function (target, room, user) {
-		if (!room.game) return;
+		if (room instanceof Users.User || !room.game) return;
 		room.game.join(user);
 	},
 	leave: 'leavegame',
 	leavegame: function (target, room, user) {
-		if (!room.game) return;
+		if (room instanceof Users.User || !room.game) return;
 		room.game.leave(user);
 	},
 
@@ -65,6 +68,7 @@ let commands = {
 	points: function (target, room, user) {
 		if (room !== user) return;
 		let targetUserid = target ? Tools.toId(target) : user.id;
+		/**@type {Array<string>} */
 		let points = [];
 		user.rooms.forEach((rank, room) => {
 			if (!(room.id in Storage.databases) || !('leaderboard' in Storage.databases[room.id])) return;

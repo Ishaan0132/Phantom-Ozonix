@@ -9,6 +9,9 @@
 
 'use strict';
 
+const Room = require('./../rooms').Room; // eslint-disable-line no-unused-vars
+const User = require('./../users').User; // eslint-disable-line no-unused-vars
+
 const name = "Trivia";
 
 const data = {
@@ -47,11 +50,17 @@ for (let i in Tools.data.abilities) {
 // if inheriting from or inherited by another game, this class would be declared as:
 // let Trivia = base => class extends base {
 class Trivia extends Games.Game {
+	/**
+	 * @param {Room} room
+	 */
 	constructor(room) {
 		super(room);
 		this.freeJoin = true;
+		/**@type {?Array<string>} */
 		this.answers = null;
-		this.hint = null;
+		/**@type {?NodeJS.Timer} */
+		this.timeout = null;
+		this.hint = '';
 		this.points = new Map();
 		this.maxPoints = 3;
 		this.categories = Object.keys(data);
@@ -88,7 +97,12 @@ class Trivia extends Games.Game {
 		this.say(this.hint);
 	}
 
+	/**
+	 * @param {string} guess
+	 * @return {boolean}
+	 */
 	checkAnswer(guess) {
+		if (!this.answers) return false;
 		guess = Tools.toId(guess);
 		for (let i = 0, len = this.answers.length; i < len; i++) {
 			if (Tools.toId(this.answers[i]) === guess) {
@@ -98,9 +112,13 @@ class Trivia extends Games.Game {
 		return false;
 	}
 
+	/**
+	 * @param {string} guess
+	 * @param {User} user
+	 */
 	guess(guess, user) {
 		if (!this.answers || !this.checkAnswer(guess)) return;
-		clearTimeout(this.timeout);
+		if (this.timeout) clearTimeout(this.timeout);
 		if (!(user.id in this.players)) this.addPlayer(user);
 		let player = this.players[user.id];
 		let points = this.points.get(player) || 0;

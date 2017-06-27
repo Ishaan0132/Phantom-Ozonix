@@ -26,11 +26,11 @@ if (!Config.username) throw new Error("Please specify a username in config.js");
 
 global.Commands = require('./commands.js');
 
-global.CommandParser = require('./command-parser.js').CommandParser;
-
 global.Rooms = require('./rooms.js').Rooms;
 
 global.Users = require('./users.js').Users;
+
+global.CommandParser = require('./command-parser.js').CommandParser;
 
 global.Client = require('./client.js');
 
@@ -46,8 +46,9 @@ for (let i = 0, len = plugins.length; i < len; i++) {
 	if (!fileName.endsWith('.js') || fileName === 'example-commands.js' || fileName === 'example-module.js') continue;
 	let file = require('./plugins/' + fileName);
 	if (file.name) {
+		// @ts-ignore
 		global[file.name] = file;
-		if (typeof global[file.name].onLoad === 'function') global[file.name].onLoad();
+		if (typeof file.onLoad === 'function') file.onLoad();
 	}
 	if (file.commands) Object.assign(Commands, file.commands);
 }

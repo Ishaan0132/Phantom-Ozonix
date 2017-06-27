@@ -9,21 +9,28 @@
 
 'use strict';
 
+const fileData = {
+	'pokedex': {path: './data/pokedex.js', export: 'BattlePokedex'},
+	'moves': {path: './data/moves.js', export: 'BattleMovedex'},
+	'items': {path: './data/items.js', export: 'BattleItems'},
+	'abilities': {path: './data/abilities.js', export: 'BattleAbilities'},
+	'learnsets': {path: './data/learnsets.js', export: 'BattleLearnsets'},
+	'teams': {path: './data/teams.js', export: 'BattlePokeTeams'},
+};
+
 class Tools {
 	constructor() {
 		this.data = {};
 	}
 
 	loadData() {
-		this.data.pokedex = require('./data/pokedex.js').BattlePokedex;
-		this.data.moves = require('./data/moves.js').BattleMovedex;
-		this.data.items = require('./data/items.js').BattleItems;
-		this.data.abilities = require('./data/abilities.js').BattleAbilities;
-		this.data.learnsets = require('./data/learnsets.js').BattleLearnsets;
-		this.data.teams = require('./data/teams.js').BattlePokeTeams;
+		for (let file in fileData) {
+			this.data[file] = require(fileData[file].path)[fileData[file].export];
+		}
 	}
 
 	/**
+	 * @param {any} text
 	 * @return {string}
 	 */
 	toId(text) {
@@ -41,6 +48,7 @@ class Tools {
 	}
 
 	/**
+	 * @param {any} text
 	 * @return {string}
 	 */
 	toName(text) {
@@ -59,6 +67,7 @@ class Tools {
 	}
 
 	/**
+	 * @param {any} text
 	 * @return {string}
 	 */
 	toString(text) {
@@ -70,6 +79,8 @@ class Tools {
 	}
 
 	/**
+	 * @param {any} text
+	 * @param {any} [room]
 	 * @return {string}
 	 */
 	normalizeMessage(text, room) {
@@ -137,18 +148,37 @@ class Tools {
 		return this.shuffle(array).splice(0, amount);
 	}
 
-	getTemplate(name) {
+	/**
+	 * @param {string} name
+	 */
+	getPokemon(name) {
 		return this.data.pokedex[this.toId(name)];
 	}
 
+	/**
+	 * @param {string} name
+	 */
+	getTemplate(name) {
+		return this.getPokemon(name);
+	}
+
+	/**
+	 * @param {string} name
+	 */
 	getMove(name) {
 		return this.data.moves[this.toId(name)];
 	}
 
+	/**
+	 * @param {string} name
+	 */
 	getItem(name) {
 		return this.data.items[this.toId(name)];
 	}
 
+	/**
+	 * @param {string} name
+	 */
 	getAbility(name) {
 		return this.data.abilities[this.toId(name)];
 	}

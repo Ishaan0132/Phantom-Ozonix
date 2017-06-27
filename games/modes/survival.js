@@ -9,10 +9,16 @@
 
 'use strict';
 
+const Game = require('./../../games').Game; // eslint-disable-line no-unused-vars
+const User = require('./../../users').User; // eslint-disable-line no-unused-vars
+
 const name = 'Survival';
 const id = Tools.toId(name);
 
 class SurvivalGame extends Games.Game {
+	/**
+	 * @param {Game} game
+	 */
 	constructor(game) {
 		super(game.room);
 		this.name = game.name + ' ' + name;
@@ -22,6 +28,10 @@ class SurvivalGame extends Games.Game {
 		this.survivalRound = 0;
 		this.roundTime = 9000;
 		this.hint = '';
+		/**@type {?Array<string>} */
+		this.answers = null;
+		/**@type {?NodeJS.Timer} */
+		this.timeout = null;
 
 		this.override = ['name', 'id', 'freeJoin', 'playerList', 'survivalRound', 'roundTime', 'onSignups', 'onStart', 'onNextRound', 'onEnd', 'guess'];
 	}
@@ -34,18 +44,23 @@ class SurvivalGame extends Games.Game {
 
 	onNextRound() {
 		if (!this.playerList.length) {
-			if (this.getRemainingPlayerCount() < 2) return this.end();
+			if (this.getRemainingPlayerCount() < 2) {
+				this.end();
+				return;
+			}
 			this.survivalRound++;
 			this.say("/wall Round " + this.survivalRound + (this.survivalRound > 1 ? " | Remaining players: " + this.getPlayerNames(this.getRemainingPlayers()) : ""));
 			this.playerList = this.shufflePlayers();
 			if (this.roundTime > 1000) this.roundTime -= 500;
 		}
 		let currentPlayer = this.playerList.shift();
-		while (currentPlayer.eliminated) {
+		while (currentPlayer && currentPlayer.eliminated) {
 			currentPlayer = this.playerList.shift();
-			if (!currentPlayer) break;
 		}
-		if (!currentPlayer) return this.onNextRound();
+		if (!currentPlayer) {
+			this.onNextRound();
+			return;
+		}
 		this.setAnswers();
 		this.say("**" + currentPlayer.name + "** you're up!");
 		this.currentPlayer = currentPlayer;
@@ -53,7 +68,7 @@ class SurvivalGame extends Games.Game {
 			this.say(this.hint);
 			this.timeout = setTimeout(() => {
 				if (this.currentPlayer) {
-					this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
+					this.say("Time's up!" + (this.answers ? "The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__" : ""));
 					this.currentPlayer.eliminated = true;
 					this.currentPlayer = null;
 				}
@@ -71,9 +86,13 @@ class SurvivalGame extends Games.Game {
 		}
 	}
 
+	/**
+	 * @param {string} guess
+	 * @param {User} user
+	 */
 	guess(guess, user) {
-		if (!this.currentPlayer || this.players[user.id] !== this.currentPlayer || !this.checkAnswer(guess)) return;
-		clearTimeout(this.timeout);
+		if (!this.currentPlayer || !this.answers || this.players[user.id] !== this.currentPlayer || !this.checkAnswer(guess)) return;
+		if (this.timeout) clearTimeout(this.timeout);
 		this.currentPlayer = null;
 		if (this.getRemainingPlayerCount() === 1) return this.end();
 		this.say("**" + user.name + "** advances to the next round! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
@@ -82,9 +101,13 @@ class SurvivalGame extends Games.Game {
 	}
 }
 
+/**
+ * @param {Game} game
+ */
 let SurvivalMode = function (game) {
 	let mode = new SurvivalGame(game);
 	for (let i = 0, len = mode.override.length; i < len; i++) {
+		// @ts-ignore
 		game[mode.override[i]] = mode[mode.override[i]];
 	}
 };

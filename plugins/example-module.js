@@ -12,16 +12,19 @@
 
 'use strict';
 
+/**@type {{[k: string]: Command | string}} */
+let commands = {
+	about: function (target, room, user) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		this.say("test");
+	},
+};
+
 class Plugin {
 	constructor() {
 		this.name = "Example";
 		this.data = {};
-		this.commands = {
-			about: function (target, room, user) {
-				if (room !== user && !user.hasRank(room, '+')) return;
-				this.say("test");
-			},
-		};
+		this.commands = commands;
 	}
 
 	onLoad() {
