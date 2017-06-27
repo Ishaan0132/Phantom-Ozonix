@@ -1,8 +1,8 @@
 /**
- * Command Parser
+ * Message Parser
  * Cassius - https://github.com/sirDonovan/Cassius
  *
- * This file parses command messages.
+ * This file parses messages sent by the server.
  *
  * @license MIT license
  */
@@ -73,7 +73,7 @@ class Context {
 
 exports.Context = Context;
 
-class CommandParser {
+class MessageParser {
 	constructor() {
 		this.globalContext = new Context('', Rooms.globalRoom, Users.self, '');
 	}
@@ -84,7 +84,7 @@ class CommandParser {
 	 * @param {User} user
 	 * @param {number} [time]
 	 */
-	parse(message, room, user, time) {
+	parseCommand(message, room, user, time) {
 		message = message.trim();
 		if (message.charAt(0) !== Config.commandCharacter) return;
 
@@ -110,4 +110,4 @@ class CommandParser {
 	}
 }
 
-exports.CommandParser = new CommandParser();
+exports.MessageParser = new MessageParser();

@@ -191,7 +191,7 @@ class Client {
 			let user = Users.add(splitMessage[0]);
 			if (!user) return;
 			if (user.id === Users.self.id) return;
-			CommandParser.parse(splitMessage.slice(2).join('|'), user, user);
+			MessageParser.parseCommand(splitMessage.slice(2).join('|'), user, user);
 			break;
 		default:
 			room.parseMessage(messageType, splitMessage);

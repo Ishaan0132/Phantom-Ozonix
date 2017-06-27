@@ -72,7 +72,7 @@ describe('Games', function () {
 				if (!room.game.freeJoin) {
 					let len = users.length;
 					for (let i = 0; i < len; i++) {
-						CommandParser.parse(Config.commandCharacter + 'joingame', room, users[i]);
+						MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]);
 					}
 					assert.strictEqual(room.game.playerCount, len);
 					room.game.start();
@@ -89,7 +89,7 @@ describe('Games', function () {
 				if (!room.game.freeJoin) {
 					room.game.signups();
 					for (let i = 0, len = users.length; i < len; i++) {
-						CommandParser.parse(Config.commandCharacter + 'joingame', room, users[i]);
+						MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]);
 					}
 					room.game.start();
 					room.game.end();
@@ -99,7 +99,7 @@ describe('Games', function () {
 				room.game.signups();
 				if (!room.game.freeJoin) {
 					for (let i = 0, len = users.length; i < len; i++) {
-						CommandParser.parse(Config.commandCharacter + 'joingame', room, users[i]);
+						MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]);
 					}
 					room.game.start();
 				}

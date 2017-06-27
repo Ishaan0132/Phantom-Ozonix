@@ -126,7 +126,7 @@ class Room {
 				if (message in this.listeners) this.listeners[message]();
 				return;
 			}
-			CommandParser.parse(message, this, user);
+			MessageParser.parseCommand(message, this, user);
 			break;
 		}
 		case 'c:': {
@@ -140,7 +140,7 @@ class Room {
 				if (message in this.listeners) this.listeners[message]();
 				return;
 			}
-			CommandParser.parse(message, this, user, parseInt(splitMessage[0]) * 1000);
+			MessageParser.parseCommand(message, this, user, parseInt(splitMessage[0]) * 1000);
 			break;
 		}
 		}

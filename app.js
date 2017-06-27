@@ -30,7 +30,7 @@ global.Rooms = require('./rooms.js').Rooms;
 
 global.Users = require('./users.js').Users;
 
-global.CommandParser = require('./command-parser.js').CommandParser;
+global.MessageParser = require('./message-parser.js').MessageParser;
 
 global.Client = require('./client.js');
 
