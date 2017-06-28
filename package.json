@@ -23,7 +23,8 @@
 	},
 	"devDependencies": {
 		"eslint": "4.0.0",
-		"mocha": "3.4.2"
+		"mocha": "3.4.2",
+		"typescript": "2.4.1"
 	},
 	"engine-strict": true,
 	"engines": {
