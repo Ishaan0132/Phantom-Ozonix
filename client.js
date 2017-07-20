@@ -30,22 +30,15 @@ class Client {
 		/**@type {Array<string>} */
 		this.messageQueue = [];
 		this.messageQueueTimeout = null;
+		this.connectTimeout = null;
 
 		this.client = new WebSocketClient();
 		this.client.on('connect', connection => {
 			this.connection = connection;
 
-			this.connection.on('message', message => {
-				if (message.type !== 'utf8' || !message.utf8Data || message.utf8Data.charAt(0) !== 'a') return;
-				this.onMessage(message.utf8Data);
-			});
-
-			this.connection.on('error', error => console.log('Connection error: ' + error.stack));
-
-			this.connection.on('close', (code, description) => {
-				console.log('Connection closed: ' + description + ' (' + code + ')\nReconnecting in ' + RETRY_SECONDS + ' seconds');
-				setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
-			});
+			this.connection.on('message', message => this.onMessage(message));
+			this.connection.on('error', error => this.onConnectionError(error));
+			this.connection.on('close', (code, description) => this.onConnectionClose(code, description));
 
 			this.onConnect();
 		});
@@ -60,8 +53,28 @@ class Client {
 	 * @param {Error} error
 	 */
 	onConnectFail(error) {
+		if (this.connectTimeout) clearTimeout(this.connectTimeout);
 		console.log('Failed to connect to server ' + server + ':\n' + error.stack + '\nRetrying in ' + RETRY_SECONDS + ' seconds');
-		setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+	}
+
+	/**
+	 * @param {Error} error
+	 */
+	onConnectionError(error) {
+		if (this.connectTimeout) clearTimeout(this.connectTimeout);
+		console.log('Connection error: ' + error.stack);
+		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+	}
+
+	/**
+	 * @param {number} code
+	 * @param {string} description
+	 */
+	onConnectionClose(code, description) {
+		if (this.connectTimeout) clearTimeout(this.connectTimeout);
+		console.log('Connection closed: ' + description + ' (' + code + ')\nReconnecting in ' + RETRY_SECONDS + ' seconds');
+		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
 	}
 
 	connect() {
@@ -102,11 +115,12 @@ class Client {
 	}
 
 	/**
-	 * @param {string} messageData
+	 * @param {{type: string, utf8Data?: string}} incomingMessage
 	 */
-	onMessage(messageData) {
+	onMessage(incomingMessage) {
+		if (incomingMessage.type !== 'utf8' || !incomingMessage.utf8Data || incomingMessage.utf8Data.charAt(0) !== 'a') return;
 		/**@type {Array<string>} */
-		let message = JSON.parse(messageData.substr(1));
+		let message = JSON.parse(incomingMessage.utf8Data.substr(1));
 		if (!(message instanceof Array)) message = [message];
 		for (let i = 0, len = message.length; i < len; i++) {
 			if (!message[i]) continue;
