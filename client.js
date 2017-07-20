@@ -125,7 +125,7 @@ class Client {
 		for (let i = 0, len = message.length; i < len; i++) {
 			if (!message[i]) continue;
 			let room = Rooms.add('lobby');
-			if (!message[i].includes('\n')) return this.parseMessage(message[i], room);
+			if (!message[i].includes('\n')) return MessageParser.parse(message[i], room);
 
 			let lines = message[i].split('\n');
 			if (lines[0].charAt(0) === '>') {
@@ -134,82 +134,18 @@ class Client {
 			}
 			for (let i = 0, len = lines.length; i < len; i++) {
 				if (lines[i].startsWith('|init|')) {
-					this.parseMessage(lines[i], room);
+					MessageParser.parse(lines[i], room);
 					lines = lines.slice(i + 1);
 					for (let i = 0, len = lines.length; i < len; i++) {
 						if (lines[i].startsWith('|users|')) {
-							this.parseMessage(lines[i], room);
+							MessageParser.parse(lines[i], room);
 							break;
 						}
 					}
 					return;
 				}
-				this.parseMessage(lines[i], room);
+				MessageParser.parse(lines[i], room);
 			}
-		}
-	}
-
-	/**
-	 * @param {string} message
-	 * @param {Room} room
-	 */
-	parseMessage(message, room) {
-		let splitMessage = message.split('|').slice(1);
-		let messageType = splitMessage[0];
-		splitMessage.shift();
-		if (typeof Config.parseMessage === 'function') {
-			if (Config.parseMessage(room, messageType, splitMessage) === false) return;
-		}
-		switch (messageType) {
-		case 'challstr':
-			this.challengeKeyId = splitMessage[0];
-			this.challenge = splitMessage[1];
-			this.login();
-			break;
-		case 'updateuser':
-			if (splitMessage[0] !== Config.username) return;
-			if (splitMessage[1] !== '1') {
-				console.log('Failed to log in');
-				process.exit();
-			}
-
-			console.log('Successfully logged in');
-			if (Config.rooms) {
-				if (!(Config.rooms instanceof Array)) throw new Error("Config.rooms must be an array");
-				for (let i = 0, len = Config.rooms.length; i < len; i++) {
-					this.send('|/join ' + Config.rooms[i]);
-				}
-			}
-			break;
-		case 'init':
-			room.onJoin(Users.self, ' ');
-			console.log('Joined room: ' + room.id);
-			break;
-		case 'noinit':
-			console.log('Could not join room: ' + room.id);
-			Rooms.destroy(room);
-			break;
-		case 'deinit':
-			Rooms.destroy(room);
-			break;
-		case 'users':
-			if (splitMessage[0] === '0') return;
-			let users = splitMessage[0].split(",");
-			for (let i = 1, len = users.length; i < len; i++) {
-				let user = Users.add(users[i].substr(1));
-				let rank = users[i].charAt(0);
-				room.users.set(user, rank);
-				user.rooms.set(room, rank);
-			}
-			break;
-		case 'pm':
-			let user = Users.add(splitMessage[0]);
-			if (!user) return;
-			if (user.id === Users.self.id) return;
-			MessageParser.parseCommand(splitMessage.slice(2).join('|'), user, user);
-			break;
-		default:
-			room.parseMessage(messageType, splitMessage);
 		}
 	}
 

@@ -80,6 +80,119 @@ class MessageParser {
 
 	/**
 	 * @param {string} message
+	 * @param {Room} room
+	 */
+	parse(message, room) {
+		let splitMessage = message.split('|').slice(1);
+		let messageType = splitMessage[0];
+		splitMessage.shift();
+		if (typeof Config.parseMessage === 'function') {
+			if (Config.parseMessage(room, messageType, splitMessage) === false) return;
+		}
+		switch (messageType) {
+		case 'challstr':
+			Client.challengeKeyId = splitMessage[0];
+			Client.challenge = splitMessage[1];
+			Client.login();
+			break;
+		case 'updateuser':
+			if (splitMessage[0] !== Config.username) return;
+			if (splitMessage[1] !== '1') {
+				console.log('Failed to log in');
+				process.exit();
+			}
+
+			console.log('Successfully logged in');
+			if (Config.rooms) {
+				if (!(Config.rooms instanceof Array)) throw new Error("Config.rooms must be an array");
+				for (let i = 0, len = Config.rooms.length; i < len; i++) {
+					Client.send('|/join ' + Config.rooms[i]);
+				}
+			}
+			break;
+		case 'init':
+			room.onJoin(Users.self, ' ');
+			console.log('Joined room: ' + room.id);
+			break;
+		case 'noinit':
+			console.log('Could not join room: ' + room.id);
+			Rooms.destroy(room);
+			break;
+		case 'deinit':
+			Rooms.destroy(room);
+			break;
+		case 'users': {
+			if (splitMessage[0] === '0') return;
+			let users = splitMessage[0].split(",");
+			for (let i = 1, len = users.length; i < len; i++) {
+				let user = Users.add(users[i].substr(1));
+				let rank = users[i].charAt(0);
+				room.users.set(user, rank);
+				user.rooms.set(room, rank);
+			}
+			break;
+		}
+		case 'J':
+		case 'j': {
+			let user = Users.add(splitMessage[0]);
+			if (!user) return;
+			room.onJoin(user, splitMessage[0].charAt(0));
+			break;
+		}
+		case 'L':
+		case 'l': {
+			let user = Users.add(splitMessage[0]);
+			if (!user) return;
+			room.onLeave(user);
+			break;
+		}
+		case 'N':
+		case 'n': {
+			let user = Users.add(splitMessage[1]);
+			if (!user) return;
+			room.onRename(user, splitMessage[0]);
+			break;
+		}
+		case 'c': {
+			let user = Users.get(splitMessage[0]);
+			if (!user) return;
+			let rank = splitMessage[0].charAt(0);
+			if (user.rooms.get(room) !== rank) user.rooms.set(room, rank);
+			let message = splitMessage.slice(1).join('|');
+			if (user.id === Users.self.id) {
+				message = Tools.toId(message);
+				if (message in room.listeners) room.listeners[message]();
+				return;
+			}
+			this.parseCommand(message, room, user);
+			break;
+		}
+		case 'c:': {
+			let user = Users.get(splitMessage[1]);
+			if (!user) return;
+			let rank = splitMessage[1].charAt(0);
+			if (user.rooms.get(room) !== rank) user.rooms.set(room, rank);
+			let message = splitMessage.slice(2).join('|');
+			if (user.id === Users.self.id) {
+				message = Tools.toId(message);
+				if (message in room.listeners) room.listeners[message]();
+				return;
+			}
+			this.parseCommand(message, room, user, parseInt(splitMessage[0]) * 1000);
+			break;
+		}
+		case 'pm': {
+			let user = Users.add(splitMessage[0]);
+			if (!user) return;
+			if (user.id === Users.self.id) return;
+			this.parseCommand(splitMessage.slice(2).join('|'), user, user);
+			break;
+		}
+		}
+	}
+
+	/**
+	 * @param {string} message
 	 * @param {Room | User} room
 	 * @param {User} user
 	 * @param {number} [time]

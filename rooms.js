@@ -89,62 +89,6 @@ class Room {
 		if (!message) return;
 		this.listeners[Tools.toId(message)] = listener;
 	}
-
-	/**
-	 * @param {string} messageType
-	 * @param {Array<string>} splitMessage
-	 */
-	parseMessage(messageType, splitMessage) {
-		let user, rank;
-		switch (messageType) {
-		case 'J':
-		case 'j':
-			user = Users.add(splitMessage[0]);
-			if (!user) return;
-			this.onJoin(user, splitMessage[0].charAt(0));
-			break;
-		case 'L':
-		case 'l':
-			user = Users.add(splitMessage[0]);
-			if (!user) return;
-			this.onLeave(user);
-			break;
-		case 'N':
-		case 'n':
-			user = Users.add(splitMessage[1]);
-			if (!user) return;
-			this.onRename(user, splitMessage[0]);
-			break;
-		case 'c': {
-			user = Users.get(splitMessage[0]);
-			if (!user) return;
-			rank = splitMessage[0].charAt(0);
-			if (user.rooms.get(this) !== rank) user.rooms.set(this, rank);
-			let message = splitMessage.slice(1).join('|');
-			if (user.id === Users.self.id) {
-				message = Tools.toId(message);
-				if (message in this.listeners) this.listeners[message]();
-				return;
-			}
-			MessageParser.parseCommand(message, this, user);
-			break;
-		}
-		case 'c:': {
-			user = Users.get(splitMessage[1]);
-			if (!user) return;
-			rank = splitMessage[1].charAt(0);
-			if (user.rooms.get(this) !== rank) user.rooms.set(this, rank);
-			let message = splitMessage.slice(2).join('|');
-			if (user.id === Users.self.id) {
-				message = Tools.toId(message);
-				if (message in this.listeners) this.listeners[message]();
-				return;
-			}
-			MessageParser.parseCommand(message, this, user, parseInt(splitMessage[0]) * 1000);
-			break;
-		}
-		}
-	}
 }
 
 exports.Room = Room;
