@@ -34,6 +34,19 @@ class Client {
 		this.client = new WebSocketClient();
 		this.client.on('connect', connection => {
 			this.connection = connection;
+
+			this.connection.on('message', message => {
+				if (message.type !== 'utf8' || !message.utf8Data || message.utf8Data.charAt(0) !== 'a') return;
+				this.onMessage(message.utf8Data);
+			});
+
+			this.connection.on('error', error => console.log('Connection error: ' + error.stack));
+
+			this.connection.on('close', (code, description) => {
+				console.log('Connection closed: ' + description + ' (' + code + ')\nReconnecting in ' + RETRY_SECONDS + ' seconds');
+				setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+			});
+
 			this.onConnect();
 		});
 		this.client.on('connectFailed', error => this.onConnectFail(error));
@@ -41,18 +54,6 @@ class Client {
 
 	onConnect() {
 		console.log('Successfully connected to server ' + server);
-
-		this.connection.on('message', message => {
-			if (message.type !== 'utf8' || !message.utf8Data || message.utf8Data.charAt(0) !== 'a') return;
-			this.onMessage(message.utf8Data);
-		});
-
-		this.connection.on('error', error => console.log('Connection error: ' + error.stack));
-
-		this.connection.on('close', (code, description) => {
-			console.log('Connection closed: ' + description + ' (' + code + ')\nReconnecting in ' + RETRY_SECONDS + ' seconds');
-			setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
-		});
 	}
 
 	/**
