@@ -188,6 +188,14 @@ class MessageParser {
 			this.parseCommand(splitMessage.slice(2).join('|'), user, user);
 			break;
 		}
+		case 'raw': {
+			let message = splitMessage.join('|');
+			if (message.includes('<div class="broadcast-red">') && message.includes('The server is restarting soon.')) {
+				Client.lockdown = true;
+			} else if (message.includes('<div class="broadcast-green">') && message.includes('The server restart was canceled.')) {
+				Client.lockdown = false;
+			}
+		}
 		}
 	}
 

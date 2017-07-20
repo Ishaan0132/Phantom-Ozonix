@@ -31,6 +31,7 @@ class Client {
 		this.messageQueue = [];
 		this.messageQueueTimeout = null;
 		this.connectTimeout = null;
+		this.lockdown = false;
 
 		this.client = new WebSocketClient();
 		this.client.on('connect', connection => {
@@ -73,8 +74,15 @@ class Client {
 	 */
 	onConnectionClose(code, description) {
 		if (this.connectTimeout) clearTimeout(this.connectTimeout);
-		console.log('Connection closed: ' + description + ' (' + code + ')\nReconnecting in ' + RETRY_SECONDS + ' seconds');
-		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+		let retryTime = RETRY_SECONDS;
+		if (this.lockdown) {
+			console.log("Connection closed: the server restarted");
+			retryTime = 15;
+		} else {
+			console.log('Connection closed: ' + description + ' (' + code + ')');
+		}
+		console.log('Reconnecting in ' + retryTime + ' seconds');
+		this.connectTimeout = setTimeout(() => this.connect(), retryTime * 1000);
 	}
 
 	connect() {
