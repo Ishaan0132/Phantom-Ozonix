@@ -23,6 +23,24 @@ if (Config.server && Config.server !== server) {
 }
 let serverId = 'showdown';
 
+let bootedWithForever = false;
+let forever;
+try {
+	// @ts-ignore
+	forever = require('forever');
+} catch (e) {}
+if (forever) {
+	forever.list(false, /**@param {Error} err @param {Array} list*/(err, list) => {
+		if (err || !list) return;
+		for (let i = 0, len = list.length; i < len; i++) {
+			if (list[i].pid === process.pid) {
+				bootedWithForever = true;
+				break;
+			}
+		}
+	});
+}
+
 class Client {
 	constructor() {
 		this.challengeKeyId = '';
@@ -78,6 +96,10 @@ class Client {
 		if (this.lockdown) {
 			console.log("Connection closed: the server restarted");
 			retryTime = 15;
+			if (bootedWithForever) {
+				setTimeout(() => process.exit(), retryTime * 1000);
+				return;
+			}
 		} else {
 			console.log('Connection closed: ' + description + ' (' + code + ')');
 		}
