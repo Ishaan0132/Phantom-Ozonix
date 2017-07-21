@@ -24,6 +24,8 @@ class User {
 		this.id = id;
 		/**@type {Map<Room, string>} */
 		this.rooms = new Map();
+		/**@type {Map<Room, {messages: Array<{time: number, message: string}>, points: number, lastAction: number}>} */
+		this.roomData = new Map();
 		/**@type {?Game} */
 		this.game = null;
 	}

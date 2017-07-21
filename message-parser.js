@@ -12,6 +12,17 @@
 const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
 const User = require('./users').User; // eslint-disable-line no-unused-vars
 
+const whitespaceRegex = new RegExp('\\s+', 'g');
+const nullCharactersRegex = new RegExp('[\u0000\u200B-\u200F]+', 'g');
+const capsRegex = new RegExp('[A-Z]', 'g');
+const stretchRegex = new RegExp('(.+)\\1+', 'g');
+
+const FLOOD_MINIMUM_MESSAGES = 5;
+const FLOOD_MAXIMUM_TIME = 5 * 1000;
+const STRETCHING_MINIMUM = 20;
+const CAPS_MINIMUM = 30;
+const PUNISHMENT_COOLDOWN = 5 * 1000;
+
 class Context {
 	/**
 	 * @param {string} target
@@ -164,7 +175,9 @@ class MessageParser {
 				if (message in room.listeners) room.listeners[message]();
 				return;
 			}
-			this.parseCommand(message, room, user);
+			let time = Date.now();
+			this.parseCommand(message, room, user, time);
+			if (!user.hasRank(room, '+')) this.moderate(message, room, user, time);
 			break;
 		}
 		case 'c:': {
@@ -178,7 +191,9 @@ class MessageParser {
 				if (message in room.listeners) room.listeners[message]();
 				return;
 			}
-			this.parseCommand(message, room, user, parseInt(splitMessage[0]) * 1000);
+			let time = parseInt(splitMessage[0]) * 1000;
+			this.parseCommand(message, room, user, time);
+			if (!user.hasRank(room, '+')) this.moderate(message, room, user, time);
 			break;
 		}
 		case 'pm': {
@@ -228,6 +243,83 @@ class MessageParser {
 		if (typeof Commands[command] !== 'function') return;
 
 		new Context(target, room, user, command, time).run();
+	}
+
+	/**
+	 * @param {string} message
+	 * @param {Room} room
+	 * @param {User} user
+	 * @param {number} time
+	 */
+	moderate(message, room, user, time) {
+		if (!Users.self.hasRank(room, '%')) return;
+		if (typeof Config.allowModeration === 'object') {
+			if (!Config.allowModeration[room.id]) return;
+		} else {
+			if (!Config.allowModeration) return;
+		}
+		if (!Config.punishmentPoints || !Config.punishmentActions) return;
+
+		message = message.trim().replace(whitespaceRegex, '').replace(nullCharactersRegex, '');
+
+		let data = user.roomData.get(room);
+		if (!data) {
+			data = {messages: [], points: 0, lastAction: 0};
+			user.roomData.set(room, data);
+		}
+
+		data.messages.unshift({message: message, time: time});
+
+		// avoid escalating punishments for the same message(s) due to lag or the message queue
+		if (data.lastAction && time - data.lastAction < PUNISHMENT_COOLDOWN) return;
+
+		/**@type {Array<{action: string, rule: string, reason: string}>} */
+		let punishments = [];
+
+		if (typeof Config.moderate === 'function') {
+			let result = Config.moderate(message, room, user, time);
+			if (result instanceof Array) punishments = punishments.concat(result);
+		}
+
+		// flooding
+		if (data.messages.length >= FLOOD_MINIMUM_MESSAGES && time - data.messages[FLOOD_MINIMUM_MESSAGES - 1].time <= FLOOD_MAXIMUM_TIME) {
+			punishments.push({action: 'mute', rule: 'flooding', reason: 'please do not flood the chat'});
+		}
+
+		// stretching
+		let stretching = message.match(stretchRegex);
+		if (stretching) {
+			stretching.sort((a, b) => b.length - a.length);
+			if (stretching[0].length >= STRETCHING_MINIMUM) {
+				punishments.push({action: 'verbalwarn', rule: 'stretching', reason: 'please do not stretch'});
+			}
+		}
+
+		// caps
+		let caps = message.match(capsRegex);
+		if (caps && caps.length >= CAPS_MINIMUM) {
+			punishments.push({action: 'verbalwarn', rule: 'caps', reason: 'please do not abuse caps'});
+		}
+
+		if (!punishments.length) return;
+
+		punishments.sort((a, b) => Config.punishmentPoints[b.action] - Config.punishmentPoints[a.action]);
+		let punishment = punishments[0];
+		let points = Config.punishmentPoints[punishment.action];
+		let reason = punishment.reason;
+		if (Config.punishmentReasons && Config.punishmentReasons[punishment.rule]) reason = Config.punishmentReasons[punishment.rule];
+		let action = punishment.action;
+		if (data.points >= points) {
+			data.points++;
+			points = data.points;
+			if (Config.punishmentActions['' + points]) action = Config.punishmentActions['' + points];
+		} else {
+			data.points = points;
+		}
+		if (action === 'verbalwarn') return room.say(user.name + ", " + reason);
+		if (action === 'roomban' && !Users.self.hasRank(room, '@')) action = 'hourmute';
+		room.say("/" + action + " " + user.name + ", " + reason);
+		data.lastAction = time;
 	}
 }
 

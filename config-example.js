@@ -48,6 +48,34 @@ exports.groups = {
 /**@type {Array<string>} */
 exports.developers = [];
 
-// Custom function
+// Custom functions
 /**@type {?Function} */
 exports.parseMessage = null;
+/**@type {?Function} */
+exports.moderate = null;
+
+/**@type {boolean | {[k: string]: boolean}} */
+exports.allowModeration = false;
+
+let punishmentPoints = {
+	'verbalwarn': 0,
+	'warn': 1,
+	'mute': 2,
+	'hourmute': 3,
+	'roomban': 4,
+};
+
+let punishmentActions = {};
+for (let i in punishmentPoints) {
+	punishmentActions['' + punishmentPoints[i]] = i;
+}
+
+exports.punishmentPoints = punishmentPoints;
+exports.punishmentActions = punishmentActions;
+
+// Reasons used when Cassius punishes a user for
+// flooding, stretching, caps, etc.
+// example: punishmentReasons = {'flooding': 'please do not flood the chat'}
+
+/**@type {?{[k: string]: string}} */
+exports.punishmentReasons = null;
