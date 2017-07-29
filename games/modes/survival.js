@@ -28,8 +28,8 @@ class SurvivalGame extends Games.Game {
 		this.survivalRound = 0;
 		this.roundTime = 9000;
 		this.hint = '';
-		/**@type {?Array<string>} */
-		this.answers = null;
+		/**@type {Array<string>} */
+		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
 
@@ -68,7 +68,7 @@ class SurvivalGame extends Games.Game {
 			this.say(this.hint);
 			this.timeout = setTimeout(() => {
 				if (this.currentPlayer) {
-					this.say("Time's up!" + (this.answers ? "The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__" : ""));
+					this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
 					this.currentPlayer.eliminated = true;
 					this.currentPlayer = null;
 				}
@@ -91,12 +91,12 @@ class SurvivalGame extends Games.Game {
 	 * @param {User} user
 	 */
 	guess(guess, user) {
-		if (!this.currentPlayer || !this.answers || this.players[user.id] !== this.currentPlayer || !this.checkAnswer(guess)) return;
+		if (!this.currentPlayer || this.players[user.id] !== this.currentPlayer || !this.checkAnswer(guess)) return;
 		if (this.timeout) clearTimeout(this.timeout);
 		this.currentPlayer = null;
 		if (this.getRemainingPlayerCount() === 1) return this.end();
 		this.say("**" + user.name + "** advances to the next round! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
-		this.answers = null;
+		this.answers = [];
 		this.timeout = setTimeout(() => this.nextRound(), 5000);
 	}
 }

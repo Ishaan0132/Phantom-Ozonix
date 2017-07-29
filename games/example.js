@@ -56,8 +56,8 @@ class Trivia extends Games.Game {
 	constructor(room) {
 		super(room);
 		this.freeJoin = true;
-		/**@type {?Array<string>} */
-		this.answers = null;
+		/**@type {Array<string>} */
+		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
 		this.hint = '';
@@ -87,7 +87,7 @@ class Trivia extends Games.Game {
 	}
 
 	onNextRound() {
-		if (this.answers) {
+		if (this.answers.length) {
 			this.say("Time's up! The answer" + (this.answers.length > 1 ? "s were" : " was") + " __" + this.answers.join(", ") + "__");
 		}
 		this.setAnswers();
@@ -102,7 +102,7 @@ class Trivia extends Games.Game {
 	 * @return {boolean}
 	 */
 	checkAnswer(guess) {
-		if (!this.answers) return false;
+		if (!this.answers.length) return false;
 		guess = Tools.toId(guess);
 		for (let i = 0, len = this.answers.length; i < len; i++) {
 			if (Tools.toId(this.answers[i]) === guess) {
@@ -117,7 +117,7 @@ class Trivia extends Games.Game {
 	 * @param {User} user
 	 */
 	guess(guess, user) {
-		if (!this.answers || !this.checkAnswer(guess)) return;
+		if (!this.checkAnswer(guess)) return;
 		if (this.timeout) clearTimeout(this.timeout);
 		if (!(user.id in this.players)) this.addPlayer(user);
 		let player = this.players[user.id];
@@ -131,7 +131,7 @@ class Trivia extends Games.Game {
 			return;
 		}
 		this.say("Correct! " + user.name + " advances to " + points + " point" + (points > 1 ? "s" : "") + ". (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
-		this.answers = null;
+		this.answers = [];
 		this.timeout = setTimeout(() => this.nextRound(), 5 * 1000);
 	}
 }

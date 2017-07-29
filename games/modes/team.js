@@ -29,8 +29,8 @@ class TeamGame extends Games.Game {
 		this.points = new Map();
 		this.maxPoints = 20;
 		this.hint = '';
-		/**@type {?Array<string>} */
-		this.answers = null;
+		/**@type {Array<string>} */
+		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
 
@@ -61,7 +61,7 @@ class TeamGame extends Games.Game {
 	}
 
 	onNextRound() {
-		if (this.answers) {
+		if (this.answers.length) {
 			this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
 		}
 		this.setAnswers();
@@ -76,7 +76,7 @@ class TeamGame extends Games.Game {
 	 * @param {User} user
 	 */
 	guess(guess, user) {
-		if (!(user.id in this.players) || !this.answers || !this.checkAnswer(guess)) return;
+		if (!(user.id in this.players) || !this.checkAnswer(guess)) return;
 		if (this.timeout) clearTimeout(this.timeout);
 		let player = this.players[user.id];
 		let points = this.points.get(player) || 0;
@@ -95,7 +95,7 @@ class TeamGame extends Games.Game {
 			return;
 		}
 		this.say("**" + user.name + "** advances **" + player.team + "** to " + points + " point" + (points > 1 ? "s" : "") + "! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
-		this.answers = null;
+		this.answers = [];
 		this.timeout = setTimeout(() => this.nextRound(), 5000);
 	}
 }
