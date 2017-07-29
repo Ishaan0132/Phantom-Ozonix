@@ -424,29 +424,13 @@ class Games {
 				let mode = require('./games/modes/' + fileName);
 				this.modes[mode.id] = mode;
 				if (mode.commands) {
-					if (i in this.commands && this.commands[i] !== mode.commands[i]) throw new Error(mode.name + " command '" + i + "' is already used for a different game function (" + this.commands[i] + ").");
 					for (let i in mode.commands) {
+						if (i in this.commands && this.commands[i] !== mode.commands[i]) throw new Error(mode.name + " command '" + i + "' is already used for a different game function (" + this.commands[i] + ").");
 						if (i in Commands) {
 							if (i in this.commands) continue;
 							throw new Error(mode.name + " mode command '" + i + "' is already a command.");
 						}
-						let gameFunction = mode.commands[i];
-						this.commands[i] = gameFunction;
-						if (gameFunction in mode.commands && gameFunction !== i) {
-							Commands[i] = gameFunction;
-							continue;
-						}
-						Commands[i] = function (target, room, user, command, time) {
-							if (room.game) {
-								// @ts-ignore
-								if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
-							} else if (room === user) {
-								user.rooms.forEach(function (value, room) {
-									// @ts-ignore
-									if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
-								});
-							}
-						};
+						this.commands[i] = mode.commands[i];
 					}
 				}
 			}
@@ -480,23 +464,7 @@ class Games {
 						if (i in this.commands) continue;
 						throw new Error(game.name + " command '" + i + "' is already a command.");
 					}
-					let gameFunction = game.commands[i];
-					this.commands[i] = gameFunction;
-					if (gameFunction in game.commands && gameFunction !== i) {
-						Commands[i] = gameFunction;
-						continue;
-					}
-					Commands[i] = function (target, room, user, command, time) {
-						if (room.game) {
-							// @ts-ignore
-							if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
-						} else if (room === user) {
-							user.rooms.forEach(function (value, room) {
-								// @ts-ignore
-								if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
-							});
-						}
-					};
+					this.commands[i] = game.commands[i];
 				}
 			}
 			if (game.aliases) {
@@ -563,8 +531,30 @@ class Games {
 				}
 			}
 		}
+
+		this.loadGameCommands();
 	}
 
+	loadGameCommands() {
+		for (let i in this.commands) {
+			let gameFunction = this.commands[i];
+			if (gameFunction in this.commands && gameFunction !== i) {
+				Commands[i] = gameFunction;
+				continue;
+			}
+			Commands[i] = function (target, room, user, command, time) {
+				if (room.game) {
+					// @ts-ignore
+					if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+				} else if (room === user) {
+					user.rooms.forEach(function (value, room) {
+						// @ts-ignore
+						if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+					});
+				}
+			};
+		}
+	}
 	/**
 	 * @param {string | GameFormat} target
 	 * @return {?GameFormat}
