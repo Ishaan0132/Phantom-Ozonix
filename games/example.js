@@ -114,9 +114,10 @@ class Trivia extends Games.Game {
 
 	/**
 	 * @param {string} guess
+	 * @param {Room} room
 	 * @param {User} user
 	 */
-	guess(guess, user) {
+	guess(guess, room, user) {
 		if (!this.checkAnswer(guess)) return;
 		if (this.timeout) clearTimeout(this.timeout);
 		if (!(user.id in this.players)) this.addPlayer(user);

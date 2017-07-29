@@ -10,6 +10,7 @@
 'use strict';
 
 const Game = require('./../../games').Game; // eslint-disable-line no-unused-vars
+const Room = require('./../../rooms').Room; // eslint-disable-line no-unused-vars
 const User = require('./../../users').User; // eslint-disable-line no-unused-vars
 
 const name = 'Survival';
@@ -88,9 +89,10 @@ class SurvivalGame extends Games.Game {
 
 	/**
 	 * @param {string} guess
+	 * @param {Room} room
 	 * @param {User} user
 	 */
-	guess(guess, user) {
+	guess(guess, room, user) {
 		if (!this.currentPlayer || this.players[user.id] !== this.currentPlayer || !this.checkAnswer(guess)) return;
 		if (this.timeout) clearTimeout(this.timeout);
 		this.currentPlayer = null;

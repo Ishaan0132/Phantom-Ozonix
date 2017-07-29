@@ -545,11 +545,11 @@ class Games {
 			Commands[i] = function (target, room, user, command, time) {
 				if (room.game) {
 					// @ts-ignore
-					if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+					if (typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, room, user, command, time);
 				} else if (room === user) {
 					user.rooms.forEach(function (value, room) {
 						// @ts-ignore
-						if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, command, time);
+						if (room.game && room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands) && typeof room.game[gameFunction] === 'function') room.game[gameFunction](target, user, user, command, time);
 					});
 				}
 			};
