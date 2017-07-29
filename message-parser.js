@@ -49,11 +49,12 @@ class Context {
 	/**
 	 * @param {string} [command]
 	 * @param {string} [target]
+	 * @returns {boolean}
 	 */
 	run(command, target) {
 		if (command) {
 			command = Tools.toId(command);
-			if (!Commands[command]) return;
+			if (!Commands[command]) return false;
 			if (typeof Commands[command] === 'string') {
 				// @ts-ignore Typescript bug - issue #10530
 				command = Commands[command];
@@ -64,7 +65,7 @@ class Context {
 			target = this.target;
 		}
 
-		if (typeof Commands[command] !== 'function') return;
+		if (typeof Commands[command] !== 'function') return false;
 
 		try {
 			// @ts-ignore Typescript bug - issue #10530
@@ -78,7 +79,9 @@ class Context {
 			stack += 'User = ' + this.user.name + '\n';
 			stack += 'Room = ' + (this.room instanceof Users.User ? 'in PM' : this.room.id);
 			console.log(stack);
+			return false;
 		}
+		return true;
 	}
 }
 
@@ -242,7 +245,7 @@ class MessageParser {
 		}
 		if (typeof Commands[command] !== 'function') return;
 
-		new Context(target, room, user, command, time).run();
+		return new Context(target, room, user, command, time).run();
 	}
 
 	/**

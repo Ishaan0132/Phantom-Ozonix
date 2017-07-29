@@ -176,6 +176,7 @@ exports.game = Trivia;
  */
 exports.spawnMochaTests = function (game) {
 	// you can skip tests for variations or modes by checking "game.variationId" or "game.modeId" here
+	if (game.modeId) return;
 
 	const assert = require('assert');
 
@@ -184,7 +185,9 @@ exports.spawnMochaTests = function (game) {
 		 * @param {Trivia} game
 		 */
 		'example': game => {
-			assert(game instanceof Trivia);
+			game.nextRound();
+			MessageParser.parseCommand('.guess ' + game.answers[0], game.room, Users.add("User 1"));
+			assert(game.points.get(game.players['user1']) === 1);
 		},
 	};
 

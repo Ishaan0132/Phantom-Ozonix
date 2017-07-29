@@ -72,7 +72,7 @@ describe('Games', function () {
 				if (!room.game.freeJoin) {
 					let len = users.length;
 					for (let i = 0; i < len; i++) {
-						MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]);
+						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
 					}
 					assert.strictEqual(room.game.playerCount, len);
 					room.game.start();
@@ -80,18 +80,30 @@ describe('Games', function () {
 				assert(room.game.started);
 				room.game.nextRound();
 			});
-			it('should support ending at any time', function () {
+			it('should support ending and using game commands at any time', function () {
 				if (!room.game) throw new Error("Game not created.");
 				room.game.signups();
+				if (room.game.commands) {
+					for (let i in room.game.commands) {
+						assert(MessageParser.parseCommand(Config.commandCharacter + i, room, users[0]) === true);
+						assert(MessageParser.parseCommand(Config.commandCharacter + i + ' mocha', room, users[0]) === true);
+					}
+				}
 				room.game.end();
 
 				Games.createGame(game, room);
 				if (!room.game.freeJoin) {
 					room.game.signups();
 					for (let i = 0, len = users.length; i < len; i++) {
-						MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]);
+						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
 					}
 					room.game.start();
+					if (room.game.commands) {
+						for (let i in room.game.commands) {
+							assert(MessageParser.parseCommand(Config.commandCharacter + i, room, users[0]) === true);
+							assert(MessageParser.parseCommand(Config.commandCharacter + i + ' mocha', room, users[0]) === true);
+						}
+					}
 					room.game.end();
 					Games.createGame(game, room);
 				}
@@ -99,11 +111,17 @@ describe('Games', function () {
 				room.game.signups();
 				if (!room.game.freeJoin) {
 					for (let i = 0, len = users.length; i < len; i++) {
-						MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]);
+						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
 					}
 					room.game.start();
 				}
 				room.game.nextRound();
+				if (room.game.commands) {
+					for (let i in room.game.commands) {
+						assert(MessageParser.parseCommand(Config.commandCharacter + i, room, users[0]) === true);
+						assert(MessageParser.parseCommand(Config.commandCharacter + i + ' mocha', room, users[0]) === true);
+					}
+				}
 				if (room.game) room.game.end();
 			});
 			it('should pass any game specfic tests', function () {
