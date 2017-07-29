@@ -106,6 +106,19 @@ describe('Games', function () {
 				room.game.nextRound();
 				if (room.game) room.game.end();
 			});
+			it('should pass any game specfic tests', function () {
+				if (!room.game) throw new Error("Game not created.");
+				if (game.spawnMochaTests) {
+					let tests = game.spawnMochaTests.call(this, room.game);
+					if (!tests) return;
+					for (let i in tests) {
+						room.game.forceEnd();
+						Games.createGame(game, room);
+						if (!room.game) throw new Error("Game not created.");
+						tests[i](room.game);
+					}
+				}
+			});
 		});
 	}
 

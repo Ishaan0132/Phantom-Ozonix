@@ -170,3 +170,23 @@ exports.modes = ["Survival", "Team"];
 // if inheriting from or inherited by another game, this game would be exported as:
 // exports.install = Trivia;
 exports.game = Trivia;
+
+/**
+ * @param {Trivia} game
+ */
+exports.spawnMochaTests = function (game) {
+	// you can skip tests for variations or modes by checking "game.variationId" or "game.modeId" here
+
+	const assert = require('assert');
+
+	let tests = {
+		/**
+		 * @param {Trivia} game
+		 */
+		'example': game => {
+			assert(game instanceof Trivia);
+		},
+	};
+
+	return tests;
+};
