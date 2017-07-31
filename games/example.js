@@ -187,7 +187,7 @@ exports.spawnMochaTests = function (game) {
 		 */
 		'example': game => {
 			game.nextRound();
-			MessageParser.parseCommand('.guess ' + game.answers[0], game.room, Users.add("User 1"));
+			MessageParser.parseCommand(Config.commandCharacter + 'guess ' + game.answers[0], game.room, Users.add("User 1"));
 			assert(game.points.get(game.players['user1']) === 1);
 		},
 	};
