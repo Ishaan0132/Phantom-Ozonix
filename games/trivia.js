@@ -144,7 +144,7 @@ exports.spawnMochaTests = function (game) {
 		/**
 		 * @param {Trivia} game
 		 */
-		'example': game => {
+		'guess': game => {
 			game.signups();
 			game.nextRound();
 			MessageParser.parseCommand(Config.commandCharacter + 'guess ' + game.answers[0], game.room, Users.add("User 1"));
