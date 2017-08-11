@@ -96,6 +96,12 @@ class Game {
 		this.variation = null;
 		/**@type {?boolean | {[k: string]: boolean}} */
 		this.pmCommands = null;
+		/**@type {?Array<string>} */
+		this.answers = null;
+		/**@type {?number} */
+		this.maxPoints = null;
+		/**@type {?Map<Player, boolean>} */
+		this.roundGuesses = null;
 	}
 
 	onSignups() {}
@@ -127,11 +133,6 @@ class Game {
 	onRename(user) {}
 
 	setAnswers() {}
-
-	/**
-	 * @param {string} guess
-	 */
-	checkAnswer(guess) {}
 
 	/**
 	 * @param {string} message;
@@ -357,6 +358,65 @@ class Game {
 			list.push(players[i]);
 		}
 		return Tools.shuffle(list);
+	}
+
+	/**
+	 * @param {string} guess
+	 */
+	checkAnswer(guess) {
+		if (!this.answers) return;
+		for (let i = 0, len = this.answers.length; i < len; i++) {
+			if (Tools.toId(this.answers[i]) === guess) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param {string} guess
+	 */
+	filterGuess(guess) {}
+
+	/**
+	 * @param {string} guess
+	 * @param {Player} player
+	 */
+	onGuess(guess, player) {}
+
+	/**
+	 * @param {string} guess
+	 * @param {Room} room
+	 * @param {User} user
+	 */
+	guess(guess, room, user) {
+		if (!this.answers || !this.answers.length || !this.points || !this.maxPoints || !this.started || (user.id in this.players && this.players[user.id].eliminated)) return;
+		if (!(user.id in this.players)) this.addPlayer(user);
+		let player = this.players[user.id];
+		guess = Tools.toId(guess);
+		if (!guess) return;
+		if (this.filterGuess && this.filterGuess(guess)) return;
+		if (this.roundGuesses) {
+			if (this.roundGuesses.has(player)) return;
+			this.roundGuesses.set(player, true);
+		}
+		if (!this.checkAnswer(guess)) {
+			if (this.onGuess) this.onGuess(guess, player);
+			return;
+		}
+		if (this.timeout) clearTimeout(this.timeout);
+		let points = this.points.get(player) || 0;
+		points += 1;
+		this.points.set(player, points);
+		if (points >= this.maxPoints) {
+			this.winners.set(player, points);
+			this.say("Correct! " + user.name + " wins the game! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
+			this.end();
+			return;
+		}
+		this.say("Correct! " + user.name + " advances to " + points + " point" + (points > 1 ? "s" : "") + ". (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
+		this.answers = [];
+		this.timeout = setTimeout(() => this.nextRound(), 5 * 1000);
 	}
 }
 

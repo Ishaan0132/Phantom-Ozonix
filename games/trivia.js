@@ -1,8 +1,6 @@
 /**
- * Example game
+ * Trivia game
  * Cassius - https://github.com/sirDonovan/Cassius
- *
- * This file contains example code for a game (Trivia)
  *
  * @license MIT license
  */
@@ -96,50 +94,11 @@ class Trivia extends Games.Game {
 		});
 		this.say(this.hint);
 	}
-
-	/**
-	 * @param {string} guess
-	 * @return {boolean}
-	 */
-	checkAnswer(guess) {
-		if (!this.answers.length) return false;
-		guess = Tools.toId(guess);
-		for (let i = 0, len = this.answers.length; i < len; i++) {
-			if (Tools.toId(this.answers[i]) === guess) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * @param {string} guess
-	 * @param {Room} room
-	 * @param {User} user
-	 */
-	guess(guess, room, user) {
-		if (!this.checkAnswer(guess)) return;
-		if (this.timeout) clearTimeout(this.timeout);
-		if (!(user.id in this.players)) this.addPlayer(user);
-		let player = this.players[user.id];
-		let points = this.points.get(player) || 0;
-		points += 1;
-		this.points.set(player, points);
-		if (points >= this.maxPoints) {
-			this.winners.set(player, points);
-			this.say("Correct! " + user.name + " wins the game! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
-			this.end();
-			return;
-		}
-		this.say("Correct! " + user.name + " advances to " + points + " point" + (points > 1 ? "s" : "") + ". (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
-		this.answers = [];
-		this.timeout = setTimeout(() => this.nextRound(), 5 * 1000);
-	}
 }
 
 exports.name = name;
 exports.id = Tools.toId(name);
-exports.description = "Guess answers based on the given descriptions.";
+exports.description = "Players guess answers based on the given descriptions!";
 exports.commands = {
 	// command: game function
 	// alias: command
@@ -186,6 +145,7 @@ exports.spawnMochaTests = function (game) {
 		 * @param {Trivia} game
 		 */
 		'example': game => {
+			game.signups();
 			game.nextRound();
 			MessageParser.parseCommand(Config.commandCharacter + 'guess ' + game.answers[0], game.room, Users.add("User 1"));
 			assert(game.points.get(game.players['user1']) === 1);

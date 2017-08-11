@@ -78,9 +78,20 @@ class TeamGame extends Games.Game {
 	 * @param {User} user
 	 */
 	guess(guess, room, user) {
-		if (!(user.id in this.players) || !this.checkAnswer(guess)) return;
-		if (this.timeout) clearTimeout(this.timeout);
+		if (!this.answers || !this.answers.length || !this.started || !(user.id in this.players)) return;
 		let player = this.players[user.id];
+		guess = Tools.toId(guess);
+		if (!guess) return;
+		if (this.filterGuess && this.filterGuess(guess)) return;
+		if (this.roundGuesses) {
+			if (this.roundGuesses.has(player)) return;
+			this.roundGuesses.set(player, true);
+		}
+		if (!this.checkAnswer(guess)) {
+			if (this.onGuess) this.onGuess(guess, player);
+			return;
+		}
+		if (this.timeout) clearTimeout(this.timeout);
 		let points = this.points.get(player) || 0;
 		points += 1;
 		this.points.set(player, points);

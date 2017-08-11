@@ -93,7 +93,14 @@ class SurvivalGame extends Games.Game {
 	 * @param {User} user
 	 */
 	guess(guess, room, user) {
-		if (!this.currentPlayer || this.players[user.id] !== this.currentPlayer || !this.checkAnswer(guess)) return;
+		if (!this.currentPlayer || !(user.id in this.players) || this.players[user.id] !== this.currentPlayer) return;
+		guess = Tools.toId(guess);
+		if (!guess) return;
+		if (this.filterGuess && this.filterGuess(guess)) return;
+		if (!this.checkAnswer(guess)) {
+			if (this.onGuess) this.onGuess(guess, this.players[user.id]);
+			return;
+		}
 		if (this.timeout) clearTimeout(this.timeout);
 		this.currentPlayer = null;
 		if (this.getRemainingPlayerCount() === 1) return this.end();
