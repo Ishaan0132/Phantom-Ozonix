@@ -4,7 +4,6 @@ exports.BattleItems = {
 	"abomasite": {
 		id: "abomasite",
 		name: "Abomasite",
-		isUnreleased: true,
 		spritenum: 575,
 		megaStone: "Abomasnow-Mega",
 		megaEvolves: "Abomasnow",
@@ -96,7 +95,6 @@ exports.BattleItems = {
 	"aggronite": {
 		id: "aggronite",
 		name: "Aggronite",
-		isUnreleased: true,
 		spritenum: 578,
 		megaStone: "Aggron-Mega",
 		megaEvolves: "Aggron",
@@ -147,7 +145,7 @@ exports.BattleItems = {
 				this.add('-item', target, 'Air Balloon');
 			}
 		},
-		// airborneness implemented in battle-engine.js:BattlePokemon#isGrounded
+		// airborneness implemented in sim/pokemon.js:Pokemon#isGrounded
 		onAfterDamage: function (damage, target, source, effect) {
 			this.debug('effect: ' + effect.id);
 			if (effect.effectType === 'Move' && effect.id !== 'confused') {
@@ -161,7 +159,9 @@ exports.BattleItems = {
 			this.debug('effect: ' + effect.id);
 			if (effect.effectType === 'Move' && effect.id !== 'confused') {
 				this.add('-enditem', target, 'Air Balloon');
-				target.setItem('');
+				target.item = '';
+				this.itemData = {id: '', target: this};
+				this.runEvent('AfterUseItem', target, null, null, 'airballoon');
 			}
 		},
 		num: 541,
@@ -197,7 +197,6 @@ exports.BattleItems = {
 	"altarianite": {
 		id: "altarianite",
 		name: "Altarianite",
-		isUnreleased: true,
 		spritenum: 615,
 		megaStone: "Altaria-Mega",
 		megaEvolves: "Altaria",
@@ -212,7 +211,6 @@ exports.BattleItems = {
 	"ampharosite": {
 		id: "ampharosite",
 		name: "Ampharosite",
-		isUnreleased: true,
 		spritenum: 580,
 		megaStone: "Ampharos-Mega",
 		megaEvolves: "Ampharos",
@@ -305,7 +303,6 @@ exports.BattleItems = {
 	"audinite": {
 		id: "audinite",
 		name: "Audinite",
-		isUnreleased: true,
 		spritenum: 617,
 		megaStone: "Audino-Mega",
 		megaEvolves: "Audino",
@@ -343,7 +340,6 @@ exports.BattleItems = {
 	"banettite": {
 		id: "banettite",
 		name: "Banettite",
-		isUnreleased: true,
 		spritenum: 582,
 		megaStone: "Banette-Mega",
 		megaEvolves: "Banette",
@@ -366,7 +362,6 @@ exports.BattleItems = {
 	"beedrillite": {
 		id: "beedrillite",
 		name: "Beedrillite",
-		isUnreleased: true,
 		spritenum: 628,
 		megaStone: "Beedrill-Mega",
 		megaEvolves: "Beedrill",
@@ -381,6 +376,7 @@ exports.BattleItems = {
 	"belueberry": {
 		id: "belueberry",
 		name: "Belue Berry",
+		isUnreleased: true,
 		spritenum: 21,
 		isBerry: true,
 		naturalGift: {
@@ -426,7 +422,7 @@ exports.BattleItems = {
 		},
 		num: 296,
 		gen: 4,
-		desc: "Holder gains 1.3x HP from draining moves, Aqua Ring, Ingrain, and Leech Seed.",
+		desc: "Holder gains 1.3x HP from draining/Aqua Ring/Ingrain/Leech Seed/Strength Sap.",
 	},
 	"bindingband": {
 		id: "bindingband",
@@ -511,7 +507,6 @@ exports.BattleItems = {
 	"blazikenite": {
 		id: "blazikenite",
 		name: "Blazikenite",
-		isUnreleased: true,
 		spritenum: 584,
 		megaStone: "Blaziken-Mega",
 		megaEvolves: "Blaziken",
@@ -652,7 +647,6 @@ exports.BattleItems = {
 	"cameruptite": {
 		id: "cameruptite",
 		name: "Cameruptite",
-		isUnreleased: true,
 		spritenum: 625,
 		megaStone: "Camerupt-Mega",
 		megaEvolves: "Camerupt",
@@ -998,6 +992,7 @@ exports.BattleItems = {
 	"cornnberry": {
 		id: "cornnberry",
 		name: "Cornn Berry",
+		isUnreleased: true,
 		spritenum: 81,
 		isBerry: true,
 		naturalGift: {
@@ -1023,6 +1018,7 @@ exports.BattleItems = {
 	"custapberry": {
 		id: "custapberry",
 		name: "Custap Berry",
+		isUnreleased: true,
 		spritenum: 86,
 		isBerry: true,
 		naturalGift: {
@@ -1117,7 +1113,7 @@ exports.BattleItems = {
 	},
 	"deepseascale": {
 		id: "deepseascale",
-		name: "DeepSeaScale",
+		name: "Deep Sea Scale",
 		spritenum: 93,
 		fling: {
 			basePower: 30,
@@ -1134,7 +1130,7 @@ exports.BattleItems = {
 	},
 	"deepseatooth": {
 		id: "deepseatooth",
-		name: "DeepSeaTooth",
+		name: "Deep Sea Tooth",
 		spritenum: 94,
 		fling: {
 			basePower: 90,
@@ -1169,7 +1165,6 @@ exports.BattleItems = {
 	"diancite": {
 		id: "diancite",
 		name: "Diancite",
-		isUnreleased: true,
 		spritenum: 624,
 		megaStone: "Diancie-Mega",
 		megaEvolves: "Diancie",
@@ -1336,6 +1331,7 @@ exports.BattleItems = {
 	"durinberry": {
 		id: "durinberry",
 		name: "Durin Berry",
+		isUnreleased: true,
 		spritenum: 114,
 		isBerry: true,
 		naturalGift: {
@@ -1499,6 +1495,7 @@ exports.BattleItems = {
 	"enigmaberry": {
 		id: "enigmaberry",
 		name: "Enigma Berry",
+		isUnreleased: true,
 		spritenum: 124,
 		isBerry: true,
 		naturalGift: {
@@ -1921,7 +1918,6 @@ exports.BattleItems = {
 	"galladite": {
 		id: "galladite",
 		name: "Galladite",
-		isUnreleased: true,
 		spritenum: 616,
 		megaStone: "Gallade-Mega",
 		megaEvolves: "Gallade",
@@ -1971,7 +1967,6 @@ exports.BattleItems = {
 	"gardevoirite": {
 		id: "gardevoirite",
 		name: "Gardevoirite",
-		isUnreleased: true,
 		spritenum: 587,
 		megaStone: "Gardevoir-Mega",
 		megaEvolves: "Gardevoir",
@@ -2324,7 +2319,6 @@ exports.BattleItems = {
 	"heracronite": {
 		id: "heracronite",
 		name: "Heracronite",
-		isUnreleased: true,
 		spritenum: 590,
 		megaStone: "Heracross-Mega",
 		megaEvolves: "Heracross",
@@ -2353,7 +2347,6 @@ exports.BattleItems = {
 	"houndoominite": {
 		id: "houndoominite",
 		name: "Houndoominite",
-		isUnreleased: true,
 		spritenum: 591,
 		megaStone: "Houndoom-Mega",
 		megaEvolves: "Houndoom",
@@ -2518,7 +2511,7 @@ exports.BattleItems = {
 			if (target.volatiles['ingrain'] || target.volatiles['smackdown'] || this.getPseudoWeather('gravity')) return;
 			if (move.type === 'Ground' && target.hasType('Flying')) return 0;
 		},
-		// airborneness negation implemented in battle-engine.js:BattlePokemon#isGrounded
+		// airborneness negation implemented in sim/pokemon.js:Pokemon#isGrounded
 		onModifySpe: function (spe) {
 			return this.chainModify(0.5);
 		},
@@ -2551,6 +2544,7 @@ exports.BattleItems = {
 	"jabocaberry": {
 		id: "jabocaberry",
 		name: "Jaboca Berry",
+		isUnreleased: true,
 		spritenum: 230,
 		isBerry: true,
 		naturalGift: {
@@ -2560,7 +2554,7 @@ exports.BattleItems = {
 		onAfterDamage: function (damage, target, source, move) {
 			if (source && source !== target && move && move.category === 'Physical') {
 				if (target.eatItem()) {
-					this.damage(source.maxhp / 8, source, target, null, true);
+					this.damage(source.maxhp / 8, source, target);
 				}
 			}
 		},
@@ -2727,7 +2721,6 @@ exports.BattleItems = {
 	"latiasite": {
 		id: "latiasite",
 		name: "Latiasite",
-		isUnreleased: true,
 		spritenum: 629,
 		megaStone: "Latias-Mega",
 		megaEvolves: "Latias",
@@ -2742,7 +2735,6 @@ exports.BattleItems = {
 	"latiosite": {
 		id: "latiosite",
 		name: "Latiosite",
-		isUnreleased: true,
 		spritenum: 630,
 		megaStone: "Latios-Mega",
 		megaEvolves: "Latios",
@@ -2796,6 +2788,7 @@ exports.BattleItems = {
 			type: "Fighting",
 		},
 		onUpdate: function (pokemon) {
+			if (!pokemon.hp) return;
 			let move = pokemon.getMoveData(pokemon.lastMove);
 			if (move && move.pp === 0) {
 				pokemon.addVolatile('leppaberry');
@@ -2920,12 +2913,11 @@ exports.BattleItems = {
 		// implemented in the corresponding thing
 		num: 269,
 		gen: 4,
-		desc: "Holder's use of Light Screen or Reflect lasts 8 turns instead of 5.",
+		desc: "Holder's use of Aurora Veil, Light Screen, or Reflect lasts 8 turns instead of 5.",
 	},
 	"lopunnite": {
 		id: "lopunnite",
 		name: "Lopunnite",
-		isUnreleased: true,
 		spritenum: 626,
 		megaStone: "Lopunny-Mega",
 		megaEvolves: "Lopunny",
@@ -3049,7 +3041,9 @@ exports.BattleItems = {
 	"machobrace": {
 		id: "machobrace",
 		name: "Macho Brace",
+		isUnreleased: true,
 		spritenum: 269,
+		ignoreKlutz: true,
 		fling: {
 			basePower: 60,
 		},
@@ -3058,7 +3052,7 @@ exports.BattleItems = {
 		},
 		num: 215,
 		gen: 3,
-		desc: "Holder's Speed is halved.",
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
 	},
 	"magnet": {
 		id: "magnet",
@@ -3107,6 +3101,7 @@ exports.BattleItems = {
 	"magostberry": {
 		id: "magostberry",
 		name: "Magost Berry",
+		isUnreleased: true,
 		spritenum: 275,
 		isBerry: true,
 		naturalGift: {
@@ -3133,7 +3128,6 @@ exports.BattleItems = {
 	"manectite": {
 		id: "manectite",
 		name: "Manectite",
-		isUnreleased: true,
 		spritenum: 596,
 		megaStone: "Manectric-Mega",
 		megaEvolves: "Manectric",
@@ -3169,7 +3163,6 @@ exports.BattleItems = {
 	"marshadiumz": {
 		id: "marshadiumz",
 		name: "Marshadium Z",
-		isUnreleased: true,
 		spritenum: 654,
 		onTakeItem: false,
 		zMove: "Soul-Stealing 7-Star Strike",
@@ -3190,7 +3183,6 @@ exports.BattleItems = {
 	"mawilite": {
 		id: "mawilite",
 		name: "Mawilite",
-		isUnreleased: true,
 		spritenum: 598,
 		megaStone: "Mawile-Mega",
 		megaEvolves: "Mawile",
@@ -3227,7 +3219,6 @@ exports.BattleItems = {
 	"medichamite": {
 		id: "medichamite",
 		name: "Medichamite",
-		isUnreleased: true,
 		spritenum: 599,
 		megaStone: "Medicham-Mega",
 		megaEvolves: "Medicham",
@@ -3367,7 +3358,6 @@ exports.BattleItems = {
 	"mewniumz": {
 		id: "mewniumz",
 		name: "Mewnium Z",
-		isUnreleased: true,
 		spritenum: 658,
 		onTakeItem: false,
 		zMove: "Genesis Supernova",
@@ -3380,7 +3370,6 @@ exports.BattleItems = {
 	"mewtwonitex": {
 		id: "mewtwonitex",
 		name: "Mewtwonite X",
-		isUnreleased: true,
 		spritenum: 600,
 		megaStone: "Mewtwo-Mega-X",
 		megaEvolves: "Mewtwo",
@@ -3395,7 +3384,6 @@ exports.BattleItems = {
 	"mewtwonitey": {
 		id: "mewtwonitey",
 		name: "Mewtwonite Y",
-		isUnreleased: true,
 		spritenum: 601,
 		megaStone: "Mewtwo-Mega-Y",
 		megaEvolves: "Mewtwo",
@@ -3410,6 +3398,7 @@ exports.BattleItems = {
 	"micleberry": {
 		id: "micleberry",
 		name: "Micle Berry",
+		isUnreleased: true,
 		spritenum: 290,
 		isBerry: true,
 		naturalGift: {
@@ -3538,6 +3527,7 @@ exports.BattleItems = {
 	"nanabberry": {
 		id: "nanabberry",
 		name: "Nanab Berry",
+		isUnreleased: true,
 		spritenum: 302,
 		isBerry: true,
 		naturalGift: {
@@ -3585,6 +3575,7 @@ exports.BattleItems = {
 	"nomelberry": {
 		id: "nomelberry",
 		name: "Nomel Berry",
+		isUnreleased: true,
 		spritenum: 306,
 		isBerry: true,
 		naturalGift: {
@@ -3703,6 +3694,7 @@ exports.BattleItems = {
 	"pamtreberry": {
 		id: "pamtreberry",
 		name: "Pamtre Berry",
+		isUnreleased: true,
 		spritenum: 323,
 		isBerry: true,
 		naturalGift: {
@@ -3836,7 +3828,6 @@ exports.BattleItems = {
 	"pidgeotite": {
 		id: "pidgeotite",
 		name: "Pidgeotite",
-		isUnreleased: true,
 		spritenum: 622,
 		megaStone: "Pidgeot-Mega",
 		megaEvolves: "Pidgeot",
@@ -3863,7 +3854,6 @@ exports.BattleItems = {
 	"pikashuniumz": {
 		id: "pikashuniumz",
 		name: "Pikashunium Z",
-		isUnreleased: true,
 		spritenum: 659,
 		onTakeItem: false,
 		zMove: "10,000,000 Volt Thunderbolt",
@@ -4022,6 +4012,66 @@ exports.BattleItems = {
 		gen: 3,
 		desc: "Cannot be eaten by the holder. No effect when eaten with Bug Bite or Pluck.",
 	},
+	"poweranklet": {
+		id: "poweranklet",
+		name: "Power Anklet",
+		spritenum: 354,
+		ignoreKlutz: true,
+		fling: {
+			basePower: 70,
+		},
+		onModifySpe: function (spe) {
+			return this.chainModify(0.5);
+		},
+		num: 293,
+		gen: 4,
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
+	},
+	"powerband": {
+		id: "powerband",
+		name: "Power Band",
+		spritenum: 355,
+		ignoreKlutz: true,
+		fling: {
+			basePower: 70,
+		},
+		onModifySpe: function (spe) {
+			return this.chainModify(0.5);
+		},
+		num: 292,
+		gen: 4,
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
+	},
+	"powerbelt": {
+		id: "powerbelt",
+		name: "Power Belt",
+		spritenum: 356,
+		ignoreKlutz: true,
+		fling: {
+			basePower: 70,
+		},
+		onModifySpe: function (spe) {
+			return this.chainModify(0.5);
+		},
+		num: 290,
+		gen: 4,
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
+	},
+	"powerbracer": {
+		id: "powerbracer",
+		name: "Power Bracer",
+		spritenum: 357,
+		ignoreKlutz: true,
+		fling: {
+			basePower: 70,
+		},
+		onModifySpe: function (spe) {
+			return this.chainModify(0.5);
+		},
+		num: 289,
+		gen: 4,
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
+	},
 	"powerherb": {
 		id: "powerherb",
 		onChargeMove: function (pokemon, target, move) {
@@ -4038,6 +4088,36 @@ exports.BattleItems = {
 		num: 271,
 		gen: 4,
 		desc: "Holder's two-turn moves complete in one turn (except Sky Drop). Single use.",
+	},
+	"powerlens": {
+		id: "powerlens",
+		name: "Power Lens",
+		spritenum: 359,
+		ignoreKlutz: true,
+		fling: {
+			basePower: 70,
+		},
+		onModifySpe: function (spe) {
+			return this.chainModify(0.5);
+		},
+		num: 291,
+		gen: 4,
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
+	},
+	"powerweight": {
+		id: "powerweight",
+		name: "Power Weight",
+		spritenum: 360,
+		ignoreKlutz: true,
+		fling: {
+			basePower: 70,
+		},
+		onModifySpe: function (spe) {
+			return this.chainModify(0.5);
+		},
+		num: 294,
+		gen: 4,
+		desc: "Holder's Speed is halved. The Ability Klutz does not ignore this effect.",
 	},
 	"premierball": {
 		id: "premierball",
@@ -4196,6 +4276,7 @@ exports.BattleItems = {
 	"rabutaberry": {
 		id: "rabutaberry",
 		name: "Rabuta Berry",
+		isUnreleased: true,
 		spritenum: 375,
 		isBerry: true,
 		naturalGift: {
@@ -4283,6 +4364,7 @@ exports.BattleItems = {
 	"razzberry": {
 		id: "razzberry",
 		name: "Razz Berry",
+		isUnreleased: true,
 		spritenum: 384,
 		isBerry: true,
 		naturalGift: {
@@ -4465,7 +4547,7 @@ exports.BattleItems = {
 		onAfterDamageOrder: 2,
 		onAfterDamage: function (damage, target, source, move) {
 			if (source && source !== target && move && move.flags['contact']) {
-				this.damage(source.maxhp / 6, source, target, null, true);
+				this.damage(source.maxhp / 6, source, target);
 			}
 		},
 		num: 540,
@@ -4526,6 +4608,7 @@ exports.BattleItems = {
 	"rowapberry": {
 		id: "rowapberry",
 		name: "Rowap Berry",
+		isUnreleased: true,
 		spritenum: 420,
 		isBerry: true,
 		naturalGift: {
@@ -4535,7 +4618,7 @@ exports.BattleItems = {
 		onAfterDamage: function (damage, target, source, move) {
 			if (source && source !== target && move && move.category === 'Special') {
 				if (target.eatItem()) {
-					this.damage(source.maxhp / 8, source, target, null, true);
+					this.damage(source.maxhp / 8, source, target);
 				}
 			}
 		},
@@ -4624,7 +4707,6 @@ exports.BattleItems = {
 	"sceptilite": {
 		id: "sceptilite",
 		name: "Sceptilite",
-		isUnreleased: true,
 		spritenum: 613,
 		megaStone: "Sceptile-Mega",
 		megaEvolves: "Sceptile",
@@ -4981,6 +5063,7 @@ exports.BattleItems = {
 	"spelonberry": {
 		id: "spelonberry",
 		name: "Spelon Berry",
+		isUnreleased: true,
 		spritenum: 462,
 		isBerry: true,
 		naturalGift: {
@@ -5079,7 +5162,6 @@ exports.BattleItems = {
 	"steelixite": {
 		id: "steelixite",
 		name: "Steelixite",
-		isUnreleased: true,
 		spritenum: 621,
 		megaStone: "Steelix-Mega",
 		megaEvolves: "Steelix",
@@ -5203,7 +5285,6 @@ exports.BattleItems = {
 	"swampertite": {
 		id: "swampertite",
 		name: "Swampertite",
-		isUnreleased: true,
 		spritenum: 612,
 		megaStone: "Swampert-Mega",
 		megaEvolves: "Swampert",
@@ -5341,7 +5422,7 @@ exports.BattleItems = {
 	},
 	"twistedspoon": {
 		id: "twistedspoon",
-		name: "TwistedSpoon",
+		name: "Twisted Spoon",
 		spritenum: 520,
 		fling: {
 			basePower: 30,
@@ -5359,7 +5440,6 @@ exports.BattleItems = {
 	"tyranitarite": {
 		id: "tyranitarite",
 		name: "Tyranitarite",
-		isUnreleased: true,
 		spritenum: 607,
 		megaStone: "Tyranitar-Mega",
 		megaEvolves: "Tyranitar",
@@ -5467,6 +5547,7 @@ exports.BattleItems = {
 	"watmelberry": {
 		id: "watmelberry",
 		name: "Watmel Berry",
+		isUnreleased: true,
 		spritenum: 530,
 		isBerry: true,
 		naturalGift: {
@@ -5502,6 +5583,7 @@ exports.BattleItems = {
 		fling: {
 			basePower: 80,
 		},
+		onHitPriority: 1,
 		onHit: function (target, source, move) {
 			if (target.hp && move.category !== 'Status' && !move.damage && !move.damageCallback && move.typeMod > 0 && target.useItem()) {
 				this.boost({atk: 2, spa: 2});
@@ -5514,6 +5596,7 @@ exports.BattleItems = {
 	"wepearberry": {
 		id: "wepearberry",
 		name: "Wepear Berry",
+		isUnreleased: true,
 		spritenum: 533,
 		isBerry: true,
 		naturalGift: {
@@ -5542,6 +5625,7 @@ exports.BattleItems = {
 				}
 				if (activate) {
 					pokemon.setBoost(boosts);
+					this.add('-clearnegativeboost', pokemon, '[silent]');
 				}
 			},
 		},
