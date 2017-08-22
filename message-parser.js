@@ -89,6 +89,8 @@ exports.Context = Context;
 
 class MessageParser {
 	constructor() {
+		this.formatsList = [];
+		this.formatsData = {};
 		this.globalContext = new Context('', Rooms.globalRoom, Users.self, '');
 	}
 
@@ -144,6 +146,11 @@ class MessageParser {
 				room.users.set(user, rank);
 				user.rooms.set(room, rank);
 			}
+			break;
+		}
+		case 'formats': {
+			this.formatsList = splitMessage.slice();
+			this.parseFormats();
 			break;
 		}
 		case 'J':
@@ -246,6 +253,60 @@ class MessageParser {
 		if (typeof Commands[command] !== 'function') return;
 
 		return new Context(target, room, user, command, time).run();
+	}
+
+	parseFormats() {
+		if (!this.formatsList.length) return;
+		this.formatsData = {};
+		let isSection = false;
+		let section = '';
+		for (let i = 0, len = this.formatsList.length; i < len; i++) {
+			if (isSection) {
+				section = this.formatsList[i];
+				isSection = false;
+			} else if (this.formatsList[i] === ',LL') {
+				continue;
+			} else if (this.formatsList[i] === '' || (this.formatsList[i].charAt(0) === ',' && !isNaN(parseInt(this.formatsList[i].substr(1))))) {
+				isSection = true;
+			} else {
+				let name = this.formatsList[i];
+				let searchShow = true;
+				let challengeShow = true;
+				let tournamentShow = true;
+				let lastCommaIndex = name.lastIndexOf(',');
+				let code = lastCommaIndex >= 0 ? parseInt(name.substr(lastCommaIndex + 1), 16) : NaN;
+				if (!isNaN(code)) {
+					name = name.substr(0, lastCommaIndex);
+					if (!(code & 2)) searchShow = false;
+					if (!(code & 4)) challengeShow = false;
+					if (!(code & 8)) tournamentShow = false;
+				} else {
+					// Backwards compatibility: late 0.9.0 -> 0.10.0
+					if (name.substr(name.length - 2) === ',#') { // preset teams
+						name = name.substr(0, name.length - 2);
+					}
+					if (name.substr(name.length - 2) === ',,') { // search-only
+						challengeShow = false;
+						name = name.substr(0, name.length - 2);
+					} else if (name.substr(name.length - 1) === ',') { // challenge-only
+						searchShow = false;
+						name = name.substr(0, name.length - 1);
+					}
+				}
+				let id = Tools.toId(name);
+				if (!id) continue;
+				this.formatsData[id] = {
+					name: name,
+					id: id,
+					section: section,
+					searchShow: searchShow,
+					challengeShow: challengeShow,
+					tournamentShow: tournamentShow,
+				};
+			}
+		}
+
+		Tools.FormatCache.clear();
 	}
 
 	/**

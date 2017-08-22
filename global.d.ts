@@ -18,5 +18,4 @@ declare global {
 	const Storage: typeof StorageType
 	const Tools: typeof ToolsType
 	const Users: typeof UsersType.Users
-	const toId: Function
 }

@@ -3,10 +3,10 @@
 const assert = require('assert');
 
 describe('Tools', function () {
-	describe('global text functions', function () {
-		it('toId should return an id', function () {
-			assert.strictEqual(toId("Test"), "test");
-			assert.strictEqual(toId({id: "test"}), "test");
+	describe('toId', function () {
+		it('should return an id', function () {
+			assert(Tools.toId("Test") === "test");
+			assert(Tools.toId({id: "Test"}) === "test");
 		});
 	});
 	describe('getPokemon', function () {

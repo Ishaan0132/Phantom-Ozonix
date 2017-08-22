@@ -9,24 +9,205 @@
 
 'use strict';
 
-const fileData = {
-	'pokedex': {path: './data/pokedex.js', export: 'BattlePokedex'},
-	'moves': {path: './data/moves.js', export: 'BattleMovedex'},
-	'items': {path: './data/items.js', export: 'BattleItems'},
-	'abilities': {path: './data/abilities.js', export: 'BattleAbilities'},
-	'learnsets': {path: './data/learnsets.js', export: 'BattleLearnsets'},
-	'teams': {path: './data/teams.js', export: 'BattlePokeTeams'},
-};
+const Data = require('./tools-data');
+const {Format, Item, Pokemon, Move, Ability} = Data; // eslint-disable-line no-unused-vars
+
+/**
+* @typedef Learnset
+* @type {Object}
+* @property {{[k: string]: Array<string>}} learnset
+*/
+
+/**
+* @typedef TypeChart
+* @type {Object}
+* @property {{[k: string]: number}} damageTaken
+* @property {{[k: string]: number}} [HPivs]
+* @property {{[k: string]: number}} [HPdvs]
+*/
+
+/**
+* @typedef FormatData
+* @type {Object}
+* @property {Array<string>} [randomBattleMoves]
+* @property {Array<string>} [randomDoubleBattleMoves]
+* @property {Array<{generation: number, level?: number, moves?: Array<string>, abilities?: Array<string>, pokeball?: string, gender?: string, isHidden?: boolean, shiny?: number | boolean, ivs?: {[k: string]: number}, nature?: string}>} [eventPokemon]
+* @property {string} [tier]
+* @property {string} [requiredItem]
+*/
+
+/**
+* @typedef DataTable
+* @type {Object}
+* @property {{[k: string]: Pokemon}} pokedex
+* @property {{[k: string]: Move}} moves
+* @property {{[k: string]: Item}} items
+* @property {{[k: string]: Ability}} abilities
+* @property {{[k: string]: string}} aliases
+* @property {{[k: string]: Learnset}} learnsets
+* @property {{[k: string]: TypeChart}} typeChart
+* @property {{[k: string]: FormatData}} formatsData
+* @property {Array<Array<string>>} teams
+*/
 
 class Tools {
 	constructor() {
-		this.data = {};
+		/**@type {DataTable} */
+		this.data = {
+			pokedex: {},
+			moves: {},
+			items: {},
+			abilities: {},
+			aliases: {},
+			learnsets: {},
+			typeChart: {},
+			formatsData: {},
+			teams: [],
+		};
+		this.gen = 7;
+		this.dataFilePath = './data/';
+		/**@type {Map<string, Move>} */
+		this.MoveCache = new Map();
+		/**@type {Map<string, Item>} */
+		this.ItemCache = new Map();
+		/**@type {Map<string, Ability>} */
+		this.AbilityCache = new Map();
+		/**@type {Map<string, Pokemon>} */
+		this.PokemonCache = new Map();
+		/**@type {Map<string, Format>} */
+		this.FormatCache = new Map();
+		this.loadedData = false;
 	}
 
 	loadData() {
-		for (let file in fileData) {
-			this.data[file] = require(fileData[file].path)[fileData[file].export];
+		let typeChart;
+		try {
+			typeChart = require(this.dataFilePath + 'typechart.js').BattleTypeChart;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
 		}
+		if (typeChart) this.data.typeChart = typeChart;
+
+		this.loadPokedex();
+		this.loadMoves();
+		this.loadItems();
+		this.loadAbilities();
+		this.loadAliases();
+		this.loadLearnsets();
+		this.loadFormatsData();
+		this.loadTeams();
+
+		this.loadedData = true;
+	}
+
+	loadPokedex() {
+		if (this.loadedData) this.PokemonCache.clear();
+
+		let pokedex;
+		try {
+			pokedex = require(this.dataFilePath + 'pokedex.js').BattlePokedex;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (pokedex) this.data.pokedex = pokedex;
+	}
+
+	loadMoves() {
+		if (this.loadedData) this.MoveCache.clear();
+
+		let moves;
+		try {
+			moves = require(this.dataFilePath + 'moves.js').BattleMovedex;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (moves) this.data.moves = moves;
+	}
+
+	loadItems() {
+		if (this.loadedData) this.ItemCache.clear();
+
+		let items;
+		try {
+			items = require(this.dataFilePath + 'items.js').BattleItems;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (items) this.data.items = items;
+	}
+
+	loadAbilities() {
+		if (this.loadedData) this.AbilityCache.clear();
+
+		let abilities;
+		try {
+			abilities = require(this.dataFilePath + 'abilities.js').BattleAbilities;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (abilities) this.data.abilities = abilities;
+	}
+
+	loadAliases() {
+		let aliases;
+		try {
+			aliases = require(this.dataFilePath + 'aliases.js').BattleAliases;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (aliases) this.data.aliases = aliases;
+	}
+
+	loadLearnsets() {
+		if (this.loadedData) this.PokemonCache.clear();
+
+		let learnsets;
+		try {
+			learnsets = require(this.dataFilePath + 'learnsets.js').BattleLearnsets;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (learnsets) this.data.learnsets = learnsets;
+	}
+
+	loadFormatsData() {
+		if (this.loadedData) this.PokemonCache.clear();
+
+		let formatsData;
+		try {
+			formatsData = require(this.dataFilePath + 'formats-data.js').BattleFormatsData;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (formatsData) this.data.formatsData = formatsData;
+	}
+
+	loadTeams() {
+		let teams;
+		try {
+			teams = require(this.dataFilePath + 'teams.js').BattlePokeTeams;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (teams) this.data.teams = teams;
 	}
 
 	/**
@@ -35,13 +216,16 @@ class Tools {
 	 */
 	toId(text) {
 		if (!text) return '';
-		if (text.id) text = text.id;
 		let type = typeof text;
 		if (type !== 'string') {
 			if (type === 'number') {
 				text = '' + text;
 			} else {
-				return '';
+				if (text.id) {
+					text = text.id;
+				} else {
+					text = (text.toString ? text.toString() : JSON.stringify(text));
+				}
 			}
 		}
 		return text.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -53,13 +237,16 @@ class Tools {
 	 */
 	toName(text) {
 		if (!text) return '';
-		if (text.name) text = text.name;
 		let type = typeof text;
 		if (type !== 'string') {
 			if (type === 'number') {
 				text = '' + text;
 			} else {
-				return '';
+				if (text.name) {
+					text = text.name;
+				} else {
+					text = (text.toString ? text.toString() : JSON.stringify(text));
+				}
 			}
 		}
 		if (Config.groups && text.charAt(0) in Config.groups) text = text.substr(1);
@@ -71,11 +258,11 @@ class Tools {
 	 * @return {string}
 	 */
 	toString(text) {
-		if (!text) return '';
 		let type = typeof text;
 		if (type === 'string') return text;
 		if (type === 'number') return '' + text;
-		return JSON.stringify(text);
+		if (!text) return '';
+		return (text.toString ? text.toString() : JSON.stringify(text));
 	}
 
 	/**
@@ -149,43 +336,174 @@ class Tools {
 	}
 
 	/**
-	 * @param {string} name
+	 * @param {Pokemon | string} name
+	 * @return {Pokemon}
 	 */
 	getPokemon(name) {
-		return this.data.pokedex[this.toId(name)];
+		if (name instanceof Pokemon) return name;
+		let id = this.toId(name);
+		if (id in this.data.aliases) {
+			name = this.data.aliases[id];
+			id = this.toId(name);
+		}
+		// @ts-ignore
+		if (id === 'constructor' || !(id in this.data.pokedex)) return null;
+		let pokemon = this.PokemonCache.get(id);
+		if (pokemon) return pokemon;
+		pokemon = new Data.Pokemon(name, this.data.pokedex[id], this.data.learnsets[id], this.data.formatsData[id]);
+		this.PokemonCache.set(id, pokemon);
+		return pokemon;
 	}
 
 	/**
-	 * @param {string} name
-	 */
-	getTemplate(name) {
-		return this.getPokemon(name);
-	}
-
-	/**
-	 * @param {string} name
+	 * @param {Move | string} name
+	 * @return {Move}
 	 */
 	getMove(name) {
-		return this.data.moves[this.toId(name)];
+		if (name instanceof Move) return name;
+		let id = this.toId(name);
+		if (id in this.data.aliases) {
+			name = this.data.aliases[id];
+			id = this.toId(name);
+		}
+		// @ts-ignore
+		if (id === 'constructor' || !(id in this.data.moves)) return null;
+		let move = this.MoveCache.get(id);
+		if (move) return move;
+		move = new Data.Move(name, this.data.moves[id]);
+		this.MoveCache.set(id, move);
+		return move;
 	}
 
 	/**
-	 * @param {string} name
+	 * @param {Item | string} name
+	 * @return {Item}
 	 */
 	getItem(name) {
-		return this.data.items[this.toId(name)];
+		if (name instanceof Item) return name;
+		let id = this.toId(name);
+		if (id in this.data.aliases) {
+			name = this.data.aliases[id];
+			id = this.toId(name);
+		}
+		// @ts-ignore
+		if (id === 'constructor' || !(id in this.data.items)) return null;
+		let item = this.ItemCache.get(id);
+		if (item) return item;
+		item = new Data.Item(name, this.data.items[id]);
+		this.ItemCache.set(id, item);
+		return item;
 	}
 
 	/**
-	 * @param {string} name
+	 * @param {Ability | string} name
+	 * @return {Ability}
 	 */
 	getAbility(name) {
-		return this.data.abilities[this.toId(name)];
+		if (name instanceof Ability) return name;
+		let id = this.toId(name);
+		if (id in this.data.aliases) {
+			name = this.data.aliases[id];
+			id = this.toId(name);
+		}
+		// @ts-ignore
+		if (id === 'constructor' || !(id in this.data.abilities)) return null;
+		let ability = this.AbilityCache.get(id);
+		if (ability) return ability;
+		ability = new Data.Ability(name, this.data.abilities[id]);
+		this.AbilityCache.set(id, ability);
+		return ability;
+	}
+
+	/**
+	 * @param {Format | string} name
+	 * @return {Format}
+	 */
+	getFormat(name) {
+		if (name instanceof Format) return name;
+		let id = this.toId(name);
+		if (id in this.data.aliases) {
+			name = this.data.aliases[id];
+			id = this.toId(name);
+		}
+		// @ts-ignore
+		if (id === 'constructor' || !(id in MessageParser.formatsData)) return null;
+		let format = this.FormatCache.get(id);
+		if (format) return format;
+		format = new Data.Format(name, MessageParser.formatsData[id]);
+		this.FormatCache.set(id, format);
+		return format;
+	}
+
+	/**
+	 * @param {Move | string} source
+	 * @param {Pokemon | string | Array<string>} target
+	 * @return {number}
+	 */
+	getEffectiveness(source, target) {
+		let sourceType = (typeof source === 'string' ? source : source.type);
+		let targetType;
+		if (typeof target === 'string') {
+			let pokemon = this.getPokemon(target);
+			if (pokemon) {
+				targetType = pokemon.types;
+			} else {
+				targetType = target;
+			}
+		} else if (target instanceof Array) {
+			targetType = target;
+		} else {
+			targetType = target.types;
+		}
+		if (targetType instanceof Array) {
+			let totalTypeMod = 0;
+			for (let i = 0, len = targetType.length; i < len; i++) {
+				totalTypeMod += this.getEffectiveness(sourceType, targetType[i]);
+			}
+			return totalTypeMod;
+		}
+		let typeData = this.data.typeChart[targetType];
+		if (!typeData) return 0;
+		switch (typeData.damageTaken[sourceType]) {
+		case 1: return 1; // super-effective
+		case 2: return -1; // not very effective
+		default: return 0;
+		}
+	}
+
+	/**
+	 * @param {Move | string} source
+	 * @param {Pokemon | string | Array<string>} target
+	 * @return {boolean}
+	 */
+	isImmune(source, target) {
+		let sourceType = (typeof source === 'string' ? source : source.type);
+		let targetType;
+		if (typeof target === 'string') {
+			let pokemon = this.getPokemon(target);
+			if (pokemon) {
+				targetType = pokemon.types;
+			} else {
+				targetType = target;
+			}
+		} else if (target instanceof Array) {
+			targetType = target;
+		} else {
+			targetType = target.types;
+		}
+		if (targetType instanceof Array) {
+			for (let i = 0; i < targetType.length; i++) {
+				if (this.isImmune(sourceType, targetType[i])) return true;
+			}
+			return false;
+		}
+		let typeData = this.data.typeChart[targetType];
+		if (typeData && typeData.damageTaken[sourceType] === 3) return true;
+		return false;
 	}
 }
 
 let tools = new Tools();
-global.toId = tools.toId;
 tools.loadData();
 
 module.exports = tools;

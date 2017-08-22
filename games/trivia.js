@@ -19,7 +19,7 @@ const data = {
 };
 
 for (let i in Tools.data.moves) {
-	let move = Tools.data.moves[i];
+	let move = Tools.getMove(i);
 	if (!move.name) continue;
 	let desc = move.desc || move.shortDesc;
 	if (!desc) continue;
@@ -28,7 +28,7 @@ for (let i in Tools.data.moves) {
 }
 
 for (let i in Tools.data.items) {
-	let item = Tools.data.items[i];
+	let item = Tools.getItem(i);
 	if (!item.name) continue;
 	let desc = item.desc || item.shortDesc;
 	if (!desc) continue;
@@ -37,7 +37,7 @@ for (let i in Tools.data.items) {
 }
 
 for (let i in Tools.data.abilities) {
-	let ability = Tools.data.abilities[i];
+	let ability = Tools.getAbility(i);
 	if (!ability.name) continue;
 	let desc = ability.desc || ability.shortDesc;
 	if (!desc) continue;

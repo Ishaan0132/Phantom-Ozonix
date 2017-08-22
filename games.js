@@ -615,6 +615,7 @@ class Games {
 			};
 		}
 	}
+
 	/**
 	 * @param {string | GameFormat} target
 	 * @return {?GameFormat}

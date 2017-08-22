@@ -9,6 +9,5 @@ declare namespace NodeJS {
 		Storage: any
 		Tools: any
 		Users: any
-		toId: Function
     }
 }
