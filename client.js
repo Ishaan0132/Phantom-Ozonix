@@ -15,6 +15,7 @@ const url = require('url');
 const querystring = require('querystring');
 const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
 const MESSAGE_THROTTLE = 600;
+const REQUEST_THROTTLE = 4000;
 const RETRY_SECONDS = 60;
 
 let server = 'play.pokemonshowdown.com';
@@ -48,6 +49,10 @@ class Client {
 		/**@type {Array<string>} */
 		this.messageQueue = [];
 		this.messageQueueTimeout = null;
+		/**@type {Array<Function>} */
+		this.requestQueue = [];
+		/**@type {?NodeJS.Timer} */
+		this.requestQueueTimeout = null;
 		this.connectTimeout = null;
 		this.lockdown = false;
 
@@ -270,6 +275,15 @@ class Client {
 			let message = this.messageQueue.shift();
 			if (message) this.send(message);
 		}, MESSAGE_THROTTLE);
+	}
+
+	prepareNextRequest() {
+		this.requestQueueTimeout = setTimeout(() => {
+			this.requestQueueTimeout = null;
+			let request = this.requestQueue.shift();
+			if (!request) return;
+			request();
+		}, REQUEST_THROTTLE);
 	}
 }
 
