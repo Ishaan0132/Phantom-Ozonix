@@ -8,6 +8,7 @@ declare namespace NodeJS {
 		Rooms: any
 		Storage: any
 		Tools: any
+		Tournaments: any
 		Users: any
     }
 }

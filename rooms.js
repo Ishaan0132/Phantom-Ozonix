@@ -10,6 +10,7 @@
 'use strict';
 
 const Game = require('./games').Game; // eslint-disable-line no-unused-vars
+const Tournament = require('./tournaments').Tournament; // eslint-disable-line no-unused-vars
 const User = require('./users').User; // eslint-disable-line no-unused-vars
 
 class Room {
@@ -25,6 +26,8 @@ class Room {
 		this.listeners = {};
 		/**@type {?Game} */
 		this.game = null;
+		/**@type {?Tournament} */
+		this.tour = null;
 	}
 
 	/**
@@ -69,6 +72,7 @@ class Room {
 		this.users.set(user, rank);
 		user.rooms.set(this, rank);
 		if (this.game) this.game.renamePlayer(user, oldName);
+		if (this.tour) this.tour.renamePlayer(user, oldName);
 	}
 
 	/**

@@ -26,6 +26,13 @@ exports.rooms = [];
 /**@type {Array<string>} */
 exports.games = [];
 
+// Rooms where scripted tournaments are enabled
+/**@type {Array<string>} */
+exports.tournaments = [];
+
+// The default cap to use for scripted tournaments
+exports.defaultTournamentCap = 0;
+
 // The character that determines which messages are read as commands
 exports.commandCharacter = '.';
 

@@ -153,6 +153,68 @@ class MessageParser {
 			this.parseFormats();
 			break;
 		}
+		case 'tournament': {
+			if (!Config.tournaments || !Config.tournaments.includes(room.id)) return;
+			switch (splitMessage[0]) {
+			case 'create': {
+				let format = Tools.getFormat(splitMessage[1]);
+				if (!format) throw new Error("Unknown format used in tournament (" + splitMessage[1] + ")");
+				room.tour = Tournaments.createTournament(room, format, splitMessage[2]);
+				if (splitMessage[3]) room.tour.playerCap = parseInt(splitMessage[3]);
+				break;
+			}
+			case 'update': {
+				let data = JSON.parse(splitMessage.slice(1).join("|"));
+				if (!data || !(data instanceof Object)) return;
+				if (!room.tour) {
+					let format = Tools.getFormat(data.teambuilderFormat) || Tools.getFormat(data.format);
+					if (!format) throw new Error("Unknown format used in tournament (" + (data.teambuilderFormat || data.format) + ")");
+					room.tour = Tournaments.createTournament(room, format, data.generator);
+					room.tour.started = true;
+				}
+				Object.assign(room.tour.updates, data);
+				break;
+			}
+			case 'updateEnd':
+				if (room.tour) room.tour.update();
+				break;
+			case 'end': {
+				let data = JSON.parse(splitMessage.slice(1).join("|"));
+				if (!data || !(data instanceof Object)) return;
+				if (!room.tour) {
+					let format = Tools.getFormat(data.teambuilderFormat) || Tools.getFormat(data.format);
+					if (!format) throw new Error("Unknown format used in tournament (" + (data.teambuilderFormat || data.format) + ")");
+					room.tour = Tournaments.createTournament(room, format, data.generator);
+					room.tour.started = true;
+				}
+				Object.assign(room.tour.updates, data);
+				room.tour.update();
+				room.tour.end();
+				break;
+			}
+			case 'forceend':
+				if (room.tour) room.tour.end();
+				break;
+			case 'join':
+				if (room.tour) room.tour.addPlayer(splitMessage[1]);
+				break;
+			case 'leave':
+				if (room.tour) room.tour.removePlayer(splitMessage[1]);
+				break;
+			case 'disqualify':
+				if (room.tour) room.tour.removePlayer(splitMessage[1]);
+				break;
+			case 'start':
+				if (room.tour) room.tour.start();
+				break;
+			case 'battlestart':
+				if (room.tour && !room.tour.isRoundRobin && room.tour.generator === 1 && room.tour.getRemainingPlayerCount() === 2) {
+					room.say("/wall Final battle of " + room.tour.format.name + " tournament: <<" + splitMessage[3].trim() + ">>");
+				}
+				break;
+			}
+			break;
+		}
 		case 'J':
 		case 'j': {
 			let user = Users.add(splitMessage[0]);
@@ -302,6 +364,7 @@ class MessageParser {
 					searchShow: searchShow,
 					challengeShow: challengeShow,
 					tournamentShow: tournamentShow,
+					playable: tournamentShow || ((searchShow || challengeShow) && tournamentShow !== false),
 				};
 			}
 		}

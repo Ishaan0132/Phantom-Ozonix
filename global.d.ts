@@ -6,6 +6,7 @@ import * as MessageParserType from './message-parser'
 import * as RoomsType from './rooms'
 import * as StorageType from './storage'
 import * as ToolsType from './tools'
+import * as TournamentsType from './tournaments'
 import * as UsersType from './users'
 
 declare global {
@@ -17,5 +18,6 @@ declare global {
 	const Rooms: typeof RoomsType.Rooms
 	const Storage: typeof StorageType
 	const Tools: typeof ToolsType
+	const Tournaments: typeof TournamentsType.Tournaments
 	const Users: typeof UsersType.Users
 }

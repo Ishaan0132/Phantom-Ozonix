@@ -6,7 +6,8 @@
 	"root": true,
 	"globals": {
 		"Client": false, "Commands": false, "MessageParser": false, "Config": false,
-		"Rooms": false, "Tools": false, "Users": false, "Games": false, "Storage": false
+		"Rooms": false, "Tools": false, "Users": false, "Games": false, "Storage": false,
+		"Tournaments": false
 	},
 	"extends": "eslint:recommended",
 	"rules": {

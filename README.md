@@ -49,7 +49,7 @@ From this point on, you can start the bot by running the following command:
 #### Credits
 
   * Quinton Lee ([@sirDonovan][5]) - Lead developer
-  * [Pokemon Showdown][1] - In-game and tools data files
+  * [Pokemon Showdown][1] - In-game data files, Tools module, and various helper functions
 
   [5]: https://github.com/sirDonovan
 
