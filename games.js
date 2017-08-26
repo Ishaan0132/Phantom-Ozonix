@@ -156,24 +156,27 @@ class Game {
 
 	/**
 	 * @param {number} bits
-	 * @param {User} user
+	 * @param {User | Player} user
 	 */
 	addBits(bits, user) {
+		if (user instanceof Player) user = Users.get(user.name);
 		Storage.addPoints(bits, user, this.room.id);
 	}
 
 	/**
 	 * @param {number} bits
-	 * @param {User} user
+	 * @param {User | Player} user
 	 */
 	removeBits(bits, user) {
+		if (user instanceof Player) user = Users.get(user.name);
 		Storage.removePoints(bits, user, this.room.id);
 	}
 
 	/**
-	 * @param {User} user
+	 * @param {User | Player} user
 	 */
 	getBits(user) {
+		if (user instanceof Player) user = Users.get(user.name);
 		return Storage.getPoints(user, this.room.id);
 	}
 
