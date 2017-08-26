@@ -76,6 +76,11 @@ class Game {
 		/**@type {{[k: string]: Player}} */
 		this.players = {};
 		this.playerCount = 0;
+		/**@type {?number} */
+		this.playerCap = null;
+		/**@type {?number} */
+		this.maxPlayers = null;
+		this.minPlayers = 2;
 		this.round = 0;
 		this.started = false;
 		this.ended = false;
@@ -180,7 +185,8 @@ class Game {
 	}
 
 	start() {
-		if (this.started || (this.modeId === 'team' && this.playerCount < 2)) return;
+		if (this.started) return;
+		if (this.playerCount < this.minPlayers) return this.say(this.name + " must have at least " + this.minPlayers + " players.");
 		this.started = true;
 		if (typeof this.onStart === 'function') this.onStart();
 	}
@@ -266,6 +272,7 @@ class Game {
 		let player = this.addPlayer(user);
 		user.say('You have joined the game of ' + this.name + '!');
 		if (typeof this.onJoin === 'function') this.onJoin(player);
+		if ((this.playerCap && this.playerCount === this.playerCap) || (this.maxPlayers && this.playerCount === this.maxPlayers)) this.start();
 	}
 
 	/**

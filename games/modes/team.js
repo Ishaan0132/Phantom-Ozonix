@@ -30,12 +30,13 @@ class TeamGame extends Games.Game {
 		this.points = new Map();
 		this.maxPoints = 20;
 		this.hint = '';
+		this.minPlayers = 4;
 		/**@type {Array<string>} */
 		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
 
-		this.override = ['name', 'id', 'freeJoin', 'teamA', 'teamB', 'points', 'maxPoints', 'onSignups', 'onStart', 'onNextRound', 'guess'];
+		this.override = ['name', 'id', 'freeJoin', 'teamA', 'teamB', 'points', 'maxPoints', 'minPlayers', 'onSignups', 'onStart', 'onNextRound', 'guess'];
 	}
 
 	onSignups() {}

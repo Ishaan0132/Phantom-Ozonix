@@ -47,6 +47,16 @@ let commands = {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (room.game) room.game.start();
 	},
+	cap: 'capgame',
+	capgame: function (target, room, user) {
+		if (room instanceof Users.User || !room.game || !user.hasRank(room, '+')) return;
+		let cap = parseInt(target);
+		if (isNaN(cap)) return this.say("Please enter a valid player cap.");
+		if (cap < room.game.minPlayers) return this.say(room.game.name + " must have at least " + room.game.minPlayers + " players.");
+		if (room.game.maxPlayers && cap > room.game.maxPlayers) return this.say(room.game.name + " cannot have more than " + room.game.maxPlayers + " players.");
+		room.game.playerCap = cap;
+		this.say("The game will automatically start at **" + cap + "** players!");
+	},
 	end: 'endgame',
 	endgame: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
