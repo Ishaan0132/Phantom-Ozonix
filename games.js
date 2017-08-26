@@ -118,19 +118,19 @@ class Game {
 	onChildEnd(winners) {}
 
 	/**
-	 * @param {User} user
+	 * @param {Player} player
 	 */
-	onJoin(user) {}
+	onJoin(player) {}
 
 	/**
-	 * @param {User} user
+	 * @param {Player} player
 	 */
-	onLeave(user) {}
+	onLeave(player) {}
 
 	/**
-	 * @param {User} user
+	 * @param {Player} player
 	 */
-	onRename(user) {}
+	onRename(player) {}
 
 	setAnswers() {}
 
@@ -253,8 +253,8 @@ class Game {
 		player.id = user.id;
 		this.players[user.id] = player;
 		delete this.players[oldId];
-		if (typeof this.onRename === 'function') this.onRename(user);
-		if (this.parentGame && typeof this.parentGame.onRename === 'function') this.parentGame.onRename(user);
+		if (typeof this.onRename === 'function') this.onRename(player);
+		if (this.parentGame && typeof this.parentGame.onRename === 'function') this.parentGame.onRename(player);
 	}
 
 	/**
@@ -263,9 +263,9 @@ class Game {
 	join(user) {
 		if (user.id in this.players || this.started) return;
 		if (this.freeJoin) return user.say(this.name + " does not require you to join.");
-		this.addPlayer(user);
+		let player = this.addPlayer(user);
 		user.say('You have joined the game of ' + this.name + '!');
-		if (typeof this.onJoin === 'function') this.onJoin(user);
+		if (typeof this.onJoin === 'function') this.onJoin(player);
 	}
 
 	/**
@@ -277,9 +277,10 @@ class Game {
 			return;
 		}
 		if (!(user.id in this.players) || this.players[user.id].eliminated) return;
+		let player = this.players[user.id];
 		this.removePlayer(user);
 		user.say("You have left the game of " + this.name + "!");
-		if (typeof this.onLeave === 'function') this.onLeave(user);
+		if (typeof this.onLeave === 'function') this.onLeave(player);
 	}
 
 	/**
