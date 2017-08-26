@@ -17,6 +17,9 @@ exports.password = '';
 // The server address to which Cassius will connect
 exports.server = '';
 
+// The avatar that Cassius will use
+exports.avatar = '';
+
 // Rooms that Cassius will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
 /**@type {Array<string>} */

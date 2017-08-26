@@ -125,6 +125,7 @@ class MessageParser {
 					Client.send('|/join ' + Config.rooms[i]);
 				}
 			}
+			if (Config.avatar) Client.send('|/avatar ' + Config.avatar);
 			break;
 		case 'init':
 			room.onJoin(Users.self, ' ');
