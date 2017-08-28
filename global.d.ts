@@ -15,6 +15,7 @@ declare global {
 	const Config: typeof ConfigType
 	const Games: typeof GamesType.Games
 	const MessageParser: typeof MessageParserType.MessageParser
+	const Plugins: Array<any> | undefined
 	const Rooms: typeof RoomsType.Rooms
 	const Storage: typeof StorageType
 	const Tools: typeof ToolsType

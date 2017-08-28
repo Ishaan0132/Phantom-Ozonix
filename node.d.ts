@@ -5,6 +5,7 @@ declare namespace NodeJS {
 		Config: any
 		Games: any
 		MessageParser: any
+		Plugins: Array<any> | undefined
 		Rooms: any
 		Storage: any
 		Tools: any

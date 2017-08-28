@@ -42,10 +42,12 @@ Games.loadGames();
 global.Storage = require('./storage.js');
 Storage.importDatabases();
 
+let pluginsList;
 let plugins = fs.readdirSync('./plugins');
 for (let i = 0, len = plugins.length; i < len; i++) {
 	let fileName = plugins[i];
 	if (!fileName.endsWith('.js') || fileName === 'example-commands.js' || fileName === 'example-module.js') continue;
+	if (!pluginsList) pluginsList = [];
 	let file = require('./plugins/' + fileName);
 	if (file.name) {
 		// @ts-ignore
@@ -53,7 +55,10 @@ for (let i = 0, len = plugins.length; i < len; i++) {
 		if (typeof file.onLoad === 'function') file.onLoad();
 	}
 	if (file.commands) Object.assign(Commands, file.commands);
+	pluginsList.push(file);
 }
+
+global.Plugins = pluginsList;
 
 if (require.main === module) {
 	Client.connect();
