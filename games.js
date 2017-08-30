@@ -571,7 +571,6 @@ class Games {
 			if (game.variations) {
 				game.variationIds = {};
 				for (let i = 0, len = game.variations.length; i < len; i++) {
-					/**@type {GameVariation} */
 					let variation = game.variations[i];
 					let id = Tools.toId(variation.name);
 					if (id in this.games) throw new Error(game.name + " variation '" + variation.name + "' is already a game.");
@@ -593,7 +592,8 @@ class Games {
 							if (!(alias in game.variationAliases) && !(alias in this.modes)) game.variationAliases[alias] = variationId;
 						}
 					}
-					game.variationIds[variationId] = Object.assign(Object.assign({}, game), variation);
+					// @ts-ignore
+					game.variationIds[variationId] = variation;
 				}
 			}
 			if (game.modes) {
@@ -677,7 +677,7 @@ class Games {
 				if (id in format.modeIds) mode = format.modeIds[id];
 			}
 		}
-		if (variation) format = Object.assign({}, variation);
+		if (variation) Object.assign(format, variation);
 		if (mode) format.modeId = mode;
 		return format;
 	}
