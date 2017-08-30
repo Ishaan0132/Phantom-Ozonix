@@ -77,9 +77,10 @@ class Room {
 
 	/**
 	 * @param {string} message
+	 * @param {boolean} [skipNormalization]
 	 */
-	say(message) {
-		message = Tools.normalizeMessage(message, this);
+	say(message, skipNormalization) {
+		if (!skipNormalization) message = Tools.normalizeMessage(message, this);
 		if (!message) return;
 		Client.send(this.clientId + '|' + message);
 	}
