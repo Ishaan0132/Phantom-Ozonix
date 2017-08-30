@@ -147,6 +147,30 @@ class Game {
 	}
 
 	/**
+	 * @param {string} message;
+	 */
+	sayHtml(message) {
+		this.room.say("/addhtmlbox " + message, true);
+	}
+
+	/**
+	 * @param {User | Player | string} user
+	 * @param {string} message;
+	 */
+	pm(user, message) {
+		if (typeof user === 'string') user = Users.add(user);
+		user.say(message);
+	}
+
+	/**
+	 * @param {User | Player | string} user
+	 * @param {string} message;
+	 */
+	pmHtml(user, message) {
+		this.room.say("/pminfobox " + Tools.toId(user) + ", " + message, true);
+	}
+
+	/**
 	 * @param {string} message
 	 * @param {Function} listener
 	 */
