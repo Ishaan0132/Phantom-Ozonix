@@ -13,7 +13,6 @@ const WebSocketClient = require('websocket').client;
 const https = require('https');
 const url = require('url');
 const querystring = require('querystring');
-const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
 const MESSAGE_THROTTLE = 600;
 const REQUEST_THROTTLE = 4000;
 const RETRY_SECONDS = 60;

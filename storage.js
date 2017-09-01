@@ -10,7 +10,6 @@
 'use strict';
 
 const fs = require('fs');
-const User = require('./users').User; // eslint-disable-line no-unused-vars
 const BACKUP_INTERVAL = 60 * 60 * 1000;
 
 class Storage {

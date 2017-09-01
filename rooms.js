@@ -9,10 +9,6 @@
 
 'use strict';
 
-const Game = require('./games').Game; // eslint-disable-line no-unused-vars
-const Tournament = require('./tournaments').Tournament; // eslint-disable-line no-unused-vars
-const User = require('./users').User; // eslint-disable-line no-unused-vars
-
 class Room {
 	/**
 	 * @param {string} id

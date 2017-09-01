@@ -9,9 +9,6 @@
 
 'use strict';
 
-const Game = require('./games').Game; // eslint-disable-line no-unused-vars
-const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
-
 const PRUNE_INTERVAL = 60 * 60 * 1000;
 
 class User {

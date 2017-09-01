@@ -9,9 +9,6 @@
 
 'use strict';
 
-const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
-const User = require('./users').User; // eslint-disable-line no-unused-vars
-
 const whitespaceRegex = new RegExp('\\s+', 'g');
 const nullCharactersRegex = new RegExp('[\u0000\u200B-\u200F]+', 'g');
 const capsRegex = new RegExp('[A-Z]', 'g');

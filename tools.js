@@ -10,7 +10,6 @@
 'use strict';
 
 const Data = require('./tools-data');
-const {Format, Item, Pokemon, Move, Ability} = Data; // eslint-disable-line no-unused-vars
 
 /**
 * @typedef Learnset
@@ -77,6 +76,8 @@ class Tools {
 		/**@type {Map<string, Format>} */
 		this.FormatCache = new Map();
 		this.loadedData = false;
+
+		this.Data = Data;
 	}
 
 	loadData() {
@@ -340,7 +341,7 @@ class Tools {
 	 * @return {Pokemon}
 	 */
 	getPokemon(name) {
-		if (name instanceof Pokemon) return name;
+		if (name instanceof Data.Pokemon) return name;
 		let id = this.toId(name);
 		if (id in this.data.aliases) {
 			name = this.data.aliases[id];
@@ -360,7 +361,7 @@ class Tools {
 	 * @return {Move}
 	 */
 	getMove(name) {
-		if (name instanceof Move) return name;
+		if (name instanceof Data.Move) return name;
 		let id = this.toId(name);
 		if (id in this.data.aliases) {
 			name = this.data.aliases[id];
@@ -380,7 +381,7 @@ class Tools {
 	 * @return {Item}
 	 */
 	getItem(name) {
-		if (name instanceof Item) return name;
+		if (name instanceof Data.Item) return name;
 		let id = this.toId(name);
 		if (id in this.data.aliases) {
 			name = this.data.aliases[id];
@@ -400,7 +401,7 @@ class Tools {
 	 * @return {Ability}
 	 */
 	getAbility(name) {
-		if (name instanceof Ability) return name;
+		if (name instanceof Data.Ability) return name;
 		let id = this.toId(name);
 		if (id in this.data.aliases) {
 			name = this.data.aliases[id];
@@ -420,7 +421,7 @@ class Tools {
 	 * @return {Format}
 	 */
 	getFormat(name) {
-		if (name instanceof Format) return name;
+		if (name instanceof Data.Format) return name;
 		let id = this.toId(name);
 		if (id in this.data.aliases) {
 			name = this.data.aliases[id];

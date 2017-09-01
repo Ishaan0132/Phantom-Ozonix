@@ -38,8 +38,6 @@
  */
 
 const fs = require('fs');
-const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
-const User = require('./users').User; // eslint-disable-line no-unused-vars
 
 class Player {
 	/**

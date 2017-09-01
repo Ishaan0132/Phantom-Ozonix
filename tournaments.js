@@ -9,10 +9,6 @@
 
 'use strict';
 
-const Room = require('./rooms').Room; // eslint-disable-line no-unused-vars
-const User = require('./users').User; // eslint-disable-line no-unused-vars
-const {Format} = require('./tools-data'); // eslint-disable-line no-unused-vars
-
 const defaultCap = Config.defaultTournamentCap || 64;
 const generators = {
 	"Single": 1,

@@ -9,10 +9,6 @@
 
 'use strict';
 
-const Game = require('./../../games').Game; // eslint-disable-line no-unused-vars
-const Room = require('./../../rooms').Room; // eslint-disable-line no-unused-vars
-const User = require('./../../users').User; // eslint-disable-line no-unused-vars
-
 const name = 'Survival';
 const id = Tools.toId(name);
 
