@@ -74,11 +74,12 @@ class Client {
 	}
 
 	/**
-	 * @param {Error} error
+	 * @param {Error} [error]
 	 */
 	onConnectFail(error) {
 		if (this.connectTimeout) clearTimeout(this.connectTimeout);
-		console.log('Failed to connect to server ' + server + ':\n' + error.stack + '\nRetrying in ' + RETRY_SECONDS + ' seconds');
+		if (error) console.log(error.stack);
+		console.log('Failed to connect to server ' + server + '\nRetrying in ' + RETRY_SECONDS + ' seconds');
 		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
 	}
 
@@ -149,6 +150,8 @@ class Client {
 		}).on('error', error => {
 			console.log('Error: ' + error.message);
 		});
+
+		this.connectTimeout = setTimeout(() => this.onConnectFail(), 30 * 1000);
 	}
 
 	/**

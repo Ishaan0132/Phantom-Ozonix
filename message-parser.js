@@ -116,6 +116,8 @@ class MessageParser {
 			break;
 		case 'updateuser':
 			if (splitMessage[0] !== Config.username) return;
+
+			if (Client.connectTimeout) clearTimeout(Client.connectTimeout);
 			if (splitMessage[1] !== '1') {
 				console.log('Failed to log in');
 				process.exit();
