@@ -41,7 +41,7 @@ exports.commandCharacter = '.';
 
 // Symbols and rankings for the server's user groups
 exports.groups = {
-	'‽': 0,
+	'\u203d': 0,
 	'!': 0,
 	' ': 0,
 	'+': 1,
