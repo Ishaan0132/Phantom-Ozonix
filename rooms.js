@@ -134,10 +134,18 @@ class Rooms {
 	destroy(id) {
 		let room = this.get(id);
 		if (!room) return;
+		if (room.game) room.game.forceEnd();
+		if (room.tour) room.tour.end();
 		room.users.forEach(function (value, user) {
 			user.rooms.delete(room);
 		});
 		delete this.rooms[room.id];
+	}
+
+	destroyRooms() {
+		for (let i in this.rooms) {
+			this.destroy(i);
+		}
 	}
 }
 

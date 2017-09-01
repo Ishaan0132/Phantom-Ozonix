@@ -109,6 +109,8 @@ class Client {
 			console.log('Connection closed: ' + description + ' (' + code + ')');
 		}
 		console.log('Reconnecting in ' + retryTime + ' seconds');
+		Rooms.destroyRooms();
+		Users.destroyUsers();
 		this.connectTimeout = setTimeout(() => this.connect(), retryTime * 1000);
 	}
 

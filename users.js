@@ -108,6 +108,12 @@ class Users {
 			}
 		}
 	}
+
+	destroyUsers() {
+		for (let i in this.users) {
+			delete this.users[i];
+		}
+	}
 }
 
 exports.Users = new Users();
