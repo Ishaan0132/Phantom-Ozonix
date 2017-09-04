@@ -83,6 +83,7 @@ class Game {
 		this.started = false;
 		this.ended = false;
 		this.freeJoin = false;
+		this.canLateJoin = false;
 		/**@type {Map<Player, number>} */
 		this.winners = new Map();
 		/**@type {?Map<Player, number>} */
@@ -122,8 +123,9 @@ class Game {
 
 	/**
 	 * @param {Player} player
+	 * @param {boolean} [lateJoin]
 	 */
-	onJoin(player) {}
+	onJoin(player, lateJoin) {}
 
 	/**
 	 * @param {Player} player
@@ -292,12 +294,29 @@ class Game {
 	 * @param {User} user
 	 */
 	join(user) {
-		if (user.id in this.players || this.started) return;
+		if (user.id in this.players) return;
 		if (this.freeJoin) return user.say(this.name + " does not require you to join.");
+		let lateJoin = false;
+		if (this.started) {
+			if (!this.canLateJoin) {
+				this.pm(user, "Sorry, this game does not support late-joins.");
+				return false;
+			}
+			if (this.maxPlayers && this.getRemainingPlayerCount() >= this.maxPlayers) {
+				this.pm(user, "Sorry, this game is full.");
+				return false;
+			}
+			if (this.lateJoin(user) === false) return false;
+			lateJoin = true;
+		}
 		let player = this.addPlayer(user);
-		user.say('You have joined the game of ' + this.name + '!');
-		if (typeof this.onJoin === 'function') this.onJoin(player);
-		if ((this.playerCap && this.playerCount === this.playerCap) || (this.maxPlayers && this.playerCount === this.maxPlayers)) this.start();
+		this.onJoin(player, lateJoin);
+		if (lateJoin) {
+			user.say('You have late-joined the game of ' + this.name + '!');
+		} else {
+			user.say('You have joined the game of ' + this.name + '!');
+			if ((this.playerCap && this.playerCount === this.playerCap) || (this.maxPlayers && this.playerCount === this.maxPlayers)) this.start();
+		}
 	}
 
 	/**
@@ -313,6 +332,20 @@ class Game {
 		this.removePlayer(user);
 		user.say("You have left the game of " + this.name + "!");
 		if (typeof this.onLeave === 'function') this.onLeave(player);
+	}
+
+	/**
+	 * @param {User} user
+	 * @return {boolean}
+	 */
+	lateJoin(user) {
+		if (!this.canLateJoin) return false;
+		if (this.round > 1) {
+			user.say("Sorry, the late-join period has ended.");
+			return false;
+		}
+		this.addPlayer(user);
+		return true;
 	}
 
 	/**
