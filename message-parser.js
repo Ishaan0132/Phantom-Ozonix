@@ -44,6 +44,40 @@ class Context {
 	}
 
 	/**
+	 * @param {string} message;
+	 */
+	sayHtml(message) {
+		if (this.room instanceof Users.User) return this.pmHtml(this.room, message);
+		this.room.say("/addhtmlbox " + message, true);
+	}
+
+	/**
+	 * @param {User | string} user
+	 * @param {string} message;
+	 */
+	pm(user, message) {
+		if (typeof user === 'string') user = Users.add(user);
+		user.say(message);
+	}
+
+	/**
+	 * @param {User | string} user
+	 * @param {string} message;
+	 */
+	pmHtml(user, message) {
+		let room = this.room;
+		if (room instanceof Users.User) {
+			let botRoom;
+			Users.self.rooms.forEach((rank, room) => {
+				if (rank === '*') botRoom = room;
+			});
+			if (!botRoom) return this.pm(user, message);
+			room = botRoom;
+		}
+		room.say("/pminfobox " + Tools.toId(user) + ", " + message, true);
+	}
+
+	/**
 	 * @param {string} [command]
 	 * @param {string} [target]
 	 * @returns {boolean}
