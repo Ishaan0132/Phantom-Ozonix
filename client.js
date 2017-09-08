@@ -43,6 +43,7 @@ if (forever) {
 
 class Client {
 	constructor() {
+		this.serverId = serverId;
 		this.challengeKeyId = '';
 		this.challenge = '';
 		/**@type {Array<string>} */
@@ -139,7 +140,7 @@ class Client {
 					let config = JSON.parse(configData.split(';')[0]);
 					if (typeof config === 'string') config = JSON.parse(config); // encoded twice by the server
 					if (config.host) {
-						if (config.id) serverId = config.id;
+						if (config.id) this.serverId = config.id;
 						this.client.connect('ws://' + (config.host === 'showdown' ? 'sim.smogon.com' : config.host) + ':' + (config.port || 8000) + '/showdown/' + Math.floor(Math.random() * 1000) + '/' + string + '/websocket');
 						return;
 					}
@@ -189,7 +190,7 @@ class Client {
 	}
 
 	login() {
-		let action = url.parse('https://play.pokemonshowdown.com/~~' + serverId + '/action.php');
+		let action = url.parse('https://play.pokemonshowdown.com/~~' + this.serverId + '/action.php');
 		let options = {
 			hostname: action.hostname,
 			path: action.pathname,
