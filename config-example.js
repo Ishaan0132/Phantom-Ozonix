@@ -89,3 +89,5 @@ exports.punishmentActions = punishmentActions;
 
 /**@type {?{[k: string]: string}} */
 exports.punishmentReasons = null;
+
+exports.allowMail = false;

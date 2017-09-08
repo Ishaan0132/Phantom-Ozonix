@@ -23,10 +23,34 @@ let commands = {
 		}
 	},
 
-	// Informational commands
+	// General commands
 	about: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
+	},
+	mail: function (target, room, user) {
+		if (!(room instanceof Users.User) || !Config.allowMail) return;
+		let targets = target.split(',');
+		if (targets.length < 2) return this.say("Please use the following format: .mail user, message");
+		let to = Tools.toId(targets[0]);
+		if (!to || to.length > 18 || to === Users.self.id || to.startsWith('guest')) return this.say("Please enter a valid username");
+		let message = targets.slice(1).join(',').trim();
+		let id = Tools.toId(message);
+		if (!id) return this.say("Please include a message to send.");
+		if (message.length > (258 - user.name.length)) return this.say("Your message is too long.");
+		let database = Storage.getDatabase('global');
+		if (to in database.mail) {
+			let queued = 0;
+			for (let i = 0, len = database.mail[to].length; i < len; i++) {
+				if (Tools.toId(database.mail[to][i].from) === user.id) queued++;
+			}
+			if (queued >= 3) return this.say("You have too many messages queued for " + targets[0] + ".");
+		} else {
+			database.mail[to] = [];
+		}
+		database.mail[to].push({time: Date.now(), from: user.name, text: message});
+		Storage.exportDatabase('global');
+		this.say("Your message has been sent to " + targets[0] + "!");
 	},
 
 	// Game commands
