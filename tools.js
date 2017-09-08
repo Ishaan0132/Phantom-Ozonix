@@ -9,6 +9,8 @@
 
 'use strict';
 
+const https = require('https');
+const url = require('url');
 const Data = require('./tools-data');
 
 /**
@@ -526,6 +528,47 @@ class Tools {
 			}
 		}
 		return parts.slice(positiveIndex).reverse().map((value, index) => value ? value + " " + unitNames[index] + (value > 1 ? "s" : "") : "").reverse().slice(0, precision).join(" ").trim();
+	}
+
+	/**
+	 * @param {string} text
+	 * @param {Function} callback
+	 */
+	uploadToHastebin(text, callback) {
+		if (typeof callback !== 'function') return false;
+		let action = url.parse('https://hastebin.com/documents');
+		let options = {
+			hostname: action.hostname,
+			path: action.pathname,
+			method: 'POST',
+		};
+
+		let request = https.request(options, response => {
+			response.setEncoding('utf8');
+			let data = '';
+			response.on('data', chunk => {
+				data += chunk;
+			});
+			response.on('end', () => {
+				let key;
+				try {
+					let pageData = JSON.parse(data);
+					key = pageData.key;
+				} catch (e) {
+					if (/^[^<]*<!DOCTYPE html>/.test(data)) {
+						return callback('Cloudflare-related error uploading to Hastebin: ' + e.message);
+					} else {
+						return callback('Unknown error uploading to Hastebin: ' + e.message);
+					}
+				}
+				callback('https://hastebin.com/raw/' + key);
+			});
+		});
+
+		request.on('error', error => console.log('Login error: ' + error.stack));
+
+		if (text) request.write(text);
+		request.end();
 	}
 }
 
