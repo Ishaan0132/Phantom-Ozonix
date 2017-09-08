@@ -20,6 +20,17 @@ class Storage {
 
 	/**
 	 * @param {string} roomid
+	 * @returns {AnyObject}
+	 */
+	getDatabase(roomid) {
+		if (!(roomid in this.databases)) this.databases[roomid] = {};
+		// sync database properties
+		if (roomid === 'global' && !this.databases[roomid].mail) this.databases[roomid].mail = {};
+		return this.databases[roomid];
+	}
+
+	/**
+	 * @param {string} roomid
 	 */
 	importDatabase(roomid) {
 		let file = '{}';
