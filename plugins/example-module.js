@@ -2,8 +2,8 @@
  * Example module
  * Cassius - https://github.com/sirDonovan/Cassius
  *
- * Plugins are ignored by GitHub, which makes it easier to have custom commands
- * and modules while still being up-to-date with changes in the main repository.
+ * Plugins make it easier to have custom commands and
+ * modules while rebasing with the main repository.
  *
  * This file shows how to add a module.
  *
