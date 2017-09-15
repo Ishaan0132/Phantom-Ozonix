@@ -13,19 +13,19 @@ class Effect {
 	 */
 	constructor(name, data = null) {
 		/**
+		 * Name. Currently does not support Unicode letters, so "Flabébé"
+		 * is "Flabebe" and "Nidoran♀" is "Nidoran-F".
+		 * @type {string}
+		 */
+		this.name = name || '';
+		/**
 		 * ID. This will be a lowercase version of the name with all the
 		 * non-alphanumeric characters removed. So, for instance, "Mr. Mime"
 		 * becomes "mrmime", and "Basculin-Blue-Striped" becomes
 		 * "basculinbluestriped".
 		 * @type {string}
 		 */
-		this.id = '';
-		/**
-		 * Name. Currently does not support Unicode letters, so "Flabébé"
-		 * is "Flabebe" and "Nidoran♀" is "Nidoran-F".
-		 * @type {string}
-		 */
-		this.name = '';
+		this.id = Tools.toId(this.name);
 		/**
 		 * Effect type.
 		 * @type {'Effect' | 'Pokemon' | 'Move' | 'Item' | 'Ability' | 'Format' | 'Ruleset' | 'Weather' | 'Status' | 'Rule' | 'ValidatorRule'}
