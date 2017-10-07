@@ -90,7 +90,11 @@ class Context {
 				// @ts-ignore Typescript bug - issue #10530
 				command = Commands[command];
 			}
-			target = target.trim();
+			if (target) {
+				target = target.trim();
+			} else {
+				target = '';
+			}
 		} else {
 			command = this.command;
 			target = this.target;
