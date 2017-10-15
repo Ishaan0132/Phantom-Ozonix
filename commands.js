@@ -9,6 +9,12 @@
 
 'use strict';
 
+// Users who use the settour command when a tournament is already
+// scheduled will be added here and prompted to reuse the command.
+// This prevents accidentally overwriting a scheduled tournament.
+/**@type {Map<string, string>} */
+let overwriteWarnings = new Map();
+
 /**@type {{[k: string]: Command | string}} */
 let commands = {
 	// Developer commands
@@ -117,7 +123,7 @@ let commands = {
 	tournament: function (target, room, user) {
 		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id)) return;
 		if (!target) {
-			if (!user.hasRank(room, '+')) return false;
+			if (!user.hasRank(room, '+')) return;
 			if (!room.tour) return this.say("I am not currently tracking a tournament in this room.");
 			let info = "``" + room.tour.name + " tournament info``";
 			if (room.tour.startTime) {
@@ -128,7 +134,7 @@ let commands = {
 				return this.say(info + ": " + room.tour.playerCount + " player" + (room.tour.playerCount > 1 ? "s" : ""));
 			}
 		} else {
-			if (!user.hasRank(room, '%')) return false;
+			if (!user.hasRank(room, '%')) return;
 			let targets = target.split(',');
 			let cmd = Tools.toId(targets[0]);
 			let format;
@@ -154,9 +160,17 @@ let commands = {
 	},
 	settour: 'settournament',
 	settournament: function (target, room, user) {
-		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id) || !user.hasRank(room, '%')) return false;
+		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id) || !user.hasRank(room, '%')) return;
+		if (room.id in Tournaments.tournamentTimers) {
+			let warned = overwriteWarnings.has(room.id) && overwriteWarnings.get(room.id) === user.id;
+			if (!warned) {
+				overwriteWarnings.set(room.id, user.id);
+				return this.say("A tournament has already been scheduled in this room. To overwrite it, please reuse this command.");
+			}
+			overwriteWarnings.delete(room.id);
+		}
 		let targets = target.split(',');
-		if (targets.length < 2) return this.say(Config.commandCharacter + ".settour - tier, time, cap (optional)");
+		if (targets.length < 2) return this.say(Config.commandCharacter + "settour - tier, time, cap (optional)");
 		let format = Tools.getFormat(targets[0]);
 		if (!format) return this.say('**Error:** invalid format.');
 		if (!format.playable) return this.say(format.name + " cannot be played, please choose another format.");
@@ -181,7 +195,7 @@ let commands = {
 	},
 	canceltour: 'canceltournament',
 	canceltournament: function (target, room, user) {
-		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id) || !user.hasRank(room, '%')) return false;
+		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id) || !user.hasRank(room, '%')) return;
 		if (!(room.id in Tournaments.tournamentTimers)) return this.say("There is no tournament scheduled for this room.");
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
