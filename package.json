@@ -16,7 +16,7 @@
 		"url": "https://github.com/sirDonovan/Cassius.git"
 	},
 	"dependencies": {
-		"websocket": "1.0.24"
+		"websocket": "^1.0.25"
 	},
 	"devDependencies": {
 		"typescript": "^2.5.1",
