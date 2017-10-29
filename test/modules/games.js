@@ -79,49 +79,81 @@ describe('Games', function () {
 				assert(room.game.started);
 				room.game.nextRound();
 			});
-			it('should support ending and using game commands at any time', function () {
+			it('should support ending at any time', function () {
 				if (!room.game) throw new Error("Game not created.");
 				room.game.signups();
-				if (room.game.commands) {
-					for (let i in room.game.commands) {
-						assert(MessageParser.parseCommand(Config.commandCharacter + i, room, users[0]) === true);
-						assert(MessageParser.parseCommand(Config.commandCharacter + i + ' mocha', room, users[0]) === true);
+				if (!room.game.freeJoin) {
+					for (let i = 0, len = users.length; i < len; i++) {
+						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
 					}
 				}
-				room.game.end();
-
+				room.game.forceEnd();
 				Games.createGame(game, room);
+
+				room.game.signups();
 				if (!room.game.freeJoin) {
-					room.game.signups();
 					for (let i = 0, len = users.length; i < len; i++) {
 						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
 					}
 					room.game.start();
-					if (room.game.commands) {
-						for (let i in room.game.commands) {
-							assert(MessageParser.parseCommand(Config.commandCharacter + i, room, users[0]) === true);
-							assert(MessageParser.parseCommand(Config.commandCharacter + i + ' mocha', room, users[0]) === true);
-						}
-					}
-					room.game.end();
-					Games.createGame(game, room);
-				}
+					room.game.forceEnd();
 
-				room.game.signups();
-				if (!room.game.freeJoin) {
-					for (let i = 0, len = users.length; i < len; i++) {
-						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
-					}
+					Games.createGame(game, room);
+					room.game.signups();
 					room.game.start();
 				}
 				room.game.nextRound();
-				if (room.game.commands) {
-					for (let i in room.game.commands) {
-						assert(MessageParser.parseCommand(Config.commandCharacter + i, room, users[0]) === true);
-						assert(MessageParser.parseCommand(Config.commandCharacter + i + ' mocha', room, users[0]) === true);
+				if (room.game) room.game.forceEnd();
+			});
+			it('commands should run at any time', function () {
+				if (!room.game) throw new Error("Game not created.");
+				room.game.signups();
+				if (!room.game.freeJoin) {
+					for (let i = 0, len = users.length; i < len; i++) {
+						assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
 					}
 				}
-				if (room.game) room.game.end();
+
+				// before starting
+				if (room.game.commands) {
+					for (let i in room.game.commands) {
+						for (let j in room.game.players) {
+							let user = Users.add(room.game.players[j].name);
+							if (room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands)) {
+								assert(MessageParser.parseCommand(Config.commandCharacter + i + " mocha", user, user) === true);
+							}
+							assert(MessageParser.parseCommand(Config.commandCharacter + i + " mocha", room, user) === true);
+						}
+					}
+				}
+				room.game.start();
+
+				// before first round
+				if (room.game.commands) {
+					for (let i in room.game.commands) {
+						for (let j in room.game.players) {
+							let user = Users.add(room.game.players[j].name);
+							if (room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands)) {
+								assert(MessageParser.parseCommand(Config.commandCharacter + i + " mocha", user, user) === true);
+							}
+							assert(MessageParser.parseCommand(Config.commandCharacter + i + " mocha", room, user) === true);
+						}
+					}
+				}
+				if (room.game.round === 0) room.game.nextRound();
+
+				// after first round starts
+				if (room.game.commands) {
+					for (let i in room.game.commands) {
+						for (let j in room.game.players) {
+							let user = Users.add(room.game.players[j].name);
+							if (room.game.pmCommands && (room.game.pmCommands === true || i in room.game.pmCommands)) {
+								assert(MessageParser.parseCommand(Config.commandCharacter + i + " mocha", user, user) === true);
+							}
+							assert(MessageParser.parseCommand(Config.commandCharacter + i + " mocha", room, user) === true);
+						}
+					}
+				}
 			});
 			it('should pass any game specfic tests', function () {
 				if (!room.game) throw new Error("Game not created.");
