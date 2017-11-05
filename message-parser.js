@@ -450,8 +450,12 @@ class MessageParser {
 		}
 
 		// flooding
-		if (data.messages.length >= FLOOD_MINIMUM_MESSAGES && time - data.messages[FLOOD_MINIMUM_MESSAGES - 1].time <= FLOOD_MAXIMUM_TIME) {
-			punishments.push({action: 'mute', rule: 'flooding', reason: 'please do not flood the chat'});
+		if (data.messages.length >= FLOOD_MINIMUM_MESSAGES) {
+			let testTime = time - data.messages[FLOOD_MINIMUM_MESSAGES - 1].time;
+			// account for the server's time changing
+			if (testTime >= 0 && testTime <= FLOOD_MAXIMUM_TIME) {
+				punishments.push({action: 'mute', rule: 'flooding', reason: 'please do not flood the chat'});
+			}
 		}
 
 		// stretching
