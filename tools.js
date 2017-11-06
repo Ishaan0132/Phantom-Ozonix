@@ -354,6 +354,8 @@ class Tools {
 		let pokemon = this.PokemonCache.get(id);
 		if (pokemon) return pokemon;
 		pokemon = new Data.Pokemon(name, this.data.pokedex[id], this.data.learnsets[id], this.data.formatsData[id]);
+		if (!pokemon.tier && pokemon.baseSpecies !== pokemon.species) pokemon.tier = this.data.formatsData[this.toId(pokemon.baseSpecies)].tier;
+		if (!pokemon.tier) pokemon.tier = 'Illegal';
 		this.PokemonCache.set(id, pokemon);
 		return pokemon;
 	}

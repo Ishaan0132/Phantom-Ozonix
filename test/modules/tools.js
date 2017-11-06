@@ -10,8 +10,26 @@ describe('Tools', function () {
 		});
 	});
 	describe('getPokemon', function () {
-		it('should return a Pokemon', function () {
-			assert(Tools.getPokemon('Pikachu').species === "Pikachu");
+		it('should return a Pokemon with the necessary data', function () {
+			let base = Tools.getPokemon("Arceus");
+			assert(base.types.length === 1);
+			assert(base.types[0] === 'Normal');
+			assert(base.species === 'Arceus');
+			assert(base.speciesid === 'arceus');
+			assert(base.baseSpecies === base.species);
+			assert(base.learnset);
+			assert(base.tier);
+
+			let forme = Tools.getPokemon('Arceus-Fire');
+			assert(forme.types.length === 1);
+			assert(forme.types[0] === 'Fire');
+			assert(forme.species === 'Arceus-Fire');
+			assert(forme.speciesid === 'arceusfire');
+			assert(forme.baseSpecies === "Arceus");
+			assert(!forme.learnset);
+			assert(forme.tier);
+
+			assert(Tools.getPokemon("Missingno.").isNonstandard);
 		});
 	});
 	describe('getMove', function () {
