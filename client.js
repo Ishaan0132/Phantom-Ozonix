@@ -23,6 +23,9 @@ if (Config.server && Config.server !== server) {
 }
 let serverId = 'showdown';
 
+/**@type {Array<string>} */
+let bannedWords = Config.bannedWords && Array.isArray(Config.bannedWords) ? Config.bannedWords.map(x => x.toLowerCase()) : [];
+
 let bootedWithForever = false;
 let forever;
 try {
@@ -274,6 +277,12 @@ class Client {
 			return;
 		}
 		message = JSON.stringify([message]);
+		if (bannedWords.length) {
+			let lower = message.toLowerCase();
+			for (let i = 0, len = bannedWords.length; i < len; i++) {
+				if (lower.includes(bannedWords[i])) return;
+			}
+		}
 		this.connection.send(message);
 		this.messageQueueTimeout = setTimeout(() => {
 			this.messageQueueTimeout = null;

@@ -53,6 +53,10 @@ exports.groups = {
 	'~': 6,
 };
 
+// Words that are either filtered or auto-locked by the server
+/**@type {Array<string>} */
+exports.bannedWords = [];
+
 // Userids of those who have debug access to Cassius
 // example: exports.developers = ['devuser1', 'devuser2', 'devuser3'];
 /**@type {Array<string>} */
