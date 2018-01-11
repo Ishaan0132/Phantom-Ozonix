@@ -19,11 +19,11 @@
 		"websocket": "^1.0.25"
 	},
 	"devDependencies": {
-		"typescript": "^2.5.1",
-		"eslint": "4.11.0",
-		"mocha": "4.0.1",
+		"typescript": "^2.6.2",
+		"eslint": "4.15.0",
+		"mocha": "4.1.0",
 		"@types/mocha": "^2.2.41",
-		"@types/node": "^8.0.26",
+		"@types/node": "^8.5.8",
 		"@types/websocket": "^0.0.33"
 	},
 	"engine-strict": true,
