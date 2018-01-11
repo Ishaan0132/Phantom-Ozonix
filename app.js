@@ -34,7 +34,7 @@ global.MessageParser = require('./message-parser.js').MessageParser;
 
 global.Client = require('./client.js');
 
-global.Tournaments = require('./tournaments').Tournaments;
+global.Tournaments = require('./tournaments');
 
 global.Games = require('./games.js');
 Games.loadGames();
