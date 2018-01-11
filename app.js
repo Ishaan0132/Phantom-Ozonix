@@ -21,6 +21,7 @@ try {
 	fs.writeFileSync('./config.js', fs.readFileSync('./config-example.js'));
 }
 
+// @ts-ignore
 global.Config = require('./config.js');
 if (!Config.username) throw new Error("Please specify a username in config.js");
 

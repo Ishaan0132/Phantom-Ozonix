@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"start": "node app.js",
-		"test": "eslint --cache . && mocha --exit"
+		"test": "eslint --cache . && tsc && mocha --exit"
 	},
 	"main": "app.js",
 	"repository": {
