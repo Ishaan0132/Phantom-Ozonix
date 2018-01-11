@@ -74,6 +74,8 @@ class Game {
 		this.answers = null;
 		/**@type {?number} */
 		this.maxPoints = null;
+		this.winnerPointsToBits = 50;
+		this.loserPointsToBits = 10;
 		/**@type {?Map<Player, boolean>} */
 		this.roundGuesses = null;
 	}
@@ -172,6 +174,25 @@ class Game {
 	getBits(user) {
 		if (user instanceof Player) user = Users.get(user.name);
 		return Storage.getPoints(user, this.room.id);
+	}
+
+	/**
+	 * @param {number} [winnerPointsToBits]
+	 * @param {number} [loserPointsToBits]
+	 */
+	convertPointsToBits(winnerPointsToBits, loserPointsToBits) {
+		if (!this.points) throw new Error(this.name + " does not track points.");
+		if (!winnerPointsToBits) winnerPointsToBits = this.winnerPointsToBits;
+		if (!loserPointsToBits) loserPointsToBits = this.loserPointsToBits;
+		this.points.forEach((points, player) => {
+			let bits = 0;
+			if (this.winners.has(player)) {
+				bits = winnerPointsToBits * points;
+			} else {
+				bits = loserPointsToBits * points;
+			}
+			if (bits) this.addBits(bits, player);
+		});
 	}
 
 	signups() {
