@@ -36,7 +36,7 @@ global.Client = require('./client.js');
 
 global.Tournaments = require('./tournaments').Tournaments;
 
-global.Games = require('./games.js').Games;
+global.Games = require('./games.js');
 Games.loadGames();
 
 global.Storage = require('./storage.js');

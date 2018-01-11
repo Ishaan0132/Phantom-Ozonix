@@ -4,6 +4,7 @@ import * as ConfigType from './config-example'
 import * as DataType from './tools-data'
 import * as GamesType from './games'
 import * as MessageParserType from './message-parser'
+import * as RoomGameType from './room-game'
 import * as RoomsType from './rooms'
 import * as StorageType from './storage'
 import * as ToolsType from './tools'
@@ -14,7 +15,7 @@ declare global {
 	const Client: typeof ClientType
 	const Commands: typeof CommandsType
 	const Config: typeof ConfigType
-	const Games: typeof GamesType.Games
+	const Games: typeof GamesType
 	const MessageParser: typeof MessageParserType.MessageParser
 	const Plugins: Array<any> | undefined
 	const Rooms: typeof RoomsType.Rooms
@@ -24,8 +25,8 @@ declare global {
 	const Users: typeof UsersType.Users
 
 	const Context: typeof MessageParserType.Context
-	const Game: typeof GamesType.Game
-	const Player: typeof GamesType.Player
+	const Game: typeof RoomGameType.Game
+	const Player: typeof RoomGameType.Player
 	const Room: typeof RoomsType.Room
 	const Tournament: typeof TournamentsType.Tournament
 	const User: typeof UsersType.User
