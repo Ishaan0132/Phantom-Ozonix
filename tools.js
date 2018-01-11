@@ -270,6 +270,16 @@ class Tools {
 
 	/**
 	 * @param {any} text
+	 * @return {string}
+	 */
+	toAlphaNumeric(text) {
+		text = this.toString(text);
+		if (!text) return '';
+		return text.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+	}
+
+	/**
+	 * @param {any} text
 	 * @param {any} [room]
 	 * @return {string}
 	 */
