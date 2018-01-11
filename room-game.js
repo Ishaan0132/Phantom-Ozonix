@@ -431,6 +431,14 @@ class Game {
 	}
 
 	/**
+	 * @param {string} answer
+	 * @returns {number}
+	 */
+	pointsPerAnswer(answer) {
+		return 1;
+	}
+
+	/**
 	 * @param {string} guess
 	 */
 	filterGuess(guess) {}
@@ -463,7 +471,7 @@ class Game {
 		}
 		if (this.timeout) clearTimeout(this.timeout);
 		let points = this.points.get(player) || 0;
-		points += 1;
+		points += this.pointsPerAnswer(guess);
 		this.points.set(player, points);
 		if (points >= this.maxPoints) {
 			this.winners.set(player, points);
