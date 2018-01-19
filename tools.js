@@ -279,6 +279,61 @@ class Tools {
 	}
 
 	/**
+	 * @param {Array<string>} list
+	 * @param {string} [formatting]
+	 * @return {string}
+	 */
+	joinList(list, formatting) {
+		if (!list.length) return '';
+		if (!formatting) formatting = '';
+		if (list.length === 1) {
+			return formatting + list[0] + formatting;
+		} else if (list.length === 2) {
+			return formatting + list[0] + formatting + " and " + formatting + list[1] + formatting;
+		} else {
+			let len = list.length - 1;
+			return formatting + list.slice(0, len).join(formatting + ", " + formatting) + formatting + ", and " + formatting + list[len] + formatting;
+		}
+	}
+
+	/**
+	 * @param {Array<string>} list
+	 * @param {string} tag
+	 * @return {string}
+	 */
+	joinListHtml(list, tag) {
+		if (!list.length) return '';
+		let openingTag = tag;
+		let closingTag = '</' + tag.substr(1);
+		if (list.length === 1) {
+			return openingTag + list[0] + closingTag;
+		} else if (list.length === 2) {
+			return openingTag + list[0] + closingTag + " and " + openingTag + list[1] + closingTag;
+		} else {
+			let len = list.length - 1;
+			return openingTag + list.slice(0, len).join(closingTag + ", " + openingTag) + closingTag + ", and " + openingTag + list[len] + closingTag;
+		}
+	}
+
+	/**
+	 * @param {string} str
+	 * @return {string}
+	 */
+	escapeHTML(str) {
+		if (!str) return '';
+		return ('' + str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/\//g, '&#x2f;');
+	}
+
+	/**
+	 * @param {string} str
+	 * @return {string}
+	 */
+	unescapeHTML(str) {
+		if (!str) return '';
+		return ('' + str).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#x2f;/g, '/').replace(/&#39;/g, "'").replace(/&#34;/g, '"');
+	}
+
+	/**
 	 * @param {any} text
 	 * @param {any} [room]
 	 * @return {string}
