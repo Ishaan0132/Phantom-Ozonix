@@ -74,9 +74,9 @@ class Trivia extends Games.Game {
 		if (this.variation) {
 			category = this.variation;
 		} else {
-			category = Tools.sample(this.categories);
+			category = Tools.sampleOne(this.categories);
 		}
-		let question = Tools.sample(this.questions[category]);
+		let question = Tools.sampleOne(this.questions[category]);
 		this.answers = data[category][question];
 		this.hint = "**" + category + "**: " + question;
 	}

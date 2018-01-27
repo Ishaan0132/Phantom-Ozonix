@@ -67,9 +67,9 @@ class Anagrams extends Games.Game {
 		if (this.variation) {
 			category = this.variation;
 		} else {
-			category = Tools.sample(this.categories);
+			category = Tools.sampleOne(this.categories);
 		}
-		let anagram = Tools.sample(data[category]);
+		let anagram = Tools.sampleOne(data[category]);
 		let id = Tools.toId(anagram);
 		let letters = Tools.shuffle(id.split(""));
 		while (letters.join("") === id) {

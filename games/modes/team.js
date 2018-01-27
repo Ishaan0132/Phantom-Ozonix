@@ -38,7 +38,7 @@ class TeamGame extends Games.Game {
 	onSignups() {}
 
 	onStart() {
-		let teamNames = Tools.sample(Tools.data.teams);
+		let teamNames = Tools.sampleOne(Tools.data.teams);
 		this.teamA = "Team " + teamNames[0];
 		this.teamB = "Team " + teamNames[1];
 		let teamAPlayers = [];

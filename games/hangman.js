@@ -75,10 +75,10 @@ class Hangman extends Games.Game {
 		if (this.variation) {
 			category = this.variation;
 		} else {
-			category = Tools.sample(this.categories);
+			category = Tools.sampleOne(this.categories);
 		}
 		this.currentCategory = category;
-		let word = Tools.sample(data[category]);
+		let word = Tools.sampleOne(data[category]);
 		this.answers = [word];
 		this.solvedLetters = [];
 		this.guessedLetters = [];

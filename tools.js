@@ -365,7 +365,6 @@ class Tools {
 	 * @return {Array}
 	 */
 	shuffle(array) {
-		if (!(array instanceof Array)) return array;
 		array = array.slice();
 
 		// Fisher-Yates shuffle algorithm
@@ -388,18 +387,26 @@ class Tools {
 
 	/**
 	 * @param {Array} array
-	 * @param {number} [amount]
 	 */
-	sample(array, amount) {
-		if (!(array instanceof Array)) return;
+	sampleOne(array) {
 		let len = array.length;
-		if (!len) return;
-		if (len === 1 || !amount || amount === 1) return array.slice()[Math.floor(Math.random() * len)];
-		if (amount > len) {
-			amount = len;
-		} else if (amount < 0) {
-			amount = 0;
-		}
+		if (!len) throw new Error("Tools.sampleOne() does not accept empty arrays");
+		if (len === 1) return array.slice()[0];
+		return this.shuffle(array)[0];
+	}
+
+	/**
+	 * @param {Array} array
+	 * @param {number | string} amount
+	 * @return {Array}
+	 */
+	sampleMany(array, amount) {
+		let len = array.length;
+		if (!len) throw new Error("Tools.sampleMany() does not accept empty arrays");
+		if (len === 1) return array.slice();
+		if (typeof amount === 'string') amount = parseInt(amount);
+		if (!amount || isNaN(amount)) throw new Error("Invalid amount in Tools.sampleMany()");
+		if (amount > len) amount = len;
 		return this.shuffle(array).splice(0, amount);
 	}
 
