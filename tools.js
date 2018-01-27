@@ -361,8 +361,9 @@ class Tools {
 	}
 
 	/**
-	 * @param {Array} array
-	 * @return {Array}
+	 * @template T
+	 * @param {Array<T>} array
+	 * @return {Array<T>}
 	 */
 	shuffle(array) {
 		array = array.slice();
@@ -386,7 +387,9 @@ class Tools {
 	}
 
 	/**
-	 * @param {Array} array
+	 * @template T
+	 * @param {Array<T>} array
+	 * @return {T}
 	 */
 	sampleOne(array) {
 		let len = array.length;
@@ -396,9 +399,10 @@ class Tools {
 	}
 
 	/**
-	 * @param {Array} array
+	 * @template T
+	 * @param {Array<T>} array
 	 * @param {number | string} amount
-	 * @return {Array}
+	 * @return {Array<T>}
 	 */
 	sampleMany(array, amount) {
 		let len = array.length;

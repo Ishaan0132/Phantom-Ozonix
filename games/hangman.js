@@ -52,12 +52,15 @@ class Hangman extends Games.Game {
 		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
-		this.hint = '';
+		/**@type {Array<string>} */
+		this.hint = [];
 		this.points = new Map();
 		this.maxPoints = 3;
 		this.categories = Object.keys(data);
 		this.currentCategory = '';
 		this.guessLimit = 10;
+		/**@type {Array<string>} */
+		this.letters = [];
 		/**@type {Array<string>} */
 		this.guessedLetters = [];
 		/**@type {Array<string>} */
