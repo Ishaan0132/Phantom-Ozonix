@@ -12,12 +12,12 @@
 const name = 'Team';
 const id = Tools.toId(name);
 
-class TeamGame extends Games.Game {
+/**@augments Game */
+class TeamGame {
 	/**
 	 * @param {Game} game
 	 */
 	constructor(game) {
-		super(game.room);
 		this.name = name + ' ' + game.name;
 		this.id = id + game.id;
 		this.freeJoin = false;
@@ -31,8 +31,6 @@ class TeamGame extends Games.Game {
 		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
-
-		this.override = ['name', 'id', 'freeJoin', 'teamA', 'teamB', 'points', 'maxPoints', 'minPlayers', 'onSignups', 'onStart', 'onNextRound', 'guess'];
 	}
 
 	onSignups() {}
@@ -115,9 +113,10 @@ class TeamGame extends Games.Game {
  */
 let TeamMode = function (game) {
 	let mode = new TeamGame(game);
-	for (let i = 0, len = mode.override.length; i < len; i++) {
+	let override = Object.getOwnPropertyNames(mode).concat(Object.getOwnPropertyNames(TeamGame.prototype));
+	for (let i = 0, len = override.length; i < len; i++) {
 		// @ts-ignore
-		game[mode.override[i]] = mode[mode.override[i]];
+		game[override[i]] = mode[override[i]];
 	}
 };
 

@@ -12,12 +12,12 @@
 const name = 'Survival';
 const id = Tools.toId(name);
 
-class SurvivalGame extends Games.Game {
+/**@augments Game */
+class SurvivalGame {
 	/**
 	 * @param {Game} game
 	 */
 	constructor(game) {
-		super(game.room);
 		this.name = game.name + ' ' + name;
 		this.id = game.id + id;
 		this.freeJoin = false;
@@ -29,8 +29,6 @@ class SurvivalGame extends Games.Game {
 		this.answers = [];
 		/**@type {?NodeJS.Timer} */
 		this.timeout = null;
-
-		this.override = ['name', 'id', 'freeJoin', 'playerList', 'survivalRound', 'roundTime', 'onSignups', 'onStart', 'onNextRound', 'onEnd', 'guess'];
 	}
 
 	onSignups() {}
@@ -111,9 +109,10 @@ class SurvivalGame extends Games.Game {
  */
 let SurvivalMode = function (game) {
 	let mode = new SurvivalGame(game);
-	for (let i = 0, len = mode.override.length; i < len; i++) {
+	let override = Object.getOwnPropertyNames(mode).concat(Object.getOwnPropertyNames(SurvivalGame.prototype));
+	for (let i = 0, len = override.length; i < len; i++) {
 		// @ts-ignore
-		game[mode.override[i]] = mode[mode.override[i]];
+		game[override[i]] = mode[override[i]];
 	}
 };
 
