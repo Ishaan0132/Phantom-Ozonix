@@ -75,6 +75,7 @@ function parseYouTubeLink(room, link) {
 				try {
 					let parsed = JSON.parse(data);
 					if (parsed.title) {
+						if (parsed.title.charAt(0) === '/' || parsed.title.charAt(0) === '!') return room.say("Unable to fetch title.");
 						let title = parsed.title.toLowerCase();
 						for (let i = 0, len = Config.bannedWords.length; i < len; i++) {
 							if (title.includes(Config.bannedWords[i])) return room.say("Unable to fetch title.");
