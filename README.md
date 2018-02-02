@@ -50,11 +50,13 @@ From this point on, you can start the bot by running the following command:
 
   * Quinton Lee ([@sirDonovan][5]) - Lead developer
   * [Pokemon Showdown][1] - In-game data files, Tools module, and various helper functions
+  * Contributors[6]
 
   [5]: https://github.com/sirDonovan
+  [6]: https://github.com/sirDonovan/Cassius/graphs/contributors
 
 ## License
 
-  Cassius is distributed under the terms of the [MIT License][6].
+  Cassius is distributed under the terms of the [MIT License][7].
 
-  [6]: https://github.com/sirDonovan/Cassius/blob/master/LICENSE
+  [7]: https://github.com/sirDonovan/Cassius/blob/master/LICENSE
