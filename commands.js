@@ -34,6 +34,11 @@ let commands = {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
 	},
+	help: function (target, room, user) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		if (!Config.guide) return this.say("There is no guide available.");
+		this.say(Users.self.name + " guide: " + Config.guide);
+	},
 	mail: function (target, room, user) {
 		if (!(room instanceof Users.User) || !Config.allowMail) return;
 		let targets = target.split(',');

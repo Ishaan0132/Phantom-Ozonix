@@ -20,6 +20,9 @@ exports.server = '';
 // The avatar that Cassius will use
 exports.avatar = '';
 
+// A guide for commands and features
+exports.guide = '';
+
 // Rooms that Cassius will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
 /**@type {Array<string>} */
