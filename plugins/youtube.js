@@ -75,12 +75,13 @@ function parseYouTubeLink(room, link) {
 				try {
 					let parsed = JSON.parse(data);
 					if (parsed.title) {
-						if (parsed.title.charAt(0) === '/' || parsed.title.charAt(0) === '!') return room.say("Unable to fetch title.");
-						let title = parsed.title.toLowerCase();
+						let title = Tools.trim(parsed.title);
+						if (title.charAt(0) === '/' || title.charAt(0) === '!') return room.say("Unable to fetch title.");
+						let titleLower = title.toLowerCase();
 						for (let i = 0, len = Config.bannedWords.length; i < len; i++) {
-							if (title.includes(Config.bannedWords[i])) return room.say("Unable to fetch title.");
+							if (titleLower.includes(Config.bannedWords[i])) return room.say("Unable to fetch title.");
 						}
-						room.say(parsed.title + " - by " + parsed['author_name']);
+						room.say(title + " - by " + parsed['author_name']);
 					}
 				} catch (e) {}
 			}

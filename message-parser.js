@@ -9,8 +9,6 @@
 
 'use strict';
 
-const whitespaceRegex = new RegExp('\\s+', 'g');
-const nullCharactersRegex = new RegExp('[\u0000\u200B-\u200F]+', 'g');
 const capsRegex = new RegExp('[A-Z]', 'g');
 const stretchRegex = new RegExp('(.+)\\1+', 'g');
 
@@ -433,7 +431,7 @@ class MessageParser {
 		}
 		if (!Config.punishmentPoints || !Config.punishmentActions) return;
 
-		message = message.trim().replace(whitespaceRegex, '').replace(nullCharactersRegex, '');
+		message = Tools.trim(message);
 
 		let data = user.roomData.get(room);
 		if (!data) {

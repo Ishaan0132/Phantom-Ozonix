@@ -13,6 +13,9 @@ const https = require('https');
 const url = require('url');
 const Data = require('./tools-data');
 
+const whitespaceRegex = new RegExp('\\s+', 'g');
+const nullCharactersRegex = new RegExp('[\u0000\u200B-\u200F]+', 'g');
+
 /**
 * @typedef Learnset
 * @type {Object}
@@ -276,6 +279,14 @@ class Tools {
 		text = this.toString(text);
 		if (!text) return '';
 		return text.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+	}
+
+	/**
+	 * @param {string} text
+	 * @return {string}
+	 */
+	trim(text) {
+		return text.trim().replace(whitespaceRegex, ' ').replace(nullCharactersRegex, '');
 	}
 
 	/**
