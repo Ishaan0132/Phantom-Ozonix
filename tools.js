@@ -37,6 +37,7 @@ const nullCharactersRegex = new RegExp('[\u0000\u200B-\u200F]+', 'g');
 * @property {Array<string>} [randomDoubleBattleMoves]
 * @property {Array<{generation: number, level?: number, moves?: Array<string>, abilities?: Array<string>, pokeball?: string, gender?: string, isHidden?: boolean, shiny?: number | boolean, ivs?: {[k: string]: number}, nature?: string}>} [eventPokemon]
 * @property {string} [tier]
+* @property {string} [doublesTier]
 * @property {string} [requiredItem]
 */
 
@@ -436,13 +437,46 @@ class Tools {
 			name = this.data.aliases[id];
 			id = this.toId(name);
 		}
-		// @ts-ignore
-		if (id === 'constructor' || !(id in this.data.pokedex)) return null;
 		let pokemon = this.PokemonCache.get(id);
 		if (pokemon) return pokemon;
+		// @ts-ignore
+		if (id === 'constructor') return null;
+		if (!(id in this.data.pokedex)) {
+			let aliasTo = '';
+			if (id.startsWith('mega') && this.data.pokedex[id.slice(4) + 'mega']) {
+				aliasTo = id.slice(4) + 'mega';
+			} else if (id.startsWith('m') && this.data.pokedex[id.slice(1) + 'mega']) {
+				aliasTo = id.slice(1) + 'mega';
+			} else if (id.startsWith('primal') && this.data.pokedex[id.slice(6) + 'primal']) {
+				aliasTo = id.slice(6) + 'primal';
+			} else if (id.startsWith('p') && this.data.pokedex[id.slice(1) + 'primal']) {
+				aliasTo = id.slice(1) + 'primal';
+			}
+			if (aliasTo) {
+				pokemon = this.getPokemon(aliasTo);
+				if (pokemon) {
+					this.PokemonCache.set(id, pokemon);
+					return pokemon;
+				}
+			}
+			// @ts-ignore
+			return null;
+		}
 		pokemon = new Data.Pokemon(name, this.data.pokedex[id], this.data.learnsets[id], this.data.formatsData[id]);
-		if (!pokemon.tier && pokemon.baseSpecies !== pokemon.species) pokemon.tier = this.data.formatsData[this.toId(pokemon.baseSpecies)].tier;
+		if (!pokemon.tier && !pokemon.doublesTier && pokemon.baseSpecies !== pokemon.species) {
+			if (pokemon.baseSpecies === 'Mimikyu') {
+				pokemon.tier = this.data.formatsData[this.toId(pokemon.baseSpecies)].tier;
+				pokemon.doublesTier = this.data.formatsData[this.toId(pokemon.baseSpecies)].doublesTier;
+			} else if (pokemon.speciesid.endsWith('totem')) {
+				pokemon.tier = this.data.formatsData[pokemon.speciesid.slice(0, -5)].tier;
+				pokemon.doublesTier = this.data.formatsData[pokemon.speciesid.slice(0, -5)].doublesTier;
+			} else {
+				pokemon.tier = this.data.formatsData[this.toId(pokemon.baseSpecies)].tier;
+				pokemon.doublesTier = this.data.formatsData[this.toId(pokemon.baseSpecies)].doublesTier;
+			}
+		}
 		if (!pokemon.tier) pokemon.tier = 'Illegal';
+		if (!pokemon.doublesTier) pokemon.doublesTier = pokemon.tier;
 		this.PokemonCache.set(id, pokemon);
 		return pokemon;
 	}
