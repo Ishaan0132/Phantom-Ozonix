@@ -20,7 +20,6 @@
     "exclude": [
 		"data",
 		"databases",
-		"node_modules",
-		"test"
+		"node_modules"
     ]
 }

@@ -68,6 +68,8 @@ class Game {
 		this.timeout = null;
 		/**@type {?string} */
 		this.variation = null;
+		/**@type {?{[k: string]: string}} */
+		this.commands = null;
 		/**@type {?boolean | {[k: string]: boolean}} */
 		this.pmCommands = null;
 		/**@type {?Array<string>} */
