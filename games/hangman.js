@@ -18,25 +18,25 @@ const data = {
 };
 
 for (let i in Tools.data.pokedex) {
-	let pokemon = Tools.getPokemon(i);
+	let pokemon = Tools.getExistingPokemon(i);
 	if (!pokemon.species) continue;
 	data["Pokemon"].push(pokemon.species);
 }
 
 for (let i in Tools.data.moves) {
-	let move = Tools.getMove(i);
+	let move = Tools.getExistingMove(i);
 	if (!move.name) continue;
 	data["Pokemon Moves"].push(move.name);
 }
 
 for (let i in Tools.data.items) {
-	let item = Tools.getItem(i);
+	let item = Tools.getExistingItem(i);
 	if (!item.name) continue;
 	data["Pokemon Items"].push(item.name);
 }
 
 for (let i in Tools.data.abilities) {
-	let ability = Tools.getAbility(i);
+	let ability = Tools.getExistingAbility(i);
 	if (!ability.name) continue;
 	data["Pokemon Abilities"].push(ability.name);
 }

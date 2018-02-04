@@ -428,7 +428,7 @@ class Tools {
 
 	/**
 	 * @param {Pokemon | string} name
-	 * @return {Pokemon}
+	 * @return {?Pokemon}
 	 */
 	getPokemon(name) {
 		if (name instanceof Data.Pokemon) return name;
@@ -439,7 +439,6 @@ class Tools {
 		}
 		let pokemon = this.PokemonCache.get(id);
 		if (pokemon) return pokemon;
-		// @ts-ignore
 		if (id === 'constructor') return null;
 		if (!(id in this.data.pokedex)) {
 			let aliasTo = '';
@@ -453,13 +452,12 @@ class Tools {
 				aliasTo = id.slice(1) + 'primal';
 			}
 			if (aliasTo) {
-				pokemon = this.getPokemon(aliasTo);
+				let pokemon = this.getPokemon(aliasTo);
 				if (pokemon) {
 					this.PokemonCache.set(id, pokemon);
 					return pokemon;
 				}
 			}
-			// @ts-ignore
 			return null;
 		}
 		pokemon = new Data.Pokemon(name, this.data.pokedex[id], this.data.learnsets[id], this.data.formatsData[id]);
@@ -482,8 +480,18 @@ class Tools {
 	}
 
 	/**
+	 * @param {Pokemon | string} name
+	 * @return {Pokemon}
+	 */
+	getExistingPokemon(name) {
+		let pokemon = this.getPokemon(name);
+		if (!pokemon) throw new Error("Expected Pokemon for '" + name + "'");
+		return pokemon;
+	}
+
+	/**
 	 * @param {Move | string} name
-	 * @return {Move}
+	 * @return {?Move}
 	 */
 	getMove(name) {
 		if (name instanceof Data.Move) return name;
@@ -492,7 +500,6 @@ class Tools {
 			name = this.data.aliases[id];
 			id = this.toId(name);
 		}
-		// @ts-ignore
 		if (id === 'constructor' || !(id in this.data.moves)) return null;
 		let move = this.MoveCache.get(id);
 		if (move) return move;
@@ -502,8 +509,18 @@ class Tools {
 	}
 
 	/**
+	 * @param {Move | string} name
+	 * @return {Move}
+	 */
+	getExistingMove(name) {
+		let move = this.getMove(name);
+		if (!move) throw new Error("Expected move for '" + name + "'");
+		return move;
+	}
+
+	/**
 	 * @param {Item | string} name
-	 * @return {Item}
+	 * @return {?Item}
 	 */
 	getItem(name) {
 		if (name instanceof Data.Item) return name;
@@ -512,7 +529,6 @@ class Tools {
 			name = this.data.aliases[id];
 			id = this.toId(name);
 		}
-		// @ts-ignore
 		if (id === 'constructor' || !(id in this.data.items)) return null;
 		let item = this.ItemCache.get(id);
 		if (item) return item;
@@ -522,8 +538,18 @@ class Tools {
 	}
 
 	/**
+	 * @param {Item | string} name
+	 * @return {Item}
+	 */
+	getExistingItem(name) {
+		let item = this.getItem(name);
+		if (!item) throw new Error("Expected item for '" + name + "'");
+		return item;
+	}
+
+	/**
 	 * @param {Ability | string} name
-	 * @return {Ability}
+	 * @return {?Ability}
 	 */
 	getAbility(name) {
 		if (name instanceof Data.Ability) return name;
@@ -532,7 +558,6 @@ class Tools {
 			name = this.data.aliases[id];
 			id = this.toId(name);
 		}
-		// @ts-ignore
 		if (id === 'constructor' || !(id in this.data.abilities)) return null;
 		let ability = this.AbilityCache.get(id);
 		if (ability) return ability;
@@ -542,8 +567,18 @@ class Tools {
 	}
 
 	/**
+	 * @param {Ability | string} name
+	 * @return {Ability}
+	 */
+	getExistingAbility(name) {
+		let ability = this.getAbility(name);
+		if (!ability) throw new Error("Expected ability for '" + name + "'");
+		return ability;
+	}
+
+	/**
 	 * @param {Format | string} name
-	 * @return {Format}
+	 * @return {?Format}
 	 */
 	getFormat(name) {
 		if (name instanceof Data.Format) return name;
@@ -552,12 +587,21 @@ class Tools {
 			name = this.data.aliases[id];
 			id = this.toId(name);
 		}
-		// @ts-ignore
 		if (id === 'constructor' || !(id in MessageParser.formatsData)) return null;
 		let format = this.FormatCache.get(id);
 		if (format) return format;
 		format = new Data.Format(name, MessageParser.formatsData[id]);
 		this.FormatCache.set(id, format);
+		return format;
+	}
+
+	/**
+	 * @param {Format | string} name
+	 * @return {Format}
+	 */
+	getExistingFormat(name) {
+		let format = this.getFormat(name);
+		if (!format) throw new Error("Expected format for '" + name + "'");
 		return format;
 	}
 
