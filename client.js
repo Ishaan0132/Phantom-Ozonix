@@ -47,8 +47,7 @@ if (forever) {
 class Client {
 	constructor() {
 		this.serverId = serverId;
-		this.challengeKeyId = '';
-		this.challenge = '';
+		this.challstr = '';
 		/**@type {Array<string>} */
 		this.messageQueue = [];
 		this.messageQueueTimeout = null;
@@ -208,8 +207,7 @@ class Client {
 				'act': 'login',
 				'name': Config.username,
 				'pass': Config.password,
-				'challengekeyid': this.challengeKeyId,
-				'challenge': this.challenge,
+				'challstr': this.challstr,
 			});
 			options.headers = {
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -220,8 +218,7 @@ class Client {
 			options.path += '?' + querystring.stringify({
 				'act': 'getassertion',
 				'userid': Tools.toId(Config.username),
-				'challengekeyid': this.challengeKeyId,
-				'challenge': this.challenge,
+				'challstr': this.challstr,
 			});
 		}
 
@@ -235,6 +232,9 @@ class Client {
 				if (data === ';') {
 					console.log('Failed to log in: invalid password');
 					process.exit();
+				} else if (data.charAt(0) !== ']') {
+					console.log('Failed to log in: ' + data);
+					process.exit();
 				} else if (data.startsWith('<!DOCTYPE html>')) {
 					console.log('Failed to log in: connection timed out. Trying again in ' + RETRY_SECONDS + ' seconds');
 					setTimeout(() => this.login(), RETRY_SECONDS * 1000);
@@ -243,13 +243,10 @@ class Client {
 					console.log('Failed to log in: the login server is under heavy load. Trying again in ' + RETRY_SECONDS + ' seconds');
 					setTimeout(() => this.login(), RETRY_SECONDS * 1000);
 					return;
-				} else if (data.length < 50) {
-					console.log('Failed to log in: ' + data);
-					process.exit();
 				} else {
 					if (Config.password) {
 						let assertion = JSON.parse(data.substr(1));
-						if (assertion.actionsuccess) {
+						if (assertion.actionsuccess && assertion.assertion) {
 							data = assertion.assertion;
 						} else {
 							console.log('Failed to log in: ' + JSON.stringify(assertion));

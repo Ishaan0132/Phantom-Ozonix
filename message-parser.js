@@ -147,8 +147,7 @@ class MessageParser {
 		}
 		switch (messageType) {
 		case 'challstr':
-			Client.challengeKeyId = splitMessage[0];
-			Client.challenge = splitMessage[1];
+			Client.challstr = splitMessage.join("|");
 			Client.login();
 			break;
 		case 'updateuser':
