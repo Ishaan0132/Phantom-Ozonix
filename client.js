@@ -15,13 +15,15 @@ const url = require('url');
 const querystring = require('querystring');
 const MESSAGE_THROTTLE = 600;
 const REQUEST_THROTTLE = 4000;
-const RETRY_SECONDS = 60;
+const BASE_RECONNECT_SECONDS = 60;
+const RELOGIN_SECONDS = 60;
 
 let server = 'play.pokemonshowdown.com';
 if (Config.server && Config.server !== server) {
 	server = Config.server.includes('.psim.us') ? Config.server : Config.server + '.psim.us';
 }
 let serverId = 'showdown';
+let reconnections = 0;
 
 /**@type {Array<string>} */
 let bannedWords = Config.bannedWords && Array.isArray(Config.bannedWords) ? Config.bannedWords.map(x => x.toLowerCase()) : [];
@@ -81,17 +83,18 @@ class Client {
 	onConnectFail(error) {
 		if (this.connectTimeout) clearTimeout(this.connectTimeout);
 		if (error) console.log(error.stack);
-		console.log('Failed to connect to server ' + server + '\nRetrying in ' + RETRY_SECONDS + ' seconds');
-		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+		reconnections++;
+		let retryTime = BASE_RECONNECT_SECONDS * reconnections;
+		console.log('Failed to connect to server ' + server + '\nRetrying in ' + retryTime + ' seconds' + (reconnections > 1 ? ' (' + reconnections + ')' : ''));
+		this.connectTimeout = setTimeout(() => this.connect(), retryTime * 1000);
 	}
 
 	/**
 	 * @param {Error} error
 	 */
 	onConnectionError(error) {
-		if (this.connectTimeout) clearTimeout(this.connectTimeout);
 		console.log('Connection error: ' + error.stack);
-		this.connectTimeout = setTimeout(() => this.connect(), RETRY_SECONDS * 1000);
+		// 'close' is emitted directly after 'error' so reconnecting is handled in onConnectionClose
 	}
 
 	/**
@@ -100,21 +103,24 @@ class Client {
 	 */
 	onConnectionClose(code, description) {
 		if (this.connectTimeout) clearTimeout(this.connectTimeout);
-		let retryTime = RETRY_SECONDS;
+		let reconnectTime;
 		if (this.lockdown) {
 			console.log("Connection closed: the server restarted");
-			retryTime = 15;
+			reconnections = 0;
+			reconnectTime = 15;
 			if (bootedWithForever) {
-				setTimeout(() => process.exit(), retryTime * 1000);
+				setTimeout(() => process.exit(), reconnectTime * 1000);
 				return;
 			}
 		} else {
 			console.log('Connection closed: ' + description + ' (' + code + ')');
+			reconnections++;
+			reconnectTime = BASE_RECONNECT_SECONDS * reconnections;
 		}
-		console.log('Reconnecting in ' + retryTime + ' seconds');
+		console.log('Reconnecting in ' + reconnectTime + ' seconds' + (reconnections > 1 ? ' (' + reconnections + ')' : ''));
 		Rooms.destroyRooms();
 		Users.destroyUsers();
-		this.connectTimeout = setTimeout(() => this.connect(), retryTime * 1000);
+		this.connectTimeout = setTimeout(() => this.connect(), reconnectTime * 1000);
 	}
 
 	connect() {
@@ -224,12 +230,12 @@ class Client {
 					console.log('Failed to log in: ' + data);
 					process.exit();
 				} else if (data.startsWith('<!DOCTYPE html>')) {
-					console.log('Failed to log in: connection timed out. Trying again in ' + RETRY_SECONDS + ' seconds');
-					setTimeout(() => this.login(), RETRY_SECONDS * 1000);
+					console.log('Failed to log in: connection timed out. Trying again in ' + RELOGIN_SECONDS + ' seconds');
+					setTimeout(() => this.login(), RELOGIN_SECONDS * 1000);
 					return;
 				} else if (data.includes('heavy load')) {
-					console.log('Failed to log in: the login server is under heavy load. Trying again in ' + RETRY_SECONDS + ' seconds');
-					setTimeout(() => this.login(), RETRY_SECONDS * 1000);
+					console.log('Failed to log in: the login server is under heavy load. Trying again in ' + RELOGIN_SECONDS + ' seconds');
+					setTimeout(() => this.login(), RELOGIN_SECONDS * 1000);
 					return;
 				} else {
 					if (Config.password) {
