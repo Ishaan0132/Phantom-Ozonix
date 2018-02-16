@@ -118,12 +118,6 @@ class Client {
 	}
 
 	connect() {
-		let characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
-		let string = '';
-		for (let i = 0, len = characters.length; i < 8; i++) {
-			string += characters[Math.floor((Math.random() * len))];
-		}
-
 		let options = {
 			hostname: 'play.pokemonshowdown.com',
 			path: '/crossdomain.php?' + querystring.stringify({host: server, path: ''}),
@@ -143,7 +137,7 @@ class Client {
 					if (typeof config === 'string') config = JSON.parse(config); // encoded twice by the server
 					if (config.host) {
 						if (config.id) this.serverId = config.id;
-						this.client.connect('ws://' + (config.host === 'showdown' ? 'sim.smogon.com' : config.host) + ':' + (config.port || 8000) + '/showdown/' + Math.floor(Math.random() * 1000) + '/' + string + '/websocket');
+						this.client.connect('ws://' + (config.host === 'showdown' ? 'sim.smogon.com' : config.host) + ':' + (config.port || 8000) + '/showdown/websocket');
 						return;
 					}
 				}
@@ -157,37 +151,31 @@ class Client {
 	}
 
 	/**
-	 * @param {{type: string, utf8Data?: string}} incomingMessage
+	 * @param {{type: string, utf8Data?: string}} message
 	 */
-	onMessage(incomingMessage) {
-		if (incomingMessage.type !== 'utf8' || !incomingMessage.utf8Data || incomingMessage.utf8Data.charAt(0) !== 'a') return;
-		/**@type {Array<string>} */
-		let message = JSON.parse(incomingMessage.utf8Data.substr(1));
-		if (!(message instanceof Array)) message = [message];
-		for (let i = 0, len = message.length; i < len; i++) {
-			if (!message[i]) continue;
-			let room = Rooms.add('lobby');
-			if (!message[i].includes('\n')) return MessageParser.parse(message[i], room);
+	onMessage(message) {
+		if (message.type !== 'utf8' || !message.utf8Data) return;
+		let room = Rooms.add('lobby');
+		if (!message.utf8Data.includes('\n')) return MessageParser.parse(message.utf8Data, room);
 
-			let lines = message[i].split('\n');
-			if (lines[0].charAt(0) === '>') {
-				room = Rooms.add(lines[0].substr(1));
-				lines.shift();
-			}
-			for (let i = 0, len = lines.length; i < len; i++) {
-				if (lines[i].startsWith('|init|')) {
-					MessageParser.parse(lines[i], room);
-					lines = lines.slice(i + 1);
-					for (let i = 0, len = lines.length; i < len; i++) {
-						if (lines[i].startsWith('|users|')) {
-							MessageParser.parse(lines[i], room);
-							break;
-						}
-					}
-					return;
-				}
+		let lines = message.utf8Data.split('\n');
+		if (lines[0].charAt(0) === '>') {
+			room = Rooms.add(lines[0].substr(1));
+			lines.shift();
+		}
+		for (let i = 0, len = lines.length; i < len; i++) {
+			if (lines[i].startsWith('|init|')) {
 				MessageParser.parse(lines[i], room);
+				lines = lines.slice(i + 1);
+				for (let i = 0, len = lines.length; i < len; i++) {
+					if (lines[i].startsWith('|users|')) {
+						MessageParser.parse(lines[i], room);
+						break;
+					}
+				}
+				return;
 			}
+			MessageParser.parse(lines[i], room);
 		}
 	}
 
@@ -273,7 +261,6 @@ class Client {
 			this.messageQueue.push(message);
 			return;
 		}
-		message = JSON.stringify([message]);
 		if (bannedWords.length) {
 			let lower = message.toLowerCase();
 			for (let i = 0, len = bannedWords.length; i < len; i++) {
