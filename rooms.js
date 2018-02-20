@@ -33,17 +33,6 @@ class Room {
 	onJoin(user, rank) {
 		this.users.set(user, rank);
 		user.rooms.set(this, rank);
-		if (user.rooms.size === 1) {
-			let database = Storage.getDatabase('global');
-			if (user.id in database.mail) {
-				let mail = database.mail[user.id];
-				for (let i = 0, len = mail.length; i < len; i++) {
-					user.say("[" + Tools.toDurationString(Date.now() - mail[i].time) + " ago] **" + mail[i].from + "** said: " + mail[i].text);
-				}
-				delete database.mail[user.id];
-				Storage.exportDatabase('global');
-			}
-		}
 	}
 
 	/**

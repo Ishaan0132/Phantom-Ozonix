@@ -262,6 +262,14 @@ class MessageParser {
 			let user = Users.add(splitMessage[0]);
 			if (!user) return;
 			room.onJoin(user, splitMessage[0].charAt(0));
+			if (Storage.globalDatabase.mail && user.id in Storage.globalDatabase.mail) {
+				let mail = Storage.globalDatabase.mail[user.id];
+				for (let i = 0, len = mail.length; i < len; i++) {
+					user.say("[" + Tools.toDurationString(Date.now() - mail[i].time) + " ago] **" + mail[i].from + "** said: " + mail[i].text);
+				}
+				delete Storage.globalDatabase.mail[user.id];
+				Storage.exportDatabase('global');
+			}
 			break;
 		}
 		case 'L':

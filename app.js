@@ -42,6 +42,7 @@ Games.loadGames();
 
 global.Storage = require('./storage.js');
 Storage.importDatabases();
+Storage.globalDatabase = Storage.getDatabase('global');
 
 let pluginsList;
 let plugins = fs.readdirSync('./plugins');
