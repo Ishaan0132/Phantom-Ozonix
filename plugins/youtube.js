@@ -20,6 +20,7 @@ const linkCooldowns = {};
  * @param {Array<string>} splitMessage
  */
 function parseMessage(room, messageType, splitMessage) {
+	if (room.id !== 'youtube') return;
 	switch (messageType) {
 	case 'c': {
 		let message = splitMessage.slice(1).join('|');
