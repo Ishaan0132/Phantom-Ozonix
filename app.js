@@ -38,7 +38,6 @@ global.Client = require('./client.js');
 global.Tournaments = require('./tournaments');
 
 global.Games = require('./games.js');
-Games.loadGames();
 
 global.Storage = require('./storage.js');
 Storage.importDatabases();
@@ -63,5 +62,6 @@ for (let i = 0, len = plugins.length; i < len; i++) {
 global.Plugins = pluginsList;
 
 if (require.main === module) {
+	Games.loadGames();
 	Client.connect();
 }

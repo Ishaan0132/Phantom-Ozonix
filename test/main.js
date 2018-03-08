@@ -11,3 +11,6 @@ const room = Rooms.add('mocha');
 room.on = function (message, listener) {
 	listener();
 };
+
+Tools.freezeData();
+Games.loadGames();

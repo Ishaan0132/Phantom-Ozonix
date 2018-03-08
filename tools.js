@@ -752,6 +752,48 @@ class Tools {
 		if (text) request.write(text);
 		request.end();
 	}
+
+	/**
+	 * @template T
+	 * @param {T} obj
+	 * @return {T}
+	 */
+	deepFreeze(obj) {
+		if (!obj) return obj;
+		let type = typeof obj;
+		if (type === 'function' || type === 'string' || type === 'number') return obj;
+		if (obj instanceof Array) {
+			for (let i = 0; i < obj.length; i++) {
+				this.deepFreeze(obj[i]);
+			}
+		} else if (obj instanceof Object) {
+			for (let i in obj) {
+				this.deepFreeze(obj[i]);
+			}
+		}
+		Object.freeze(obj);
+		return obj;
+	}
+
+	freezeData() {
+		for (let i in this.data.pokedex) {
+			this.deepFreeze(this.getPokemon(i));
+		}
+
+		for (let i in this.data.moves) {
+			this.deepFreeze(this.getMove(i));
+		}
+
+		for (let i in this.data.items) {
+			this.deepFreeze(this.getItem(i));
+		}
+
+		for (let i in this.data.abilities) {
+			this.deepFreeze(this.getAbility(i));
+		}
+
+		this.deepFreeze(this.data);
+	}
 }
 
 let tools = new Tools();
