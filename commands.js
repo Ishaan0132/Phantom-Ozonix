@@ -55,13 +55,13 @@ let commands = {
 			for (let i = 0, len = database.mail[to].length; i < len; i++) {
 				if (Tools.toId(database.mail[to][i].from) === user.id) queued++;
 			}
-			if (queued >= 3) return this.say("You have too many messages queued for " + targets[0] + ".");
+			if (queued >= 3) return this.say("You have too many messages queued for " + Users.add(targets[0]).name + ".");
 		} else {
 			database.mail[to] = [];
 		}
 		database.mail[to].push({time: Date.now(), from: user.name, text: message});
 		Storage.exportDatabase('global');
-		this.say("Your message has been sent to " + targets[0] + "!");
+		this.say("Your message has been sent to " + Users.add(targets[0]).name + "!");
 	},
 
 	// Game commands
