@@ -76,6 +76,8 @@ class Games {
 
 		this.Game = Game;
 		this.Player = Player;
+		// typescript hack for optional game methods
+		this.selfPlayer = new Player(Users.self);
 	}
 
 	loadGames() {

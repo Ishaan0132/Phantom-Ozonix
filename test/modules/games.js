@@ -51,10 +51,9 @@ describe('Games', function () {
 			it('should have the necessary functions', function () {
 				if (!room.game) throw new Error("Game not created.");
 				if (room.game.freeJoin) {
-					assert(typeof room.game.onSignups === 'function');
+					assert(room.game.onSignups);
 				} else {
-					let beginningFunction = room.game.onSignups || room.game.onStart;
-					assert(typeof beginningFunction === 'function');
+					assert(room.game.onSignups || room.game.onStart);
 				}
 				if (room.game.modeId) {
 					let mode = Games.modes[room.game.modeId];

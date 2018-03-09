@@ -60,6 +60,7 @@ class TeamGame {
 		if (this.answers.length) {
 			this.say("Time's up! The answer" + (this.answers.length > 1 ? 's were' : ' was') + ": __" + this.answers.join(", ") + "__");
 		}
+		// @ts-ignore - existence checked in tests
 		this.setAnswers();
 		this.on(this.hint, () => {
 			this.timeout = setTimeout(() => this.nextRound(), 10 * 1000);

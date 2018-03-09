@@ -31,6 +31,7 @@ class Player {
 
 exports.Player = Player;
 
+/**@augments BaseGame */
 class Game {
 	/**
 	 * @param {Room} room
@@ -81,37 +82,6 @@ class Game {
 		/**@type {?Map<Player, boolean>} */
 		this.roundGuesses = null;
 	}
-
-	onSignups() {}
-
-	onStart() {}
-
-	onNextRound() {}
-
-	onEnd() {}
-
-	/**
-	 * @param {Map<Player, number>} winners
-	 */
-	onChildEnd(winners) {}
-
-	/**
-	 * @param {Player} player
-	 * @param {boolean} [lateJoin]
-	 */
-	onJoin(player, lateJoin) {}
-
-	/**
-	 * @param {Player} player
-	 */
-	onLeave(player) {}
-
-	/**
-	 * @param {Player} player
-	 */
-	onRename(player) {}
-
-	setAnswers() {}
 
 	/**
 	 * @param {string} message;
@@ -200,7 +170,7 @@ class Game {
 	signups() {
 		this.say("Hosting a game of " + this.name + "! " + (this.freeJoin ? "(free join)" : "If you would like to play, use the command ``" + Config.commandCharacter + "join``."));
 		if (this.description) this.say("Description: " + this.description);
-		if (typeof this.onSignups === 'function') this.onSignups();
+		if (this.onSignups) this.onSignups();
 		if (this.freeJoin) this.started = true;
 	}
 
@@ -208,18 +178,18 @@ class Game {
 		if (this.started) return;
 		if (this.playerCount < this.minPlayers) return this.say(this.name + " must have at least " + this.minPlayers + " players.");
 		this.started = true;
-		if (typeof this.onStart === 'function') this.onStart();
+		if (this.onStart) this.onStart();
 	}
 
 	end() {
 		if (this.ended) return;
 		if (this.timeout) clearTimeout(this.timeout);
-		if (typeof this.onEnd === 'function') this.onEnd();
+		if (this.onEnd) this.onEnd();
 		this.ended = true;
 		this.room.game = null;
 		if (this.parentGame) {
 			this.room.game = this.parentGame;
-			if (typeof this.parentGame.onChildEnd === 'function') this.parentGame.onChildEnd(this.winners);
+			if (this.parentGame.onChildEnd) this.parentGame.onChildEnd(this.winners);
 		}
 	}
 
@@ -238,7 +208,7 @@ class Game {
 	nextRound() {
 		if (this.timeout) clearTimeout(this.timeout);
 		this.round++;
-		if (typeof this.onNextRound === 'function') this.onNextRound();
+		if (this.onNextRound) this.onNextRound();
 	}
 
 	/**
@@ -279,8 +249,8 @@ class Game {
 		player.id = user.id;
 		this.players[user.id] = player;
 		delete this.players[oldId];
-		if (typeof this.onRename === 'function') this.onRename(player);
-		if (this.parentGame && typeof this.parentGame.onRename === 'function') this.parentGame.onRename(player);
+		if (this.onRename) this.onRename(player);
+		if (this.parentGame && this.parentGame.onRename) this.parentGame.onRename(player);
 	}
 
 	/**
@@ -303,7 +273,7 @@ class Game {
 			lateJoin = true;
 		}
 		let player = this.addPlayer(user);
-		this.onJoin(player, lateJoin);
+		if (this.onJoin) this.onJoin(player, lateJoin);
 		if (lateJoin) {
 			user.say('You have late-joined the game of ' + this.name + '!');
 		} else {
@@ -324,7 +294,7 @@ class Game {
 		let player = this.players[user.id];
 		this.removePlayer(user);
 		user.say("You have left the game of " + this.name + "!");
-		if (typeof this.onLeave === 'function') this.onLeave(player);
+		if (this.onLeave) this.onLeave(player);
 	}
 
 	/**
@@ -433,25 +403,6 @@ class Game {
 	}
 
 	/**
-	 * @param {string} answer
-	 * @returns {number}
-	 */
-	pointsPerAnswer(answer) {
-		return 1;
-	}
-
-	/**
-	 * @param {string} guess
-	 */
-	filterGuess(guess) {}
-
-	/**
-	 * @param {string} guess
-	 * @param {Player} player
-	 */
-	onGuess(guess, player) {}
-
-	/**
 	 * @param {string} guess
 	 * @param {Room} room
 	 * @param {User} user
@@ -473,7 +424,11 @@ class Game {
 		}
 		if (this.timeout) clearTimeout(this.timeout);
 		let points = this.points.get(player) || 0;
-		points += this.pointsPerAnswer(guess);
+		if (this.pointsPerAnswer) {
+			points += this.pointsPerAnswer(guess);
+		} else {
+			points += 1;
+		}
 		this.points.set(player, points);
 		if (points >= this.maxPoints) {
 			this.winners.set(player, points);

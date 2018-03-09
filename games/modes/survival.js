@@ -56,6 +56,7 @@ class SurvivalGame {
 			this.onNextRound();
 			return;
 		}
+		// @ts-ignore - existence checked in tests
 		this.setAnswers();
 		this.say("**" + currentPlayer.name + "** you're up!");
 		this.currentPlayer = currentPlayer;
