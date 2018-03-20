@@ -101,8 +101,23 @@ describe('Games', function () {
 					room.game.signups();
 					room.game.start();
 				}
-				room.game.nextRound();
+				if (room.game.started) room.game.nextRound();
 				if (room.game) room.game.forceEnd();
+			});
+			it('should support leaving at any point and late-joining when permitted', function () {
+				if (!room.game) throw new Error("Game not created.");
+				room.game.signups();
+				assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[0]) === true);
+				assert(MessageParser.parseCommand(Config.commandCharacter + 'leavegame', room, users[0]) === true);
+
+				room.game.forceEnd();
+				Games.createGame(game, room);
+				for (let i = 1, len = users.length; i < len; i++) {
+					assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[i]) === true);
+				}
+				room.game.start();
+				assert(MessageParser.parseCommand(Config.commandCharacter + 'joingame', room, users[0]) === true);
+				assert(MessageParser.parseCommand(Config.commandCharacter + 'leavegame', room, users[1]) === true);
 			});
 			it('commands should run at any time', function () {
 				if (!room.game) throw new Error("Game not created.");
