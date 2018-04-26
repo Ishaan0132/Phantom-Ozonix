@@ -56,6 +56,7 @@ let commands = {
 		if (!user.hasRank(room, database.defaultRanks['quotes'])) return;
 		target = target.trim();
 		if (!target) return this.say("Please use the following format: .addquote quote");
+		if (target.startsWith("/") || target.startsWith("!")) return this.say("You can't use a command in your quote.");
 		let quotes = database.quotes;
 		let index = quotes.findIndex(/**@param {string} quote */ quote => Tools.toId(quote) === Tools.toId(target));
 		if (index >= 0) return this.say("That quote already exists.");
