@@ -38,3 +38,4 @@ config.js
 plugins/private.js
 databases/*
 !databases/README.md
+package-lock.json

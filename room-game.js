@@ -159,8 +159,10 @@ class Game {
 		this.points.forEach((points, player) => {
 			let bits = 0;
 			if (this.winners.has(player)) {
+				// @ts-ignore
 				bits = winnerPointsToBits * points;
 			} else {
+				// @ts-ignore
 				bits = loserPointsToBits * points;
 			}
 			if (bits) this.addBits(bits, player);
