@@ -602,6 +602,9 @@ class Tools {
 			name = this.data.aliases[id];
 			id = this.toId(name);
 		}
+		if ('gen' + this.gen + id in MessageParser.formatsData) {
+			id = 'gen' + this.gen + id;
+		}
 		if (id === 'constructor' || !(id in MessageParser.formatsData)) return null;
 		let format = this.FormatCache.get(id);
 		if (format) return format;
