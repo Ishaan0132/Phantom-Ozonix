@@ -16,6 +16,8 @@ const data = {
 	"Pokemon Items": [],
 	"Pokemon Abilities": [],
 };
+data["Pokemon Badges"] = Tools.data.badges.slice();
+data["Pokemon Characters"] = Tools.data.characters.slice();
 
 for (let i in Tools.data.pokedex) {
 	let pokemon = Tools.getExistingPokemon(i);

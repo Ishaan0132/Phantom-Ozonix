@@ -52,8 +52,10 @@ const nullCharactersRegex = new RegExp('[\u0000\u200B-\u200F]+', 'g');
 * @property {{[k: string]: Learnset}} learnsets
 * @property {{[k: string]: TypeChart}} typeChart
 * @property {{[k: string]: FormatData}} formatsData
+* @property {Array<string>} badges
+* @property {Array<string>} characters
 * @property {Array<Array<string>>} teams
-* @property {Array<String>} trainerClasses
+* @property {Array<string>} trainerClasses
 */
 
 class Tools {
@@ -68,6 +70,8 @@ class Tools {
 			learnsets: {},
 			typeChart: {},
 			formatsData: {},
+			badges: [],
+			characters: [],
 			teams: [],
 			trainerClasses: [],
 		};
@@ -106,6 +110,8 @@ class Tools {
 		this.loadAliases();
 		this.loadLearnsets();
 		this.loadFormatsData();
+		this.loadBadges();
+		this.loadCharacters();
 		this.loadTeams();
 		this.loadTrainerClasses();
 
@@ -206,6 +212,30 @@ class Tools {
 			}
 		}
 		if (formatsData) this.data.formatsData = formatsData;
+	}
+
+	loadBadges() {
+		let badges;
+		try {
+			badges = require(this.dataFilePath + 'badges.js').BattleBadges;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (badges) this.data.badges = badges;
+	}
+
+	loadCharacters() {
+		let characters;
+		try {
+			characters = require(this.dataFilePath + 'characters.js').BattleCharacters;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (characters) this.data.characters = characters;
 	}
 
 	loadTeams() {
