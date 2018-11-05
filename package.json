@@ -16,15 +16,15 @@
 		"url": "https://github.com/sirDonovan/Cassius.git"
 	},
 	"dependencies": {
-		"websocket": "^1.0.25"
+		"websocket": "1.0.28"
 	},
 	"devDependencies": {
-		"typescript": "^2.8.3",
+		"typescript": "2.8.3",
 		"eslint": "4.16.0",
 		"mocha": "5.0.0",
-		"@types/mocha": "^2.2.41",
-		"@types/node": "^8.5.8",
-		"@types/websocket": "^0.0.33"
+		"@types/mocha": "2.2.41",
+		"@types/node": "8.5.8",
+		"@types/websocket": "0.0.33"
 	},
 	"engine-strict": true,
 	"engines": {

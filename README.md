@@ -5,18 +5,23 @@ A bot for [Pokemon Showdown][1].
 
   [1]: https://github.com/Zarel/Pokemon-Showdown
 
+## Inactivity notice - November 5, 2018
+Cassius has been succeeded by [Lanette][2] and is no longer actively developed.
+
+  [2]: https://github.com/sirDonovan/Lanette
+
 ## Installation
-Cassius requires [Node.js][2] version 6.0.0 or later and a command line (e.g. `Command Prompt` on Windows or `Terminal` on Mac OS/Linux) to run. Once you have compatible software, complete installation by following these steps:
+Cassius requires [Node.js][3] version 6.0.0 or later and a command line (e.g. `Command Prompt` on Windows or `Terminal` on Mac OS/Linux) to run. Once you have compatible software, complete installation by following these steps:
 
 1. Obtain a copy of Cassius
 
-  You can do this through the [GitHub client][3] by clicking the "Clone or download" button on the home page of the repository and then clicking "Open in Desktop". You can also use the following [Git][4] command:
+  You can do this through the [GitHub client][4] by clicking the "Clone or download" button on the home page of the repository and then clicking "Open in Desktop". You can also use the following [Git][5] command:
   
   `git clone https://github.com/sirDonovan/Cassius.git`
 
-  [2]: https://nodejs.org/
-  [3]: https://desktop.github.com/
-  [4]: https://git-scm.com/
+  [3]: https://nodejs.org/
+  [4]: https://desktop.github.com/
+  [5]: https://git-scm.com/
 
 2. Navigate to the root directory
 
@@ -42,21 +47,17 @@ From this point on, you can start the bot by running the following command:
 
   `node app.js`
 
-## Development
+## Credits
 
-  Issues and pull requests are welcomed! When submitting a pull request, be sure that you have installed development dependencies and ran `npm test` to check for errors in your code.
-
-#### Credits
-
-  * Quinton Lee ([@sirDonovan][5]) - Lead developer
+  * Quinton Lee ([@sirDonovan][6]) - Lead developer
   * [Pokemon Showdown][1] - In-game data files, Tools module, and various helper functions
-  * [Contributors][6]
+  * [Contributors][7]
 
-  [5]: https://github.com/sirDonovan
-  [6]: https://github.com/sirDonovan/Cassius/graphs/contributors
+  [6]: https://github.com/sirDonovan
+  [7]: https://github.com/sirDonovan/Cassius/graphs/contributors
 
 ## License
 
-  Cassius is distributed under the terms of the [MIT License][7].
+  Cassius is distributed under the terms of the [MIT License][8].
 
-  [7]: https://github.com/sirDonovan/Cassius/blob/master/LICENSE
+  [8]: https://github.com/sirDonovan/Cassius/blob/master/LICENSE
