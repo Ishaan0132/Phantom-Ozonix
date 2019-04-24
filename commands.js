@@ -1,8 +1,8 @@
 /**
  * Commands
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
- * This file contains the base commands for Cassius.
+ * This file contains the base commands for Phantom Ozonix.
  *
  * @license MIT license
  */
@@ -32,7 +32,7 @@ let commands = {
 	// General commands
 	about: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		this.say(Config.username + " code by sirDonovan: https://github.com/sirDonovan/Cassius");
+		this.say(Config.username + " code by A Flying Phantom: https://github.com/PowerHitter0418/Phantom-Ozonix");
 	},
 	help: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
