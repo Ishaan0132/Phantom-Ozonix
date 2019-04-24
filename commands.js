@@ -28,6 +28,24 @@ let commands = {
 			this.say(e.name + ": " + e.message);
 		}
 	},
+	custom: 'c',
+	c: function (target, room, user) {
+		if (!user.isDeveloper() || !target) return;
+		this.say(target);
+	},
+	uptime: function (target, room, user, pm) {
+		let uptime = process.uptime();
+		let uptimeText;
+		if (uptime > 24 * 60 * 60) {
+			let uptimeDays = Math.floor(uptime / (24 * 60 * 60));
+			uptimeText = uptimeDays + " " + (uptimeDays === 1 ? "day" : "days");
+			let uptimeHours = Math.floor(uptime / (60 * 60)) - uptimeDays * 24;
+			if (uptimeHours) uptimeText += ", " + uptimeHours + " " + (uptimeHours === 1 ? "hour" : "hours");
+		} else {
+			uptimeText = Tools.toDurationString(uptime * 1000);
+		}
+		this.say("Uptime: **" + uptimeText + "**");
+	},
 
 	// General commands
 	about: function (target, room, user) {
