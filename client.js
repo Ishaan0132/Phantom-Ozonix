@@ -1,6 +1,6 @@
 /**
  * Client
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * This file connects to the server and handles incoming/outgoing messages.
  *
