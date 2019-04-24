@@ -1,6 +1,6 @@
 /**
  * Rooms
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * This file tracks information about the rooms that the bot joins.
  *
