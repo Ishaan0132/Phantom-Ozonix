@@ -1,6 +1,6 @@
 /**
  * Room Game
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * This file contains the base player and game classes
  *
