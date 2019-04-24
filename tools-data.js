@@ -1,6 +1,6 @@
 /**
  * Tools data
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * @license MIT license
  */
