@@ -1,6 +1,6 @@
 /**
  * Quotes
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * Manages the quotes system for the bot, allowing the adding,
  * removing, and viewing of added quotes.
