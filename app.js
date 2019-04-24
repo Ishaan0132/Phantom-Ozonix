@@ -2,7 +2,7 @@
  * App
  * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
- * This is the main file that starts Cassius.
+ * This is the main file that starts Phantom Ozonix.
  *
  * @license MIT license
  */
