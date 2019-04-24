@@ -1,6 +1,6 @@
 /**
  * Example module
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * Plugins make it easier to have custom commands and
  * modules while rebasing with the main repository.
