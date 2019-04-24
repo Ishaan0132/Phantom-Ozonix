@@ -1,29 +1,29 @@
 /**
  * Config (example)
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
- * Copy this file to 'config.js' before starting Cassius.
+ * Copy this file to 'config.js' before starting Phantom Ozonix.
  *
  * @license MIT license
  */
 
 'use strict';
 
-// The username and password that Cassius will use to login
+// The username and password that Phantom Ozonix will use to login
 exports.username = 'Example Username';
 // leave this blank if the username is unregistered
 exports.password = '';
 
-// The server address to which Cassius will connect
+// The server address to which Phantom Ozonix will connect
 exports.server = '';
 
-// The avatar that Cassius will use
+// The avatar that Phantom Ozonix will use
 exports.avatar = '';
 
 // A guide for commands and features
 exports.guide = '';
 
-// Rooms that Cassius will attempt to join after logging in
+// Rooms that Phantom Ozonix will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
 /**@type {Array<string>} */
 exports.rooms = [];
@@ -60,7 +60,7 @@ exports.groups = {
 /**@type {Array<string>} */
 exports.bannedWords = [];
 
-// Userids of those who have debug access to Cassius
+// Userids of those who have debug access to Phantom Ozonix
 // example: exports.developers = ['devuser1', 'devuser2', 'devuser3'];
 /**@type {Array<string>} */
 exports.developers = [];
@@ -90,7 +90,7 @@ for (let i in punishmentPoints) {
 exports.punishmentPoints = punishmentPoints;
 exports.punishmentActions = punishmentActions;
 
-// Reasons used when Cassius punishes a user for
+// Reasons used when Phantom Ozonix punishes a user for
 // flooding, stretching, caps, etc.
 // example: punishmentReasons = {'flooding': 'please do not flood the chat'}
 
