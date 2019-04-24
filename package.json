@@ -1,10 +1,10 @@
 {
-	"name": "cassius",
+	"name": "Phantom-Ozonix",
 	"version": "0.4.0",
 	"description": "A bot for Pokemon Showdown",
 	"author": {
-		"name": "Quinton Lee",
-		"email": "quivistis@gmail.com"
+		"name": "A Flying Phantom",
+		"email": "ishaan0132@gmail.com"
 	},
 	"scripts": {
 		"start": "node app.js",
@@ -13,7 +13,7 @@
 	"main": "app.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sirDonovan/Cassius.git"
+		"url": "https://github.com/PowerHitter0418/Phantom-Ozonix.git"
 	},
 	"dependencies": {
 		"websocket": "1.0.28"
