@@ -1,6 +1,6 @@
 /**
  * YouTube
- * Cassius - https://github.com/sirDonovan/Cassius
+ * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
  *
  * Fetches YouTube video information and handles
  * adding videos to the database
