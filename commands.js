@@ -46,6 +46,11 @@ let commands = {
 		}
 		this.say("Uptime: **" + uptimeText + "**");
 	},
+	kill: function (target, room, user) {
+        if (!user.isDeveloper()) return false;
+	console.log('Killed by ' + user.name.blue);
+	process.exit(-1);
+        },
 
 	// General commands
 	about: function (target, room, user) {
