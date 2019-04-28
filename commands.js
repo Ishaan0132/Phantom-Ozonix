@@ -48,7 +48,7 @@ let commands = {
 	},
 	kill: function (target, room, user) {
         if (!user.isDeveloper()) return false;
-	console.log('Killed by ' + user.name.blue);
+	console.log('Killed by ' + user.name);
 	process.exit(-1);
         },
 
