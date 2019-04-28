@@ -6,7 +6,9 @@
  *
  * @license MIT license
  */
+ var request = require("request");
 
+ let data;
 'use strict';
 
 // Users who use the settour command when a tournament is already
@@ -228,6 +230,27 @@ let commands = {
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
 	},
+	joke: function (arg, user, room)
+             {
+
+                var jokesAPI = "https://api.icndb.com/jokes?escape=javascript";
+                let self=this;
+                request(jokesAPI, function(err, resp, body){
+                    if(!err && resp.statusCode == 200){
+                     data = JSON.parse(body);
+                     var jokes = [];
+                     for (var i = 0; i < data.value.length; i++) {
+                        jokes.push(data.value[i].joke);
+                      }
+                      var random = Math.floor(Math.random() * jokes.length);
+                      self.restrictReply(jokes[random]);
+                    }
+              });
+               
+              
+                               
+          },
+	
 };
 
 module.exports = commands;
