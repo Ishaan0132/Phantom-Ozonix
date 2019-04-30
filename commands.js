@@ -231,6 +231,13 @@ let commands = {
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
 	},
+	iq: function (arg, user, room) {
+          if (!arg) return this.say('You didn\'t specify a person');
+          this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
+          var x = Math.floor((Math.random() * 200) + 1);
+          this.say('The iq of ' + arg + 'is :  ' +   x );
+         
+        },
 	joke: function (arg, user, room)
              {
 
