@@ -8,7 +8,8 @@
  */
  var request = require("request");
 
- let data;
+         let data;
+
 'use strict';
 
 // Users who use the settour command when a tournament is already
