@@ -6,6 +6,9 @@
  *
  * @license MIT license
  */
+ var request = require("request");
+
+         let data;
 
 'use strict';
 
@@ -47,9 +50,9 @@ let commands = {
 		this.say("Uptime: **" + uptimeText + "**");
 	},
 	kill: function (target, room, user) {
-        if (!user.isDeveloper()) return false;
-	console.log('Killed by ' + user.name.blue);
-	process.exit(-1);
+    if (!user.isDeveloper()) return false;
+	  console.log('Killed by ' + user.name);
+	  process.exit(-1);
         },
 
 	// General commands
@@ -228,6 +231,27 @@ let commands = {
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
 	},
+	joke: function (arg, user, room)
+             {
+
+                var jokesAPI = "https://api.icndb.com/jokes?escape=javascript";
+                let self=this;
+                request(jokesAPI, function(err, resp, body){
+                    if(!err && resp.statusCode == 200){
+                     data = JSON.parse(body);
+                     var jokes = [];
+                     for (var i = 0; i < data.value.length; i++) {
+                        jokes.push(data.value[i].joke);
+                      }
+                      var random = Math.floor(Math.random() * jokes.length);
+                      self.restrictReply(jokes[random]);
+                    }
+              });
+               
+              
+                               
+          },
+	
 };
 
 module.exports = commands;

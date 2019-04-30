@@ -1,5 +1,4 @@
 # Phantom Ozonix
-[![Build Status](https://travis-ci.org/PowerHitter0418/Phantom-Ozonix.svg)](https://travis-ci.org/PowerHitter0418/Phantom-Ozonix)
 
 A bot for [Pokemon Showdown][1].
 
