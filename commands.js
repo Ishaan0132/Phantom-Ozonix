@@ -231,6 +231,29 @@ let commands = {
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
 	},
+	iq: function (arg, user, room) {
+          if (!arg) return this.say('You didn\'t specify a person');
+          this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
+          var x = Math.floor((Math.random() * 200) + 1);
+          this.say('The iq of ' + arg + 'is :  ' +   x );
+         
+        },
+	generation: function (arg, user, room) {
+        var url = "http://pokeapi.co/api/v2/generation/"+arg;
+        let self=this;
+        request(url, function(err, resp, body){
+            if(!err && resp.statusCode == 200){
+             data = JSON.parse(body);
+             var htmltext = "!addhtmlbox <ul>"
+             data["pokemon_species"].sort().forEach(function(pokemon){
+                 htmltext+= '<li>' +  pokemon.name  + '</li>' }) 
+           
+            htmltext+="</ul>";
+                               
+            self.say(htmltext)   
+            }
+        });                      
+      },
 	joke: function (arg, user, room)
              {
 
@@ -244,7 +267,7 @@ let commands = {
                         jokes.push(data.value[i].joke);
                       }
                       var random = Math.floor(Math.random() * jokes.length);
-                      self.restrictReply(jokes[random]);
+                      self.say(jokes[random]);
                     }
               });
                
