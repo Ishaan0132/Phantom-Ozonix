@@ -231,6 +231,9 @@ let commands = {
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
 	},
+	
+	// Other commands
+	
 	iq: function (arg, user, room) {
           if (!arg) return this.say('You didn\'t specify a person');
           this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
