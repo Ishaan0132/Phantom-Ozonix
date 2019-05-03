@@ -11,7 +11,7 @@ Phantom Ozonix requires [Node.js][2] version 6.0.0 or later and a command line (
 
   You can do this through the [GitHub client][3] by clicking the "Clone or download" button on the home page of the repository and then clicking "Open in Desktop". You can also use the following [Git][4] command:
   
-  `git clone https://github.com/sirDonovan/Phantom-Ozonix.git`
+  `git clone https://github.com/PowerHitter0418/Phantom-Ozonix.git`
 
   [2]: https://nodejs.org/
   [3]: https://desktop.github.com/
