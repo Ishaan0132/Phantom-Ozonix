@@ -6,9 +6,9 @@
  *
  * @license MIT license
  */
- var request = require("request");
+ /**var request = require("request");
 
-         let data;
+         let data;**/
 
 'use strict';
 
@@ -257,7 +257,7 @@ let commands = {
             }
         });                      
       },
-	joke: function (arg, user, room)
+	/**joke: function (arg, user, room)
              {
 
                 var jokesAPI = "https://api.icndb.com/jokes?escape=javascript";
@@ -276,7 +276,7 @@ let commands = {
                
               
                                
-          },
+          },**/
 	
 };
 
