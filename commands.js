@@ -65,6 +65,13 @@ let commands = {
 		if (!Config.guide) return this.say("There is no guide available.");
 		this.say(Users.self.name + " guide: " + Config.guide);
 	},
+	choose: 'pick',
+	pick: function (target, room, user, pm) {
+		if (target.length < 3 || !~target.indexOf(',')) return this.say("You must give at least 2 valid choices", room);
+		let targets = target.split(',');
+		let pick = targets[Math.floor(Math.random() * targets.length)];
+		this.say("Random pick: " + pick);
+	},
 	mail: function (target, room, user) {
 		if (!(room instanceof Users.User) || !Config.allowMail) return;
 		let targets = target.split(',');
