@@ -54,6 +54,18 @@ let commands = {
 	  console.log('Killed by ' + user.name);
 	  process.exit(-1);
         },
+	jr: 'joinroom',
+        joinroom: function (target, room, user, pm) {
+		if (!user.isDeveloper()) return false;
+		if (!target) return this.say("Usage: " + Config.commandCharacter + "joinroom [room]");
+		this.say("/join " + target);
+	},
+        lr: 'leaveroom',
+        leaveroom: function (target, room, user, pm) {
+		if (!user.isDeveloper()) return false;
+                if (!target) return this.say("Usage: " + Config.commandCharacter + "leaveroom [room]");
+		this.say("/leave " + target);
+	},
 
 	// General commands
 	about: function (target, room, user) {
