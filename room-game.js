@@ -435,7 +435,7 @@ class Game {
 		if (points >= this.maxPoints) {
 			this.winners.set(player, points);
 			this.say("Correct! " + user.name + " wins the game! (Answer" + (this.answers.length > 1 ? "s" : "") + ": __" + this.answers.join(", ") + "__)");
-                        Storage.addPoints(10, user, this.room.id);
+                        Storage.addPoints(20, user, this.room.id);
                         Storage.exportDatabase(room.id);
 			this.end();
 			return;
