@@ -276,6 +276,21 @@ let commands = {
             }
         });                      
       },
+          ping: function (target, room, user) {
+          if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+          var rate = Math.floor((Math.random() * 10) + 1);
+          if(rate == 1){
+          this.say("You win");
+    } 
+
+          else if(rate == 4){
+          this.say("You lose");
+        //  this.say("/mute " + user.id + ", fuck u");
+    }
+    else{
+      this.say("Pong!");
+
+  }},
 	/**joke: function (arg, user, room)
              {
 
