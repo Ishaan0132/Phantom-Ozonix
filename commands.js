@@ -260,7 +260,7 @@ let commands = {
           this.say('The iq of ' + arg + 'is :  ' +   x );
          
         },
-	generation: function (arg, user, room) {
+	/*generation: function (arg, user, room) {
         var url = "http://pokeapi.co/api/v2/generation/"+arg;
         let self=this;
         request(url, function(err, resp, body){
@@ -275,7 +275,7 @@ let commands = {
             self.say(htmltext)   
             }
         });                      
-      },
+      },*/
           ping: function (target, room, user) {
           if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
           var rate = Math.floor((Math.random() * 10) + 1);
