@@ -291,6 +291,13 @@ let commands = {
       this.say("Pong!");
 
   }},
+	j: 'judge',
+        judge:  function (target, room, user) {
+        var judgement = [" is so cute"," is the worst!!!"," is um eh not bad "," is the best"," is ok"];
+        var rand = Math.floor((Math.random() * 4) + 1); 
+        if (!["!", "/"].includes(target.charAt(0))) 
+        this.say(target.split('/') + judgement[rand]);
+  },
 	/**joke: function (arg, user, room)
              {
 
