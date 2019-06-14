@@ -21,7 +21,7 @@ exports.server = '';
 exports.avatar = '';
 
 // A guide for commands and features
-exports.guide = '';
+exports.guide = 'https://github.com/PowerHitter0418/Phantom-Ozonix/blob/master/Guide.md';
 
 // Rooms that Phantom Ozonix will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
