@@ -292,6 +292,12 @@ let commands = {
       this.say("Pong!");
 
   }},
+	randtype: 'type',
+        type: function (target, user, room) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		let types = ["Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"];
+                this.say("Randomly generated type:" + "**" + Tools.sampleOne(types) + "**");
+  },
 	j: 'judge',
         judge:  function (target, room, user) {
         var judgement = [" is so cute"," is the worst!!!"," is um eh not bad "," is the best"," is ok"];
