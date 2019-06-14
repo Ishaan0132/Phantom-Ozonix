@@ -72,6 +72,7 @@ let commands = {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		this.say(Config.username + " code by A Flying Phantom: https://github.com/PowerHitter0418/Phantom-Ozonix");
 	},
+	git: 'help',
 	help: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (!Config.guide) return this.say("There is no guide available.");
