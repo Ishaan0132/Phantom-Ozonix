@@ -187,6 +187,7 @@ class Client {
 
 	login() {
 		let action = url.parse('https://play.pokemonshowdown.com/~~' + this.serverId + '/action.php');
+                /**@type {{[k: string]: number}} */
 		let options = {
 			hostname: action.hostname,
 			path: action.pathname,
