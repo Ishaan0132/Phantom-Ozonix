@@ -43,6 +43,7 @@ exports.defaultTournamentCap = 0;
 exports.commandCharacter = '.';
 
 // Symbols and rankings for the server's user groups
+/**@type {{[k: string]: number}} */
 exports.groups = {
 	'\u203d': 0,
 	'!': 0,
