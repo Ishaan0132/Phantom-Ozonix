@@ -75,6 +75,7 @@ exports.moderate = null;
 /**@type {boolean | {[k: string]: boolean}} */
 exports.allowModeration = false;
 
+/**@type {{[k: string]: number}} */
 let punishmentPoints = {
 	'verbalwarn': 0,
 	'warn': 1,
@@ -83,6 +84,7 @@ let punishmentPoints = {
 	'roomban': 4,
 };
 
+/**@type {{[k: string]: string}} */
 let punishmentActions = {};
 for (let i in punishmentPoints) {
 	punishmentActions['' + punishmentPoints[i]] = i;
