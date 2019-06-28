@@ -94,6 +94,7 @@ class Context {
 				// @ts-ignore Typescript bug - issue #10530
 				newCommand = Commands[newCommand];
 			}
+                        // @ts-ignore
 			command = newCommand;
 			if (newTarget) {
 				target = newTarget.trim();
@@ -126,7 +127,9 @@ exports.Context = Context;
 
 class MessageParser {
 	constructor() {
+                /**@type {string[]} */
 		this.formatsList = [];
+                /**@type {{[k: string]: {name: string, id: string, section: string, searchShow: boolean, challengeShow: boolean, tournamentShow: boolean, playable: boolean}}} */
 		this.formatsData = {};
 		this.globalContext = new Context('', Rooms.globalRoom, Users.self, '', '');
 	}
