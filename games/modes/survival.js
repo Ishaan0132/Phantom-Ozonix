@@ -21,6 +21,7 @@ class SurvivalGame {
 		this.name = game.name + ' ' + name;
 		this.id = game.id + id;
 		this.freeJoin = false;
+                /**@type {Player[]} */
 		this.playerList = [];
 		this.survivalRound = 0;
 		this.roundTime = 9000;
