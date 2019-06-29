@@ -12,6 +12,7 @@
 
 const https = require('https');
 const youtubeRegex = /https:\/\/(youtu\.be\/|(www\.)?youtube\.com\/watch\?v=)[A-Za-z0-9\-_]{11}/g;
+/**@type {{[k: string]: number}} */
 const linkCooldowns = {};
 
 /**
