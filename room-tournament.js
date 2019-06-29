@@ -9,6 +9,7 @@
 
 'use strict';
 
+/**@type {{[k: string]: number}} */
 const generators = {
 	"Single": 1,
 	"Double": 2,
@@ -73,7 +74,9 @@ class Tournament {
 		this.createTime = Date.now();
 		this.startTime = 0;
 		this.maxRounds = 6;
+		/**@type {AnyObject} */
 		this.info = {};
+		/**@type {AnyObject} */
 		this.updates = {};
 	}
 
@@ -161,7 +164,9 @@ class Tournament {
 
 	updateBracket() {
 		let data = this.info.bracketData;
+		/**@type {{[k: string]: string}} */
 		let players = {};
+		/**@type {{[k: string]: number}} */
 		let losses = {};
 		if (data.type === 'tree') {
 			if (data.rootNode) {
