@@ -10,6 +10,30 @@
 
          let data;**/
 
+class MATH {
+  add(a,b){
+    let result = +a + +b;
+    return result;
+  }
+  
+  substract(a,b){
+    let result = a - b;
+    return result;
+  }
+  
+  mult(a,b){
+    let result = a * b;
+    return result;
+  }
+  
+  div(a,b){
+    let result = a / b;
+    return result;
+  }
+}
+
+let math = new MATH();
+
 'use strict';
 
 // Users who use the settour command when a tournament is already
@@ -305,6 +329,46 @@ let commands = {
         if (!["!", "/"].includes(target.charAt(0))) 
         this.say(target.split('/') + judgement[rand]);
   },
+        calculate: function(target, room, user){
+        let myArray;
+        if(target.includes('+')){
+        myArray = target.split('+');
+        this.say(math.add(myArray[0],myArray[1]));
+    }
+       if(target.includes('-')){
+       myArray = target.split('-');
+       this.say(math.substract(myArray[0],myArray[1]));
+    } 
+       if(target.includes('*')){
+       myArray = target.split('*');
+       this.say(math.mult(myArray[0],myArray[1]));
+    }
+     
+      if(target.includes('/')){
+      myArray = target.split('/');
+      this.say(math.div(myArray[0],myArray[1]));
+    }
+  },
+      reversio: function(target, room, user){
+    let str = target;
+    
+    var n = str.includes("!");
+    if(n)
+    {return this.say("you cant use ! in your sentence");
+    }
+        var m = str.includes("/");
+    if(m)
+    {return this.say("you cant use / in your sentence");
+    }
+     var splitString = str.split("");
+    var reverseArray = splitString.reverse();
+      var joinArray = reverseArray.join("");
+    
+     if(joinArray == target) {
+       return this.say("you spotted a palindrome! " + joinArray);}
+    return this.say(joinArray);
+  },
+
 	/**joke: function (arg, user, room)
              {
 
