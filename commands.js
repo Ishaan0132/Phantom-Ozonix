@@ -6,33 +6,11 @@
  *
  * @license MIT license
  */
+
  /**var request = require("request");
 
          let data;**/
 
-class MATH {
-  add(a,b){
-    let result = +a + +b;
-    return result;
-  }
-  
-  substract(a,b){
-    let result = a - b;
-    return result;
-  }
-  
-  mult(a,b){
-    let result = a * b;
-    return result;
-  }
-  
-  div(a,b){
-    let result = a / b;
-    return result;
-  }
-}
-
-let math = new MATH();
 
 'use strict';
 
@@ -329,25 +307,14 @@ let commands = {
         if (!["!", "/"].includes(target.charAt(0))) 
         this.say(target.split('/') + judgement[rand]);
   },
+        cal : 'calculate',
         calculate: function(target, room, user){
-        let myArray;
-        if(target.includes('+')){
-        myArray = target.split('+');
-        this.say(math.add(myArray[0],myArray[1]));
-    }
-       if(target.includes('-')){
-       myArray = target.split('-');
-       this.say(math.substract(myArray[0],myArray[1]));
-    } 
-       if(target.includes('*')){
-       myArray = target.split('*');
-       this.say(math.mult(myArray[0],myArray[1]));
-    }
-     
-      if(target.includes('/')){
-      myArray = target.split('/');
-      this.say(math.div(myArray[0],myArray[1]));
-    }
+        let alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z'];
+        let cond = true;
+        for(let i = 0;i < alphabets.length;i++){
+        if(target.includes(alphabets[i])) cond = false;
+  }
+        if(cond == true) return this.say(eval(target));
   },
       reversio: function(target, room, user){
     let str = target;
