@@ -317,24 +317,29 @@ let commands = {
         if(cond == true) return this.say(eval(target));
   },
       reversio: function(target, room, user){
-    let str = target;
+     let str = target;
     
-    var n = str.includes("!");
-    if(n)
-    {return this.say("you cant use ! in your sentence");
+     var n = str.includes("!");
+     if(n)
+     {return this.say("you cant use ! in your sentence");
     }
         var m = str.includes("/");
-    if(m)
-    {return this.say("you cant use / in your sentence");
+     if(m)
+     {return this.say("you cant use / in your sentence");
     }
      var splitString = str.split("");
-    var reverseArray = splitString.reverse();
+     var reverseArray = splitString.reverse();
       var joinArray = reverseArray.join("");
     
-     if(joinArray == target) {
-       return this.say("you spotted a palindrome! " + joinArray);}
-    return this.say(joinArray);
+      if(joinArray == target) {
+        return this.say("You spotted a palindrome! " + joinArray);}
+      return this.say(joinArray);
   },
+	roast: function (target, user, room) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		let roasts = ["If i wanted to die, I would climb to the top of " + target + "'s ego and jump to their IQ", target + ", I was going to give you a nasty look but I see that you’ve already got one.", target + ", you always bring me so much joy. As soon as you leave the room.", target + ", some day you'll go far - and i really hope you stay there.", "To call " + target + " a donkey would be an insult to the donkey.", target + ", You're the reason the gene pool needs a lifeguard", target + "'s breath is so bad, their dentist treats them over the phone.", "I tried making " + target + " my password but my computer said it was too weak.", "If laughter is the best medicine, " + target + "'s face must be curing the world.", target + ", you remind me of Kurt Angle. You suck!", target + ', your presence here is as bad as __OM Room__\'s theme', target + ", you remind me of gold. You weigh a fuck ton.", target + ", your body looks like a kindergartners attempt to make a person out of playdoh", target + ", my mom asked me to take out the trash so what time should I pick you up?", "No, those __pants__ don't make " + target + " look fatter - how could they?", "If " + target + " is gonna be two-faced, why can't at least one of them be attractive?", "Accidents happen. LIKE YOU!", target + " is proof god has a sense of humor"];
+		this.say(Tools.sampleOne(roasts));
+	},
 
 	/**joke: function (arg, user, room)
              {
