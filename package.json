@@ -16,13 +16,14 @@
 		"url": "https://github.com/PowerHitter0418/Phantom-Ozonix.git"
 	},
 	"dependencies": {
-		"websocket": "1.0.28"
+		"websocket": "1.0.29"
 	},
 	"devDependencies": {
 		"@types/mocha": "5.2.7",
 		"@types/node": "8.10.49",
 		"@types/websocket": "0.0.40",
 		"eslint": "5.16.0",
+                "lodash": "4.17.14",
 		"mocha": "6.1.4",
 		"typescript": "3.3.4000"
 	},
