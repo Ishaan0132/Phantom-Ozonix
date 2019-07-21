@@ -326,6 +326,27 @@ class Tools {
 		if (!text) return '';
 		return text.replace(/[^a-zA-Z0-9 ]/g, '').trim();
 	}
+        
+        /**
+	 * @param {string} usernameText
+	 * @return {{away: boolean, status: string, username: string}}
+	 */
+	parseUsernameText(usernameText) {
+		let away = false;
+		let status = '';
+		let username = '';
+		const atIndex = usernameText.indexOf('@');
+		if (atIndex !== -1) {
+			username = usernameText.substr(0, atIndex);
+			status = usernameText.substr(atIndex + 1);
+			away = status.charAt(0) === '!';
+		} else {
+			username = usernameText;
+		}
+
+		return {away, status, username};
+	}
+
 
 	/**
 	 * @param {string} text
