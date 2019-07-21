@@ -154,7 +154,8 @@ class MessageParser {
 			Client.login();
 			break;
 		case 'updateuser':
-			if (splitMessage[0] !== Config.username) return;
+			const parsedUsername = Tools.parseUsernameText(splitMessage[0]);
+			if (Tools.toId(parsedUsername.username) !== Users.self.id) return;
 
 			if (Client.connectTimeout) clearTimeout(Client.connectTimeout);
 			if (splitMessage[1] !== '1') {
@@ -186,7 +187,8 @@ class MessageParser {
 			if (splitMessage[0] === '0') return;
 			let users = splitMessage[0].split(",");
 			for (let i = 1, len = users.length; i < len; i++) {
-				let user = Users.add(users[i].substr(1));
+				const parsedUsername = Tools.parseUsernameText(users[i].substr(1));
+				let user = Users.add(parsedUsername.username);
 				let rank = users[i].charAt(0);
 				room.users.set(user, rank);
 				user.rooms.set(room, rank);
@@ -262,7 +264,8 @@ class MessageParser {
 		}
 		case 'J':
 		case 'j': {
-			let user = Users.add(splitMessage[0]);
+			const parsedUsername = Tools.parseUsernameText(splitMessage[0]);
+			let user = Users.add(parsedUsername.username);
 			if (!user) return;
 			room.onJoin(user, splitMessage[0].charAt(0));
 			if (Storage.globalDatabase.mail && user.id in Storage.globalDatabase.mail) {
@@ -277,7 +280,8 @@ class MessageParser {
 		}
 		case 'L':
 		case 'l': {
-			let user = Users.add(splitMessage[0]);
+			const parsedUsername = Tools.parseUsernameText(splitMessage[0]);
+			let user = Users.add(parsedUsername.username);
 			if (!user) return;
 			room.onLeave(user);
 			break;
@@ -286,8 +290,9 @@ class MessageParser {
 		case 'n': {
 			let user = Users.add(splitMessage[1]);
 			if (!user) return;
-			room.onRename(user, splitMessage[0]);
-			break;
+			const parsedUsername = Tools.parseUsernameText(splitMessage[0]);
+			room.onRename(user, splitMessage[0].charAt(0) + parsedUsername.username);
+                        break;
 		}
 		case 'c': {
 			let user = Users.get(splitMessage[0]);
