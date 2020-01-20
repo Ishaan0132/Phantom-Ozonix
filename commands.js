@@ -87,15 +87,6 @@ let commands = {
 		let pick = targets[Math.floor(Math.random() * targets.length)];
 		this.say("Random pick: " + pick);
 	},
-	cal : 'calculate',
-        calculate: function(target, room, user){
-        let alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z'];
-        let cond = true;
-        for(let i = 0;i < alphabets.length;i++){
-        if(target.includes(alphabets[i])) cond = false;
-        }
-        if(cond == true) return this.say(eval(target));
-        },
 	mail: function (target, room, user) {
 		if (!(room instanceof Users.User) || !Config.allowMail) return;
 		let targets = target.split(',');
