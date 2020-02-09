@@ -155,6 +155,10 @@ let commands = {
 		if (room instanceof Users.User || !room.game) return;
 		room.game.leave(user);
 	},
+	bid: function (target, room, user) {
+		if (!room.game) return;
+		if (typeof room.game.bid === 'function') room.game.bid(target, user);
+	},
 
 	// Storage commands
 	bits: 'points',
