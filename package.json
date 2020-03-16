@@ -1,5 +1,5 @@
 {
-	"name": "Phantom-Ozonix",
+	"name": "phantom ozonix",
 	"version": "0.4.0",
 	"description": "A bot for Pokemon Showdown",
 	"author": {
@@ -13,23 +13,19 @@
 	"main": "app.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/PowerHitter0418/Phantom-Ozonix.git"
+		"url": "https://github.com/sirDonovan/Cassius.git"
 	},
 	"dependencies": {
-		"websocket": "1.0.29"
+		"websocket": "1.0.31"
 	},
 	"devDependencies": {
 		"@types/mocha": "5.2.7",
-		"@types/node": "8.10.49",
+		"@types/node": "8.10.53",
 		"@types/websocket": "0.0.40",
-		"eslint": "5.16.0",
-                "lodash": "4.17.14",
-		"mocha": "6.1.4",
+		"minimist": ">=1.2.2",
+		"eslint": "6.8.0",
+		"mocha": "7.1.0",
 		"typescript": "3.3.4000"
-	},
-	"engine-strict": true,
-	"engines": {
-		"node": ">=6.0.0"
 	},
 	"private": true,
 	"license": "MIT"
