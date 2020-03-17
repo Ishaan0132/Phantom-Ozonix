@@ -187,6 +187,56 @@ let commands = {
         return this.say("You spotted a palindrome! " + joinArray);}
         return this.say(joinArray);
        },
+	joke: function(target, user, room) {
+        if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		let jokes = [
+			"What's the difference between a jeweler and a jailor? One sells watches, and the other watches cells!",
+			"Why do seagulls fly over the sea? Because if they flew over the bay, they'd be bagels!",
+			"Why is it a waste of time to talk to a cow? Because it just goes in one ear and out the udder!",
+			"Why did the invisible man turn down the job offer? He couldn't see himself doing it.",
+			"What do prisoners use to call each other? Cell phones!",
+			"What do you call a bee that can't make up its mind? A maybe!",
+			"What do you call a bee that lives in America? A USB!",
+			"What do you call an everyday potato? A commentator!",
+			"Why did the partially blind man fall down the well? Because he couldn't see that well.",
+			"What's the difference between a dog and a marine biologist? One wags its tail, and the other tags a whale!",
+			"Where do ants go when it's hot outside? **Ant**arctica!",
+			"What happened when the oceans raced each other? They tide!",
+			"What do you call a chicken that calculates how to cross the road? A mathemachicken!",
+			"A woman in labor suddenly shouted, \"Shouldn't! Wouldn't! Couldn't! Didn't! Can't!\". \"Don't worry\", said the doctor, \"those are just contractions.\"",
+			"Why did the sun not go to college? It already had three million degrees!",
+			"What's the difference between a diameter and a radius? A radius!",
+			"What did the scientist say when he found two isotopes of helium? HeHe",
+			"Why do Marxists only drink bad tea? Because all proper tea is theft.",
+			"What's a frog's favorite drink? Diet croak!",
+			"As I handed Dad his 50th birthday card, he looked at me with tears in his eyes and said, \"You know, one would have been enough.\"",
+			"I'd tell you a Fibonacci joke, but it's probably as bad as the last two you've heard combined.",
+			"Why don't Americans switch from using pounds to kilograms? Because there'd be a mass confusion.",
+			"Where do fish go to work at? The offish!",
+			"What do you call two friends who both like math? Algebros!",
+			"What happened to the man that injested plutonium? He got atomicache!",
+			"My sister bet me $100 I couldn't build a car out of spaghetti. You should have seen her face when I drove right pasta!",
+			"Did you hear people aren't naming their daughters Karen nowadays? Soon there won't be a Karen the world.",
+			"Why is justice best served cold? Because if it was served warm, it would be just water!",
+			"Last week, I decided I was going to enter the Worlds Tightest Hat competition. I just hope I can pull it off...",
+			"What do you call a beehive where bees can never leave? Un-bee-leaveable!",
+			"How much does it cost for a pirate to get their ears pierced? A buccaneer!",
+			"The minus button on my calculator is broken. On the plus side, it works.",
+			"Gravity is one of the fundamental forces in the universe. If you removed it, you'd get gravy.",
+			"Did you know that if you cut off your left arm, your right arm is left?",
+			"The other day, I spotted an albino dalmatian. I figured it was the least I could do for him.",
+			"What is the loudest pet? A trum**pet**!",
+			"What's the best way to cook an alligator? In a crockpot!",
+			"What's the best way to make a pirate angry? Remove the p!",
+			"Last night, my wife was feeling pretty emotional, and she started coloring on my upper arm. I guess she just needed a shoulder to crayon.",
+			"Did you hear about the marriage of the invisible man and the invisible woman? I'm just not sure what they saw in each other.",
+			"Where do you take a boat when it gets sick? To the doc!",
+			"My eye doctor called and said the results of my last appointment were finished. When I asked if I could see them, she said, \"probably not\".",
+			"A priest, a pastor, and a rabbit walk into a bar. The rabbit says, \"I must be a typo!\"",
+			"Why was the tennis club's website down? They had problems with their server.",
+		]
+               this.say(Tools.sampleOne(jokes));
+        },
 	roast: function (target, user, room) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		let roasts = ["If i wanted to die, I would climb to the top of " + target + "'s ego and jump to their IQ", target + ", I was going to give you a nasty look but I see that you’ve already got one.", target + ", you always bring me so much joy. As soon as you leave the room.", target + ", some day you'll go far - and i really hope you stay there.", "To call " + target + " a donkey would be an insult to the donkey.", target + ", You're the reason the gene pool needs a lifeguard", target + "'s breath is so bad, their dentist treats them over the phone.", "I tried making " + target + " my password but my computer said it was too weak.", "If laughter is the best medicine, " + target + "'s face must be curing the world.", target + ", you remind me of Kurt Angle. You suck!", target + ', your presence here is as bad as __OM Room__\'s theme', target + ", you remind me of gold. You weigh a fuck ton.", target + ", your body looks like a kindergartners attempt to make a person out of playdoh", target + ", my mom asked me to take out the trash so what time should I pick you up?", "No, those __pants__ don't make " + target + " look fatter - how could they?", "If " + target + " is gonna be two-faced, why can't at least one of them be attractive?", "Accidents happen. LIKE YOU!", target + " is proof god has a sense of humor"];
@@ -367,28 +417,7 @@ let commands = {
             }
         });                      
       },*/
-        
-	/**joke: function (arg, user, room)
-             {
 
-                var jokesAPI = "https://api.icndb.com/jokes?escape=javascript";
-                let self=this;
-                request(jokesAPI, function(err, resp, body){
-                    if(!err && resp.statusCode == 200){
-                     data = JSON.parse(body);
-                     var jokes = [];
-                     for (var i = 0; i < data.value.length; i++) {
-                        jokes.push(data.value[i].joke);
-                      }
-                      var random = Math.floor(Math.random() * jokes.length);
-                      self.say(jokes[random]);
-                    }
-              });
-               
-              
-                               
-          },**/
-	
 };
 
 module.exports = commands;
