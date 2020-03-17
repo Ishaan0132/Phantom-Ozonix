@@ -80,13 +80,6 @@ let commands = {
 		if (!Config.guide) return this.say("There is no guide available.");
 		this.say(Users.self.name + " guide: " + Config.guide);
 	},
-	choose: 'pick',
-	pick: function (target, room, user, pm) {
-		if (target.length < 3 || !~target.indexOf(',')) return this.say("You must give at least 2 valid choices", room);
-		let targets = target.split(',');
-		let pick = targets[Math.floor(Math.random() * targets.length)];
-		this.say("Random pick: " + pick);
-	},
 	mail: function (target, room, user) {
 		if (!(room instanceof Users.User) || !Config.allowMail) return;
 		let targets = target.split(',');
@@ -110,6 +103,104 @@ let commands = {
 		database.mail[to].push({time: Date.now(), from: user.name, text: message});
 		Storage.exportDatabase('global');
 		this.say("Your message has been sent to " + Users.add(targets[0]).name + "!");
+	},
+	
+	// Misc Commands
+	
+	choose: 'pick',
+	pick: function (target, room, user, pm) {
+		if (target.length < 3 || !~target.indexOf(',')) return this.say("You must give at least 2 valid choices", room);
+		let targets = target.split(',');
+		let pick = targets[Math.floor(Math.random() * targets.length)];
+		this.say("Random pick: " + pick);
+	},
+        iq: function (arg, user, room) {
+        if (!arg) return this.say('You didn\'t specify a person');
+        this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
+        var x = Math.floor((Math.random() * 200) + 1);
+        this.say('The iq of ' + arg + 'is :  ' +   x );
+        },
+	 ping: function (target, room, user) {
+          if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+          var rate = Math.floor((Math.random() * 10) + 1);
+          if(rate == 1){
+          this.say("You win");
+       } 
+
+          else if(rate == 4){
+          this.say("You lose");
+       }
+       else{
+       this.say("Pong!");
+
+        }},
+	randtype: 'type',
+        type: function (target, user, room) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		let types = ["Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"];
+                this.say("Randomly generated type:" + "**" + Tools.sampleOne(types) + "**");
+        },
+	j: 'judge',
+        judge:  function (target, room, user) {
+        var judgement = [" is so cute"," is the worst!!!"," is um eh not bad "," is the best"," is ok"];
+        var rand = Math.floor((Math.random() * 4) + 1); 
+        if (!["!", "/"].includes(target.charAt(0))) 
+        this.say(target.split('/') + judgement[rand]);
+        },
+	timer: function (target, room, user) {
+		if (!user.hasRank(room, '+')) return;
+		let x = Math.floor(target);
+		if (!x || x >= 120 || (x < 10 && x > 2) || x <= 0) return room.say("The timer must be between 10 seconds and 2 minutes.");
+		if (x === 1) x = 60;
+		let minutes = Math.floor(x / 60);
+		let seconds = x % 60;
+		clearTimeout(Games.timeout);
+		this.say("Timer set for " + (minutes > 0 ? "1 minute" + (seconds > 0 ? " and " : "") : "") + (seconds > 0 ? ((seconds) + " second" + (seconds > 1 ? "s" : "")) : "") + ".");
+		setTimeout(() => this.say("Times Up!"), x * 1000);
+	},
+        cal : 'calculate',
+        calculate: function(target, room, user){
+        let alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z'];
+        let cond = true;
+        for(let i = 0;i < alphabets.length;i++){
+        if(target.includes(alphabets[i])) cond = false;
+        }
+        if(cond == true) return this.say(eval(target));
+        },
+        reversio: function(target, room, user){
+        let str = target;
+        var n = str.includes("!");
+        if(n)
+       {
+	return this.say("you cant use ! in your sentence");
+       }
+        var m = str.includes("/");
+        if(m)
+       {
+	return this.say("you cant use / in your sentence");
+       }
+       var splitString = str.split("");
+       var reverseArray = splitString.reverse();
+       var joinArray = reverseArray.join("");
+    
+       if(joinArray == target) {
+        return this.say("You spotted a palindrome! " + joinArray);}
+        return this.say(joinArray);
+       },
+	roast: function (target, user, room) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+		let roasts = ["If i wanted to die, I would climb to the top of " + target + "'s ego and jump to their IQ", target + ", I was going to give you a nasty look but I see that you’ve already got one.", target + ", you always bring me so much joy. As soon as you leave the room.", target + ", some day you'll go far - and i really hope you stay there.", "To call " + target + " a donkey would be an insult to the donkey.", target + ", You're the reason the gene pool needs a lifeguard", target + "'s breath is so bad, their dentist treats them over the phone.", "I tried making " + target + " my password but my computer said it was too weak.", "If laughter is the best medicine, " + target + "'s face must be curing the world.", target + ", you remind me of Kurt Angle. You suck!", target + ', your presence here is as bad as __OM Room__\'s theme', target + ", you remind me of gold. You weigh a fuck ton.", target + ", your body looks like a kindergartners attempt to make a person out of playdoh", target + ", my mom asked me to take out the trash so what time should I pick you up?", "No, those __pants__ don't make " + target + " look fatter - how could they?", "If " + target + " is gonna be two-faced, why can't at least one of them be attractive?", "Accidents happen. LIKE YOU!", target + " is proof god has a sense of humor"];
+		this.say(Tools.sampleOne(roasts));
+	},
+	 voice: function (target, room, user) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '@')) return;
+		if (room.id = !Games) return;
+		this.say("/roomvoice " + user.id);
+	},
+        devoice: function (target, room, user) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '@')) return;
+		if (room.id = !Games) return;
+		this.say("/roomdevoice " + user.id);
 	},
 
 	// Game commands
@@ -260,13 +351,6 @@ let commands = {
 	
 	// Other commands
 	
-	iq: function (arg, user, room) {
-          if (!arg) return this.say('You didn\'t specify a person');
-          this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
-          var x = Math.floor((Math.random() * 200) + 1);
-          this.say('The iq of ' + arg + 'is :  ' +   x );
-         
-        },
 	/*generation: function (arg, user, room) {
         var url = "http://pokeapi.co/api/v2/generation/"+arg;
         let self=this;
@@ -283,78 +367,7 @@ let commands = {
             }
         });                      
       },*/
-          ping: function (target, room, user) {
-          if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-          var rate = Math.floor((Math.random() * 10) + 1);
-          if(rate == 1){
-          this.say("You win");
-    } 
-
-          else if(rate == 4){
-          this.say("You lose");
-        //  this.say("/mute " + user.id + ", fuck u");
-    }
-    else{
-      this.say("Pong!");
-
-  }},
-	randtype: 'type',
-        type: function (target, user, room) {
-		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		let types = ["Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"];
-                this.say("Randomly generated type:" + "**" + Tools.sampleOne(types) + "**");
-  },
-	j: 'judge',
-        judge:  function (target, room, user) {
-        var judgement = [" is so cute"," is the worst!!!"," is um eh not bad "," is the best"," is ok"];
-        var rand = Math.floor((Math.random() * 4) + 1); 
-        if (!["!", "/"].includes(target.charAt(0))) 
-        this.say(target.split('/') + judgement[rand]);
-  },
-        cal : 'calculate',
-        calculate: function(target, room, user){
-        let alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z'];
-        let cond = true;
-        for(let i = 0;i < alphabets.length;i++){
-        if(target.includes(alphabets[i])) cond = false;
-  }
-        if(cond == true) return this.say(eval(target));
-  },
-      reversio: function(target, room, user){
-     let str = target;
-    
-     var n = str.includes("!");
-     if(n)
-     {return this.say("you cant use ! in your sentence");
-    }
-        var m = str.includes("/");
-     if(m)
-     {return this.say("you cant use / in your sentence");
-    }
-     var splitString = str.split("");
-     var reverseArray = splitString.reverse();
-      var joinArray = reverseArray.join("");
-    
-      if(joinArray == target) {
-        return this.say("You spotted a palindrome! " + joinArray);}
-      return this.say(joinArray);
-  },
-	roast: function (target, user, room) {
-		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		let roasts = ["If i wanted to die, I would climb to the top of " + target + "'s ego and jump to their IQ", target + ", I was going to give you a nasty look but I see that you’ve already got one.", target + ", you always bring me so much joy. As soon as you leave the room.", target + ", some day you'll go far - and i really hope you stay there.", "To call " + target + " a donkey would be an insult to the donkey.", target + ", You're the reason the gene pool needs a lifeguard", target + "'s breath is so bad, their dentist treats them over the phone.", "I tried making " + target + " my password but my computer said it was too weak.", "If laughter is the best medicine, " + target + "'s face must be curing the world.", target + ", you remind me of Kurt Angle. You suck!", target + ', your presence here is as bad as __OM Room__\'s theme', target + ", you remind me of gold. You weigh a fuck ton.", target + ", your body looks like a kindergartners attempt to make a person out of playdoh", target + ", my mom asked me to take out the trash so what time should I pick you up?", "No, those __pants__ don't make " + target + " look fatter - how could they?", "If " + target + " is gonna be two-faced, why can't at least one of them be attractive?", "Accidents happen. LIKE YOU!", target + " is proof god has a sense of humor"];
-		this.say(Tools.sampleOne(roasts));
-	},
-	 voice: function (target, room, user) {
-		if (!(room instanceof Users.User) && !user.hasRank(room, '@')) return;
-		if (room.id = !Games) return;
-		this.say("/roomvoice " + user.id);
-	},
-        devoice: function (target, room, user) {
-		if (!(room instanceof Users.User) && !user.hasRank(room, '@')) return;
-		if (room.id = !Games) return;
-		this.say("/roomdevoice " + user.id);
-	},
-
+        
 	/**joke: function (arg, user, room)
              {
 
