@@ -75,7 +75,7 @@ class Tools {
 			teams: [],
 			trainerClasses: [],
 		};
-		this.gen = 7;
+		this.gen = 8;
 		this.dataFilePath = './data/';
 		/**@type {Map<string, Move>} */
 		this.MoveCache = new Map();
