@@ -343,7 +343,9 @@ class Pokemon extends Effect {
 		this.requiredItems = this.requiredItems || (this.requiredItem && [this.requiredItem]) || null;
 
 		if (!this.gen) {
-			if (this.num >= 722 || this.forme === 'Alola') {
+			 if (this.num >= 810 || this.forme === 'Galar') {
+				this.gen = 8;
+			} else if (this.num >= 722 || this.forme === 'Alola') {
 				this.gen = 7;
 			} else if (this.forme && this.forme in {'Mega':1, 'Mega-X':1, 'Mega-Y':1}) {
 				this.gen = 6;
