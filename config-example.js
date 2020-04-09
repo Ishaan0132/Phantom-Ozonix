@@ -1,6 +1,6 @@
 /**
  * Config (example)
- * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
  *
  * Copy this file to 'config.js' before starting Phantom Ozonix.
  *
@@ -21,7 +21,7 @@ exports.server = '';
 exports.avatar = '';
 
 // A guide for commands and features
-exports.guide = 'https://github.com/PowerHitter0418/Phantom-Ozonix/blob/master/Guide.md';
+exports.guide = 'https://github.com/FlyingPhantom/Phantom-Ozonix/blob/master/Guide.md';
 
 // Rooms that Phantom Ozonix will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
