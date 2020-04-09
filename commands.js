@@ -1,16 +1,11 @@
 /**
  * Commands
- * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
  *
  * This file contains the base commands for Phantom Ozonix.
  *
  * @license MIT license
  */
-
- /**var request = require("request");
-
-         let data;**/
-
 
 'use strict';
 
@@ -398,26 +393,6 @@ let commands = {
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
 	},
-	
-	// Other commands
-	
-	/*generation: function (arg, user, room) {
-        var url = "http://pokeapi.co/api/v2/generation/"+arg;
-        let self=this;
-        request(url, function(err, resp, body){
-            if(!err && resp.statusCode == 200){
-             data = JSON.parse(body);
-             var htmltext = "!addhtmlbox <ul>"
-             data["pokemon_species"].sort().forEach(function(pokemon){
-                 htmltext+= '<li>' +  pokemon.name  + '</li>' }) 
-           
-            htmltext+="</ul>";
-                               
-            self.say(htmltext)   
-            }
-        });                      
-      },*/
-
 };
 
 module.exports = commands;
