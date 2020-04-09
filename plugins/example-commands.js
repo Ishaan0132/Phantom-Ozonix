@@ -1,6 +1,6 @@
 /**
  * Example commands
- * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
  *
  * Plugins make it easier to have custom commands and
  * modules while rebasing with the main repository.
@@ -16,7 +16,7 @@
 let commands = {
 	about: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		this.say(Config.username + " code by A Flying Phantom: https://github.com/PowerHitter0418/Phantom-Ozonix");
+		this.say(Config.username + " code by A Flying Phantom: https://github.com/FlyingPhantom/Phantom-Ozonix");
 	},
 };
 
