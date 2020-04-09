@@ -1,6 +1,6 @@
 /**
  * App
- * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
  *
  * This is the main file that starts Phantom Ozonix.
  *
