@@ -1,6 +1,6 @@
 /**
  * YouTube
- * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
  *
  * Fetches YouTube video information and handles
  * adding videos to the database
