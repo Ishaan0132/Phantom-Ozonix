@@ -1,6 +1,6 @@
 /**
  * Room Tournament
- * Phantom Ozonix - https://github.com/PowerHitter0418/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
  *
  * This file contains the tournament and tournament-player classes
  *
