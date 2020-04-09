@@ -1,3 +1,12 @@
+/**
+ * User Info
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ *
+ * Fetches User information
+ *
+ * @license MIT license
+ */
+
 "use strict";
 
 const http = require("https");
