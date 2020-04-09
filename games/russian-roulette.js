@@ -1,3 +1,10 @@
+/**
+ * Russian Roulette game
+ * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ *
+ * @license MIT license
+ */
+
 "use strict";
 
 const name = "Russian Roulette";
