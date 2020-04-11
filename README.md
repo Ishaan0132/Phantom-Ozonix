@@ -11,7 +11,7 @@ Phantom Ozonix requires [Node.js][2] version 8.9.0 or later and a command line (
 
   You can do this through the [GitHub client][3] by clicking the "Clone or download" button on the home page of the repository and then clicking "Open in Desktop". You can also use the following [Git][4] command:
   
-  `git clone https://github.com/PowerHitter0418/Phantom-Ozonix.git`
+  `git clone https://github.com/FlyingPhantom/Phantom-Ozonix.git`
 
   [2]: https://nodejs.org/
   [3]: https://desktop.github.com/
@@ -23,7 +23,7 @@ Phantom Ozonix requires [Node.js][2] version 8.9.0 or later and a command line (
 
   `cd DIRECTORY`
   
-  Replace `DIRECTORY` with the filepath to your directory (e.g. `C:\Users\PowerHitter0418\Documents\GitHub\Phantom-Ozonix`).
+  Replace `DIRECTORY` with the filepath to your directory (e.g. `C:\Users\FlyingPhantom\Documents\GitHub\Phantom-Ozonix`).
 
 3. Install dependencies
 
@@ -42,17 +42,17 @@ From this point on, you can start the bot by running the following command:
   `node app.js`
 
 ## Credits
-  * A Flying Phantom ([@PowerHitter0418][5]) - Lead Developer
+  * A Flying Phantom ([@FlyingPhantom][5]) - Lead Developer
   * Quinton Lee ([@sirDonovan][6]) - Base Repository 
   * [Pokemon Showdown][1] - In-game data files, Tools module, and various helper functions
   * [Contributors][7]
   
-  [5]: https://github.com/PowerHitter0418
+  [5]: https://github.com/FlyingPhantom
   [6]: https://github.com/sirDonovan
-  [7]: https://github.com/PowerHitter0418/Phantom-Ozonix/graphs/contributors
+  [7]: https://github.com/FlyingPhantom/Phantom-Ozonix/graphs/contributors
 
 ## License
 
   Phantom Ozonix is distributed under the terms of the [MIT License][8].
 
-  [8]: https://github.com/PowerHitter0418/Phantom-Ozonix/blob/master/LICENSE
+  [8]: https://github.com/FlyingPhantom/Phantom-Ozonix/blob/master/LICENSE
