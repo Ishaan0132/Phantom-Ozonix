@@ -84,10 +84,10 @@ exports.BattleTrainerClasses = [
 	"Lady",
 	"Ninja Boy",
 	"Parasol Lady",
-	"Pokémon Breeder",
-	"Pokémon Ranger",
+	"Pokemon Breeder",
+	"Pokemon Ranger",
 	"Rich Boy",
 	"Ruin Maniac",
 	"Triathlete",
-	"Tube"
+	"Tuber"
 ];
