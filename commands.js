@@ -247,6 +247,70 @@ let commands = {
 		if (room.id = !Games) return;
 		this.say("/roomdevoice " + user.id);
 	},
+        "rpoke":"randompokemon",
+	"randpoke": "randompokemon",
+        "randp": "randompokemon",
+        randompokemon: function(target, room, user) {
+	                if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
+	                if (!target) {
+       	                const species = Tools.getExistingPokemon(Tools.sampleOne(Object.keys(Tools.data.pokedex))).name;
+	                {
+	                this.say('!dt ' + species);
+	                }
+	               return;
+	               }
+	               this.say("!randpoke " + target);
+        },
+        "rmove": "randommove",
+	"randmove": "randommove",
+         randommove:  function(target, room, user) {
+			if (!(!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+')))) return;
+			const move = Tools.getExistingMove(Tools.sampleOne(Object.keys(Tools.data.moves))).name;
+  		        this.say('!dt ' + move);
+        },
+        "ritem": "randomitem",
+	"randitem": "randomitem",
+         randomitem: function (target, room, user) {
+		     if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
+		     const item = Tools.getExistingItem(Tools.sampleOne(Object.keys(Tools.data.items))).name;
+		     this.say('!dt ' + item);
+	},
+        "rability": "randomability",
+	"randability": "randomability",
+         randomability: function(target, room, user) {
+			if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
+			const abilities = Object.keys(Tools.data.abilities);
+			let ability = Tools.getExistingAbility(Tools.sampleOne(abilities));
+			while (ability.id === 'noability') {
+				ability = Tools.getExistingAbility(Tools.sampleOne(abilities));
+			}
+			this.say('!dt ' + ability.name);
+	},
+	"rtype": "randomtype",
+	"randtype": "randomtype",
+         randomtype:  function(target, room, user) {
+			if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
+			const types = Object.keys(Tools.data.typeChart);
+			let type = Tools.sampleOne(types);
+			if (Tools.random(2)) {
+				types.splice(types.indexOf(type), 1);
+				type += "/" + Tools.sampleOne(types);
+			}
+			this.say('Randomly generated type: **' + type + '**');
+	},
+        "randchar": "randomcharacter",
+        "rchar": "randomcharacter",
+        randomcharacter: function (target, room, user) {
+			if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
+			this.say('Randomly generated character: **' + Tools.sampleOne(Tools.data.characters).trim() + '**');
+	},
+        "randlocation": "randomlocation",
+        "rloc": "randomlocation",
+	"randloc": "randomlocation",
+        randomlocation:	function(target, room, user) {
+			if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
+			this.say('Randomly generated location: **' + Tools.sampleOne(Tools.data.locations).trim() + '**');
+	}, 
 
 	// Game commands
 	signups: 'creategame',
