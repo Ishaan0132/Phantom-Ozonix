@@ -72,6 +72,7 @@ class Tools {
 			formatsData: {},
 			badges: [],
 			characters: [],
+			locations: [],
 			teams: [],
 			trainerClasses: [],
 		};
@@ -112,6 +113,7 @@ class Tools {
 		this.loadFormatsData();
 		this.loadBadges();
 		this.loadCharacters();
+		this.lodLocations();
 		this.loadTeams();
 		this.loadTrainerClasses();
 
@@ -236,6 +238,17 @@ class Tools {
 			}
 		}
 		if (characters) this.data.characters = characters;
+	}
+	 loadLocations() {
+		let locations;
+		try {
+			locations = require(this.dataFilePath + 'locations.js').BattleLocations;
+		} catch (e) {
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				throw e;
+			}
+		}
+		if (locations) this.data.locations = locations;
 	}
 
 	loadTeams() {
