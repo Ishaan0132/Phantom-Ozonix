@@ -47,19 +47,19 @@ let commands = {
 		this.say("Uptime: **" + uptimeText + "**");
 	},
 	kill: function (target, room, user) {
-    if (!user.isDeveloper()) return false;
+    if (!user.isDeveloper()) return;
 	  console.log('Killed by ' + user.name);
 	  process.exit(-1);
         },
 	jr: 'joinroom',
         joinroom: function (target, room, user, pm) {
-		if (!user.isDeveloper()) return false;
+		if (!user.isDeveloper()) return;
 		if (!target) return this.say("Usage: " + Config.commandCharacter + "joinroom [room]");
 		this.say("/join " + target);
 	},
         lr: 'leaveroom',
         leaveroom: function (target, room, user, pm) {
-		if (!user.isDeveloper()) return false;
+		if (!user.isDeveloper()) return;
                 if (!target) return this.say("Usage: " + Config.commandCharacter + "leaveroom [room]");
 		this.say("/leave " + target);
 	},
@@ -104,12 +104,14 @@ let commands = {
 	
 	choose: 'pick',
 	pick: function (target, room, user, pm) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (target.length < 3 || !~target.indexOf(',')) return this.say("You must give at least 2 valid choices", room);
 		let targets = target.split(',');
 		let pick = targets[Math.floor(Math.random() * targets.length)];
 		this.say("Random pick: " + pick);
 	},
         iq: function (arg, user, room) {
+	if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
         if (!arg) return this.say('You didn\'t specify a person');
         this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
         var x = Math.floor((Math.random() * 200) + 1);
@@ -129,21 +131,16 @@ let commands = {
        this.say("Pong!");
 
         }},
-	randtype: 'type',
-        type: function (target, user, room) {
-		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		let types = ["Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"];
-                this.say("Randomly generated type:" + "**" + Tools.sampleOne(types) + "**");
-        },
 	j: 'judge',
         judge:  function (target, room, user) {
+	if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
         var judgement = [" is so cute"," is the worst!!!"," is um eh not bad "," is the best"," is ok"];
         var rand = Math.floor((Math.random() * 4) + 1); 
         if (!["!", "/"].includes(target.charAt(0))) 
         this.say(target.split('/') + judgement[rand]);
         },
 	timer: function (target, room, user) {
-		if (!user.hasRank(room, '+')) return;
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		let x = Math.floor(target);
 		if (!x || x >= 120 || (x < 10 && x > 2) || x <= 0) return room.say("The timer must be between 10 seconds and 2 minutes.");
 		if (x === 1) x = 60;
@@ -155,6 +152,7 @@ let commands = {
 	},
         cal : 'calculate',
         calculate: function(target, room, user){
+	if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
         let alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z'];
         let cond = true;
         for(let i = 0;i < alphabets.length;i++){
