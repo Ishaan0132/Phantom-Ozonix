@@ -262,7 +262,7 @@ let commands = {
         "rmove": "randommove",
 	"randmove": "randommove",
          randommove:  function(target, room, user) {
-			if (!(!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+')))) return;
+			if (!Users.self.hasRank(room, '+') || (!user.hasRank(room, '+'))) return;
 			const move = Tools.getExistingMove(Tools.sampleOne(Object.keys(Tools.data.moves))).name;
   		        this.say('!dt ' + move);
         },
