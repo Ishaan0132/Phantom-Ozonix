@@ -9,29 +9,42 @@ Basic Commands
 Basic features and some information about the bot.
 
  - `about` - Basic bot info, with the link to this repo.
- - `git` or `help` - Link to this repo
- - `mail` - Sends a message to a user 
+ - `git` or `help` - Link to this repo.
+ - `mail` - Sends a message to a user. 
 
 Chat Plugins
 ------------
 
 Misc commands for multiple features:
 
- - `pick [option1], [option2], [...]` - Choose between multiple options
- - `iq` - Get a random iq of the user
- - `joke` - Get a random joke
- - `randquote` - Get a random quote from the local database
- - `generation` - Get pokemons og the given generation (Works only if the bot has * rank)
+ - `pick [option1], [option2], [...]` - Choose between multiple options.
+ - `iq` - Get a random iq of the user.
+ - `joke` - Get a random joke.
+ - `ping` - Pings the bot.
+ - `judge` - Judges the user.
+ - `calculate` - Calculate mathematics.
+ - `joke` - Generates a random joke.
+ - `roast` - Roast someone.
+ - `helix` or `8ball` - Get a random answer.
+ - `regdate (username)` - Get the register date of a Pokemon Showdown account.
+ - `regtime (username)` - Get the age of a Pokemon Showdown account, useful for check if an account is autoconfirmed.
+
 
 Commands for getting pokemon info:
 
- - `type` - Get a random pokemon type
+ - `rpoke` - Get a random pokemon.
+ - `rmove` - Get a random move.
+ - `ritem` - Get a random item.
+ - `rability` - Get a random ability.
+ - `rtype` - Get a random pokemon type.
+ - `rchar` - Get a random character.
+ - `rloc` - Get a random location.
 
-Commands for managing the local database of jokes and quotes:
+Commands for managing the local database of quotes:
 
- - `addquote [text]` - Add a new quote
- - `delquote [text]` - Delete an existing quote
- - `quotes` - Get the quotes list
+ - `addquote [text]` - Add a new quote.
+ - `delquote [text]` - Delete an existing quote.
+ - `quotes` - Get the quotes list.
  
 Administrative Commands
 ------------
