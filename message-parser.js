@@ -171,6 +171,7 @@ class MessageParser {
 				}
 			}
 			if (Config.avatar) Client.send('|/avatar ' + Config.avatar);
+		        if (Config.status) Client.send('|/status ' + Config.status);
 			break;
 		case 'init':
 			room.onJoin(Users.self, ' ');
