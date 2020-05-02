@@ -20,6 +20,10 @@ exports.server = '';
 // The avatar that Phantom Ozonix will use
 exports.avatar = '';
 
+// The status that Phantom Ozonix will have
+// (Note: Change the command character to the one you're using)
+exports.status = "PM me .guide for help!";
+
 // A guide for commands and features
 exports.guide = 'https://github.com/FlyingPhantom/Phantom-Ozonix/blob/master/Guide.md';
 
