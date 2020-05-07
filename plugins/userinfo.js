@@ -4,6 +4,8 @@
  *
  * Fetches User information
  *
+ * Base Code Credits : Sparky Child
+ *
  * @license MIT license
  */
 
