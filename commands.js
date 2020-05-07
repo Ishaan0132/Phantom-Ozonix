@@ -115,7 +115,7 @@ let commands = {
         if (!arg) return this.say('You didn\'t specify a person');
         this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
         var x = Math.floor((Math.random() * 200) + 1);
-        this.say('The iq of ' + arg + 'is :  ' +   x );
+        this.say('The iq of ' + arg + ' is :  ' +   x );
         },
 	 ping: function (target, room, user) {
           if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
