@@ -110,12 +110,12 @@ let commands = {
 		let pick = targets[Math.floor(Math.random() * targets.length)];
 		this.say("Random pick: " + pick);
 	},
-        iq: function (arg, user, room) {
+        iq: function (target, room, user) {
 	if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-        if (!arg) return this.say('You didn\'t specify a person');
+        if (!target) return this.say('You didn\'t specify a person');
         this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
         var x = Math.floor((Math.random() * 200) + 1);
-        this.say('The iq of ' + arg + ' is :  ' +   x );
+        this.say('The iq of ' + target + ' is :  ' +   x );
         },
 	 ping: function (target, room, user) {
           if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
@@ -139,17 +139,33 @@ let commands = {
         if (!["!", "/"].includes(target.charAt(0))) 
         this.say(target.split('/') + judgement[rand]);
         },
-	timer: function (target, room, user) {
-		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		let x = Math.floor(target);
-		if (!x || x >= 120 || (x < 10 && x > 2) || x <= 0) return room.say("The timer must be between 10 seconds and 2 minutes.");
-		if (x === 1) x = 60;
-		let minutes = Math.floor(x / 60);
-		let seconds = x % 60;
-		clearTimeout(Games.timeout);
-		this.say("Timer set for " + (minutes > 0 ? "1 minute" + (seconds > 0 ? " and " : "") : "") + (seconds > 0 ? ((seconds) + " second" + (seconds > 1 ? "s" : "")) : "") + ".");
-		setTimeout(() => this.say("Times Up!"), x * 1000);
-	},
+        timer: function(target, room, user) {
+	if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
+	const id = Tools.toId(target);
+	if (id === 'off' || id === 'end') {
+	if (!room.timers || !(user.id in room.timers)) return this.say("You do not have a timer running.");
+	clearTimeout(room.timers[user.id]);
+	delete room.timers[user.id];
+	return this.say("Your timer has been turned off.");
+	}
+
+	let time;
+	if (id.length === 1) {
+	time = parseInt(id) * 60;
+	} else {
+	time = parseInt(id);
+	}
+	if (isNaN(time) || time > 1800 || time < 5) return this.say("Please enter an amount of time between 5 seconds and 30 minutes.");
+	time *= 1000;
+
+	if (!room.timers) room.timers = {};
+	if (user.id in room.timers) clearTimeout(room.timers[user.id]);
+	room.timers[user.id] = setTimeout(() => {
+	room.say(user.name + ": time is up!");
+	delete room.timers[user.id];
+	}, time);
+	this.say("Your timer has been set for: " + Tools.toDurationString(time) + ".");
+		},
         cal : 'calculate',
         calculate: function(target, room, user){
 	if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
@@ -165,22 +181,22 @@ let commands = {
         var n = str.includes("!");
         if(n)
        {
-	return this.say("you cant use ! in your sentence");
+	return this.say("You cant use ! in your sentence");
        }
         var m = str.includes("/");
         if(m)
        {
-	return this.say("you cant use / in your sentence");
+	return this.say("You cant use / in your sentence");
        }
        var splitString = str.split("");
        var reverseArray = splitString.reverse();
        var joinArray = reverseArray.join("");
     
        if(joinArray == target) {
-        return this.say("You spotted a palindrome! " + joinArray);}
+        return this.say("You spotted a Palindrome! " + joinArray);}
         return this.say(joinArray);
        },
-	joke: function(target, user, room) {
+	joke: function(target, room, user) {
         if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		let jokes = [
 			"What's the difference between a jeweler and a jailor? One sells watches, and the other watches cells!",
@@ -230,13 +246,13 @@ let commands = {
 		]
                this.say(Tools.sampleOne(jokes));
         },
-	roast: function (target, user, room) {
+	roast: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		let roasts = ["If i wanted to die, I would climb to the top of " + target + "'s ego and jump to their IQ", target + ", I was going to give you a nasty look but I see that you’ve already got one.", target + ", you always bring me so much joy. As soon as you leave the room.", target + ", some day you'll go far - and i really hope you stay there.", "To call " + target + " a donkey would be an insult to the donkey.", target + ", You're the reason the gene pool needs a lifeguard", target + "'s breath is so bad, their dentist treats them over the phone.", "I tried making " + target + " my password but my computer said it was too weak.", "If laughter is the best medicine, " + target + "'s face must be curing the world.", target + ", you remind me of Kurt Angle. You suck!", target + ', your presence here is as bad as __OM Room__\'s theme', target + ", you remind me of gold. You weigh a fuck ton.", target + ", your body looks like a kindergartners attempt to make a person out of playdoh", target + ", my mom asked me to take out the trash so what time should I pick you up?", "No, those __pants__ don't make " + target + " look fatter - how could they?", "If " + target + " is gonna be two-faced, why can't at least one of them be attractive?", "Accidents happen. LIKE YOU!", target + " is proof god has a sense of humor"];
 		this.say(Tools.sampleOne(roasts));
 	},
 	"helix": "8ball",
-	"8ball": function(target, user, room){
+	"8ball": function(target, room, user){
                  if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 	         let cases = ["Signs point to yes.","Yes.","Reply hazy,try again.","Without a doubt.","My sources say no.","As I see it, yes.","You may rely on it.","Concentrate and ask again.", "Outlook not so good.",	"It is decidedly so.",   "Very doubtful.","Better not tell you now.","Yes - definitely.", "It is certain.", "Cannot predict now.","Most likely.","Ask again later.",	"My reply is no.","Outlook good.","Don't count on it."]
                  this.say(Tools.sampleOne(cases));
