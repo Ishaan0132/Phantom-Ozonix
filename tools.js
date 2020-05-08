@@ -113,7 +113,7 @@ class Tools {
 		this.loadFormatsData();
 		this.loadBadges();
 		this.loadCharacters();
-		this.lodLocations();
+		this.loadLocations();
 		this.loadTeams();
 		this.loadTrainerClasses();
 
