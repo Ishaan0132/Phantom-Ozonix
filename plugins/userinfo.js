@@ -85,7 +85,8 @@ function getUserInfo(userid) {
     }
 
 exports.commands = {
-    regdate: function(target, room, user) {
+    regdate: {
+        command(target, room, user) {
         if (room instanceof Users.User || !user.hasRank(room, '+')) return;
         
         target = Tools.toId(target) || user.userid;
@@ -98,9 +99,11 @@ exports.commands = {
             
             this.say("The userid '" + target + "' was registered on " + date + ".");
         });
+        },
     },
     
-    regtime: function (target, room, user) {
+    regtime: {
+        command(target, room, user) {
         if (room instanceof Users.User || !user.hasRank(room, '+')) return;
         
         target = Tools.toId(target) || user.userid;
@@ -112,9 +115,11 @@ exports.commands = {
             
             this.say("The userid '" + target + "' was registered " + getTimeAgo(time) + " ago.");
         });
+        },
     },
     
-    rank: function (target, room, user) {
+    rank: {
+        command(target, room, user) {
        if (room instanceof Users.User || !user.hasRank(room, '+')) return;
         
         target = Tools.toId(target) || user.userid;
@@ -126,5 +131,6 @@ exports.commands = {
             if (!buffer.length) return this.say(`The user '${target}' has not played any ladder games yet.`);
             this.say(`Ladder ratings for '${target}': ` + buffer.join(" | "));
         });
+        },
     },
 };
