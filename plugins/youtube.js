@@ -97,7 +97,8 @@ function parseYouTubeLink(room, link) {
 
 /**@type {{[k: string]: Command | string}} */
 let commands = {
-	addvideo: function (target, room, user) {
+	addvideo: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !user.hasRank(room, '%')) return;
 		if (room.id !== 'youtube') return;
 		let database = Storage.databases[room.id];
@@ -108,9 +109,11 @@ let commands = {
 		if (database.youtubeLinks.includes(link)) return this.say("That video is already in the database.");
 		database.youtubeLinks.push(link);
 		this.say("That video has been added to the database.");
+		},
 	},
 	removevideo: 'deletevideo',
-	deletevideo: function (target, room, user) {
+	deletevideo: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !user.hasRank(room, '%')) return;
 		if (room.id !== 'youtube') return;
 		let database = Storage.databases[room.id];
@@ -121,13 +124,16 @@ let commands = {
 		if (!database.youtubeLinks.includes(link)) return this.say("That video is not in the database.");
 		database.youtubeLinks.splice(database.youtubeLinks.indexOf(link), 1);
 		this.say("That video has been removed from the database.");
+		},
 	},
-	getvideo: function (target, room, user) {
+	getvideo: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !user.hasRank(room, '+')) return;
 		if (room.id !== 'youtube') return;
 		let database = Storage.databases[room.id];
 		if (!database || !database.youtubeLinks) return this.say("There are no videos stored in the database.");
 		this.say("Random stored video: " + Tools.sampleOne(database.youtubeLinks));
+		},
 	},
 };
 
