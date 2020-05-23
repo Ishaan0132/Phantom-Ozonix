@@ -19,21 +19,26 @@ let overwriteWarnings = new Map();
 let commands = {
 	// Developer commands
 	js: 'eval',
-	eval: function (target, room, user) {
-		if (!user.isDeveloper()) return;
+	eval: {
+		command(target, room, user) {
 		try {
 			target = eval(target);
 			this.say(JSON.stringify(target));
 		} catch (e) {
 			this.say(e.name + ": " + e.message);
 		}
+		},
+		developerOnly: true,
 	},
 	custom: 'c',
-	c: function (target, room, user) {
-		if (!user.isDeveloper() || !target) return;
+	c: {
+		command(target, room, user) {
 		this.say(target);
+		},
+		developerOnly: true,
 	},
-	uptime: function (target, room, user, pm) {
+	uptime: {
+		command(target, room, user, pm) {
 		let uptime = process.uptime();
 		let uptimeText;
 		if (uptime > 24 * 60 * 60) {
@@ -45,37 +50,49 @@ let commands = {
 			uptimeText = Tools.toDurationString(uptime * 1000);
 		}
 		this.say("Uptime: **" + uptimeText + "**");
+		},
 	},
-	kill: function (target, room, user) {
-    if (!user.isDeveloper()) return;
+	kill: {
+		command(target, room, user) {
 	  console.log('Killed by ' + user.name);
 	  process.exit(-1);
+		},
+		developerOnly: true,
         },
 	jr: 'joinroom',
-        joinroom: function (target, room, user, pm) {
-		if (!user.isDeveloper()) return;
+        joinroom: {
+		command(target, room, user) {
 		if (!target) return this.say("Usage: " + Config.commandCharacter + "joinroom [room]");
 		this.say("/join " + target);
+		},
+		developerOnly: true,
 	},
         lr: 'leaveroom',
-        leaveroom: function (target, room, user, pm) {
-		if (!user.isDeveloper()) return;
+        leaveroom: {
+		command(target, room, user) {
                 if (!target) return this.say("Usage: " + Config.commandCharacter + "leaveroom [room]");
 		this.say("/leave " + target);
+		},
+		developerOnly: true,
 	},
 
 	// General commands
-	about: function (target, room, user) {
+	about: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		this.say(Config.username + " code by A Flying Phantom: https://github.com/FlyingPhantom/Phantom-Ozonix");
+		},
 	},
 	guide: 'help',
-	help: function (target, room, user) {
+	help: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (!Config.guide) return this.say("There is no guide available.");
 		this.say(Users.self.name + " guide: " + Config.guide);
+		},
 	},
-	mail: function (target, room, user) {
+	mail: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) || !Config.allowMail) return;
 		let targets = target.split(',');
 		if (targets.length < 2) return this.say("Please use the following format: .mail user, message");
@@ -98,26 +115,32 @@ let commands = {
 		database.mail[to].push({time: Date.now(), from: user.name, text: message});
 		Storage.exportDatabase('global');
 		this.say("Your message has been sent to " + Users.add(targets[0]).name + "!");
+		},
 	},
 	
 	// Misc Commands
 	
 	choose: 'pick',
-	pick: function (target, room, user, pm) {
+	pick: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (target.length < 3 || !~target.indexOf(',')) return this.say("You must give at least 2 valid choices", room);
 		let targets = target.split(',');
 		let pick = targets[Math.floor(Math.random() * targets.length)];
 		this.say("Random pick: " + pick);
+		},
 	},
-        iq: function (target, room, user) {
+        iq: {
+		command(target, room, user) {
 	    if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
             if (!target) return this.say('You didn\'t specify a person');
             this.say('Analysisng the IQ of the person. ' + 'Give me a few moments.......')
             var x = Math.floor((Math.random() * 200) + 1);
             this.say('The iq of ' + target + ' is :  ' +   x );
+		},
         },
-	 ping: function (target, room, user) {
+	 ping: {
+		 command(target, room, user) {
           if(!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
           var rate = Math.floor((Math.random() * 10) + 1);
           if(rate == 1){
@@ -130,16 +153,22 @@ let commands = {
        else{
        this.say("Pong!");
 
-        }},
+        }
+		 },
+		 
+        },
 	j: 'judge',
-        judge:  function (target, room, user) {
+        judge:  {
+		command(target, room, user) {
 	        if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
                 var judgement = [" is so cute"," is the worst!!!"," is um eh not bad "," is the best"," is ok"];
                 var rand = Math.floor((Math.random() * 4) + 1); 
                 if (!["!", "/"].includes(target.charAt(0))) 
                this.say(target.split('/') + judgement[rand]);
+		},
         },
-      timer: function(target, room, user) {
+      timer: {
+	      command(target, room, user) {
 			if (!user.hasRank(room, 'voice') && !user.isDeveloper) return;
 			const id = Tools.toId(target);
 			if (id === 'off' || id === 'end') {
@@ -165,9 +194,11 @@ let commands = {
 				delete room.timers[user.id];
 			}, time);
 			this.say("Your timer has been set for: " + Tools.toDurationString(time) + ".");
-		},
+	      },
+	},
         cal : 'calculate',
-        calculate: function(target, room, user){
+        calculate: {
+		command(target, room, user){
 	           if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
                    let alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z'];
                    let cond = true;
@@ -175,8 +206,10 @@ let commands = {
                    if(target.includes(alphabets[i])) cond = false;
                 }
                    if(cond == true) return this.say(eval(target));
+		},
         },
-        reversio: function(target, room, user){
+        reversio: {
+		command(target, room, user){
                   let str = target;
                   var n = str.includes("!");
                   if(n)
@@ -195,8 +228,10 @@ let commands = {
                 if(joinArray == target) {
                  return this.say("You spotted a Palindrome! " + joinArray);}
                  return this.say(joinArray);
+		},
        },
-	joke: function(target, room, user) {
+	joke: {
+		command(target, room, user) {
         if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		let jokes = [
 			"What's the difference between a jeweler and a jailor? One sells watches, and the other watches cells!",
@@ -245,22 +280,28 @@ let commands = {
 			"Why was the tennis club's website down? They had problems with their server.",
 		]
                this.say(Tools.sampleOne(jokes));
+		},
         },
-	roast: function (target, room, user) {
+	roast: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		let roasts = ["If i wanted to die, I would climb to the top of " + target + "'s ego and jump to their IQ", target + ", I was going to give you a nasty look but I see that you’ve already got one.", target + ", you always bring me so much joy. As soon as you leave the room.", target + ", some day you'll go far - and i really hope you stay there.", "To call " + target + " a donkey would be an insult to the donkey.", target + ", You're the reason the gene pool needs a lifeguard", target + "'s breath is so bad, their dentist treats them over the phone.", "I tried making " + target + " my password but my computer said it was too weak.", "If laughter is the best medicine, " + target + "'s face must be curing the world.", target + ", you remind me of Kurt Angle. You suck!", target + ', your presence here is as bad as __OM Room__\'s theme', target + ", you remind me of gold. You weigh a fuck ton.", target + ", your body looks like a kindergartners attempt to make a person out of playdoh", target + ", my mom asked me to take out the trash so what time should I pick you up?", "No, those __pants__ don't make " + target + " look fatter - how could they?", "If " + target + " is gonna be two-faced, why can't at least one of them be attractive?", "Accidents happen. LIKE YOU!", target + " is proof god has a sense of humor"];
 		this.say(Tools.sampleOne(roasts));
+		},
 	},
 	"helix": "8ball",
-	"8ball": function(target, room, user){
+	"8ball": {
+		command(target, room, user){
                  if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 	         let cases = ["Signs point to yes.","Yes.","Reply hazy,try again.","Without a doubt.","My sources say no.","As I see it, yes.","You may rely on it.","Concentrate and ask again.", "Outlook not so good.",	"It is decidedly so.",   "Very doubtful.","Better not tell you now.","Yes - definitely.", "It is certain.", "Cannot predict now.","Most likely.","Ask again later.",	"My reply is no.","Outlook good.","Don't count on it."]
                  this.say(Tools.sampleOne(cases));
+		},
         },
         "rpoke":"randompokemon",
 	"randpoke": "randompokemon",
         "randp": "randompokemon",
-        randompokemon: function(target, room, user) {
+        randompokemon: {
+		command(target, room, user) {
 	                if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 	                if (!target) {
        	                const species = Tools.getExistingPokemon(Tools.sampleOne(Object.keys(Tools.data.pokedex))).name;
@@ -270,24 +311,30 @@ let commands = {
 	               return;
 	               }
 	               this.say("!randpoke " + target);
+		},
         },
         "rmove": "randommove",
 	"randmove": "randommove",
-         randommove:  function(target, room, user) {
+         randommove:  {
+		 command(target, room, user) {
 			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 			const move = Tools.getExistingMove(Tools.sampleOne(Object.keys(Tools.data.moves))).name;
   		        this.say('!dt ' + move);
+		 },
         },
         "ritem": "randomitem",
 	"randitem": "randomitem",
-         randomitem: function (target, room, user) {
+         randomitem: {
+		 command(target, room, user) {
 		     if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 		     const item = Tools.getExistingItem(Tools.sampleOne(Object.keys(Tools.data.items))).name;
 		     this.say('!dt ' + item);
+		 },
 	},
         "rability": "randomability",
 	"randability": "randomability",
-         randomability: function(target, room, user) {
+         randomability: {
+		 command(target, room, user) {
 			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 			const abilities = Object.keys(Tools.data.abilities);
 			let ability = Tools.getExistingAbility(Tools.sampleOne(abilities));
@@ -295,10 +342,12 @@ let commands = {
 				ability = Tools.getExistingAbility(Tools.sampleOne(abilities));
 			}
 			this.say('!dt ' + ability.name);
+		 },
 	},
 	"rtype": "randomtype",
 	"randtype": "randomtype",
-         randomtype:  function(target, room, user) {
+         randomtype:  {
+		 command(target, room, user) {
 			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 			const types = Object.keys(Tools.data.typeChart);
 			let type = Tools.sampleOne(types);
@@ -307,25 +356,30 @@ let commands = {
 				type += "/" + Tools.sampleOne(types);
 			}
 			this.say('Randomly generated type: **' + type + '**');
+		 },
 	},
         "randchar": "randomcharacter",
         "rchar": "randomcharacter",
-        randomcharacter: function (target, room, user) {
+        randomcharacter: {
+		command(target, room, user) {
 			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 			this.say('Randomly generated character: **' + Tools.sampleOne(Tools.data.characters).trim() + '**');
+		},
 	},
         "randlocation": "randomlocation",
         "rloc": "randomlocation",
 	"randloc": "randomlocation",
-        randomlocation:	function(target, room, user) {
+        randomlocation:	{
+		command(target, room, user) {
 			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
 			this.say('Randomly generated location: **' + Tools.sampleOne(Tools.data.locations).trim() + '**');
+		},
 	}, 
 
 	// Game commands
 	signups: 'creategame',
-	creategame: function (target, room, user) {
-		if (room instanceof Users.User) return;
+	creategame: {
+		command(target, room, user) {
 		if (!user.hasRank(room, '+')) return;
 		if (!Config.games || !Config.games.includes(room.id)) return this.say("Games are not enabled for this room.");
 		let format = Games.getFormat(target);
@@ -334,14 +388,20 @@ let commands = {
 		Games.createGame(format, room);
 		if (!room.game) return;
 		room.game.signups();
+		},
+		chatOnly: true,
 	},
 	start: 'startgame',
-	startgame: function (target, room, user) {
+	startgame: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (room.game) room.game.start();
+		},
+		chatOnly: true,
 	},
 	cap: 'capgame',
-	capgame: function (target, room, user) {
+	capgame: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !room.game || !user.hasRank(room, '+')) return;
 		let cap = parseInt(target);
 		if (isNaN(cap)) return this.say("Please enter a valid player cap.");
@@ -349,31 +409,45 @@ let commands = {
 		if (room.game.maxPlayers && cap > room.game.maxPlayers) return this.say(room.game.name + " cannot have more than " + room.game.maxPlayers + " players.");
 		room.game.playerCap = cap;
 		this.say("The game will automatically start at **" + cap + "** players!");
+		},
+		chatOnly: true,
 	},
 	end: 'endgame',
-	endgame: function (target, room, user) {
+	endgame: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		if (room.game) room.game.forceEnd();
+		},
+		chatOnly: true,
 	},
 	join: 'joingame',
-	joingame: function (target, room, user) {
+	joingame: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !room.game) return;
 		room.game.join(user);
+		},
+		chatOnly: true,
 	},
 	leave: 'leavegame',
-	leavegame: function (target, room, user) {
+	leavegame: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !room.game) return;
 		room.game.leave(user);
+		},
+		chatOnly: true,
 	},
-	bid: function (target, room, user) {
+	bid: {
+		command(target, room, user) {
 		if (!room.game) return;
 		if (typeof room.game.bid === 'function') room.game.bid(target, user);
+		},
+		chatOnly: true,
 	},
 
 	// Storage commands
 	bits: 'points',
-	points: function (target, room, user) {
-		if (room !== user) return;
+	points: {
+		command(target, room, user) {
 		let targetUserid = target ? Tools.toId(target) : user.id;
 		/**@type {Array<string>} */
 		let points = [];
@@ -383,11 +457,14 @@ let commands = {
 		});
 		if (!points.length) return this.say((target ? target.trim() + " does not" : "You do not") + " have points on any leaderboard.");
 		this.say(points.join(" | "));
+		},
+		pmOnly: true,
 	},
 
 	// Tournament commands
 	tour: 'tournament',
-	tournament: function (target, room, user) {
+	tournament: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id)) return;
 		if (!target) {
 			if (!user.hasRank(room, '+')) return;
@@ -424,9 +501,12 @@ let commands = {
 				this.say("/tour new " + format.id + ", elimination, " + (cap ? cap + ", " : "") + (targets.length > 2 ? ", " + targets.slice(2).join(", ") : ""));
 			}
 		}
+		},
+		chatOnly: true,
 	},
 	settour: 'settournament',
-	settournament: function (target, room, user) {
+	settournament: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id) || !user.hasRank(room, '%')) return;
 		if (room.id in Tournaments.tournamentTimers) {
 			let warned = overwriteWarnings.has(room.id) && overwriteWarnings.get(room.id) === user.id;
@@ -459,13 +539,18 @@ let commands = {
 		if (timer <= 0) timer += 24 * 60 * 60 * 1000;
 		Tournaments.setTournamentTimer(room, timer, format.id, targets[2] ? parseInt(targets[2]) : 0);
 		this.say("The " + format.name + " tournament is scheduled for " + Tools.toDurationString(timer) + ".");
+		},
+		chatOnly: true,
 	},
 	canceltour: 'canceltournament',
-	canceltournament: function (target, room, user) {
+	canceltournament: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !Config.tournaments || !Config.tournaments.includes(room.id) || !user.hasRank(room, '%')) return;
 		if (!(room.id in Tournaments.tournamentTimers)) return this.say("There is no tournament scheduled for this room.");
 		clearTimeout(Tournaments.tournamentTimers[room.id]);
 		this.say("The scheduled tournament was canceled.");
+		},
+		chatOnly: true,
 	},
 };
 
