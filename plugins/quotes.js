@@ -40,7 +40,8 @@ function getDatabase(room) {
 /**@type {{[k: string]: Command | string}} */
 let commands = {
 	quotesrank: 'setquotesrank',
-	setquotesrank: function (target, room, user) {
+	setquotesrank: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !user.hasRank(room, '#')) return;
 		let database = getDatabase(room.id);
 		target = target.trim();
@@ -49,8 +50,10 @@ let commands = {
 		database.defaultRanks['quotes'] = target;
 		Storage.exportDatabase(room.id);
 		this.say("Users of rank " + target + " and above can now manage room quotes.");
+		},
 	},
-	addquote: function (target, room, user) {
+	addquote: {
+		command(target, room, user) {
 		if (room instanceof Users.User) return;
 		let database = getDatabase(room.id);
 		if (!user.hasRank(room, database.defaultRanks['quotes'])) return;
@@ -63,8 +66,10 @@ let commands = {
 		quotes.push(target);
 		Storage.exportDatabase(room.id);
 		this.say("Your quote was successfully added.");
+		},
 	},
-	removequote: function (target, room, user) {
+	removequote: {
+		command(target, room, user) {
 		if (room instanceof Users.User) return;
 		let database = getDatabase(room.id);
 		if (!user.hasRank(room, database.defaultRanks['quotes'])) return;
@@ -76,14 +81,19 @@ let commands = {
 		quotes.splice(index, 1);
 		Storage.exportDatabase(room.id);
 		this.say("Your quote was successfully removed.");
+		},
 	},
-	randquote: function (target, room, user) {
+	"quote": "randquote",
+	randquote: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !user.hasRank(room, '+')) return;
 		let quotes = getDatabase(room.id).quotes;
 		if (!quotes.length) return this.say("This room doesn't have any quotes.");
 		this.say(Tools.sampleOne(quotes));
+		},
 	},
-	quotes: function (target, room, user) {
+	quotes: {
+		command(target, room, user) {
 		if (room instanceof Users.User || !user.hasRank(room, '+')) return;
 		let quotes = getDatabase(room.id).quotes;
 		if (!quotes.length) return this.say("This room doesn't have any quotes.");
@@ -97,6 +107,7 @@ let commands = {
 		Tools.uploadToHastebin(prettifiedQuotes, /**@param {string} hastebinUrl */ hastebinUrl => {
 			this.say("Room quotes: " + hastebinUrl);
 		});
+		},
 	},
 };
 
