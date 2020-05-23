@@ -94,7 +94,6 @@ class Context {
 				// @ts-ignore Typescript bug - issue #10530
 				newCommand = Commands[newCommand];
 			}
-                        // @ts-ignore
 			command = newCommand;
 			if (newTarget) {
 				target = newTarget.trim();
@@ -102,12 +101,24 @@ class Context {
 				target = '';
 			}
 		}
+		if (Commands[command].command && typeof Commands[command].command !== 'function') return false;
+    if(Commands[command].developerOnly && !this.user.isDeveloper()) return false;
+    if(this.room == this.user){
+  if(Commands[command].chatOnly && !this.user.isDeveloper()) return false;
+}
+    else if(Commands[command].room && !Commands[command].room.includes(this.room.id)) return;
 
-		if (typeof Commands[command] !== 'function') return false;
-
+ else{
+      if(Commands[command].pmOnly && !this.user.isDeveloper()) return false;
+    }
 		try {
 			// @ts-ignore Typescript bug - issue #10530
+		if(Commands[command].command){
+			Commands[command].command.call(this, target, this.room, this.user, originalCommand, this.time);
+			}
+			else{
 			Commands[command].call(this, target, this.room, this.user, originalCommand, this.time);
+			}
 		} catch (e) {
 			let stack = e.stack;
 			stack += 'Additional information:\n';
