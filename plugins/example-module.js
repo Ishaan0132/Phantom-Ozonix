@@ -14,9 +14,11 @@
 
 /**@type {{[k: string]: Command | string}} */
 let commands = {
-	about: function (target, room, user) {
+	about: {
+		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		this.say("test");
+		},
 	},
 };
 
