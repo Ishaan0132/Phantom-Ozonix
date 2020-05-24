@@ -383,9 +383,17 @@ class MessageParser {
 			// @ts-ignore Typescript bug - issue #10530
 			command = Commands[command];
 		}
-		if (typeof Commands[command] !== 'function') return;
-
+		if(Commands[command].command){
+		if (Commands[command].command && typeof Commands[command].command !== 'function') return;
+			
 		return new Context(target, room, user, command, originalCommand, time).run();
+	}
+	
+	else {
+			if (typeof Commands[command] !== 'function') return;
+		
+		return new Context(target, room, user, command, originalCommand, time).run();
+	}
 	}
 
 	parseFormats() {
