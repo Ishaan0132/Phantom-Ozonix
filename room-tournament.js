@@ -172,8 +172,9 @@ class Tournament {
 			if (data.rootNode) {
 				let queue = [data.rootNode];
 				while (queue.length > 0) {
-					let node = queue.shift();
-					if (!node) break;
+					const node = queue[0];
+				queue.shift();
+				if (!node.children) continue;
 
 					if (node.children[0] && node.children[0].team) {
 						let userA = Tools.toId(node.children[0].team);
@@ -193,17 +194,16 @@ class Tournament {
 						}
 					}
 
-					node.children.forEach(/**@param {any} child*/ function (child) {
-						queue.push(child);
-					});
+					node.children.forEach( child => {
+					if (child) queue.push(child);
+				});
 				}
 			}
 		} else if (data.type === 'table') {
-			if (data.tableHeaders && data.tableHeaders.cols) {
-				for (let i = 0, len = data.tableHeaders.cols.length; i < len; i++) {
-					let player = Tools.toId(data.tableHeaders.cols[i]);
-					if (!players[player]) players[player] = data.tableHeaders.cols[i];
-				}
+			if (!this.info.bracketData.tableHeaders || !this.info.bracketData.tableHeaders.cols) return;
+			for (const name of this.info.bracketData.tableHeaders.cols) {
+				const id = Tools.toId(name);
+				if (!players[id]) players[id] = name;
 			}
 		}
 		if (!this.playerCount) {
@@ -227,9 +227,9 @@ class Tournament {
 		}
 
 		for (let i in players) {
-			let player = this.addPlayer(players[i]);
-			if (!player || player.eliminated) continue;
-			if (losses[i] && player.losses < losses[i]) {
+			let player = this.addPlayer(players[i]) || this.players[i];
+			if (player.eliminated) continue;
+			if (losses[i] && losses[i] !== player.losses) {
 				player.losses = losses[i];
 				if (player.losses >= this.generator) {
 					player.eliminated = true;
