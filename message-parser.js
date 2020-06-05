@@ -138,6 +138,8 @@ exports.Context = Context;
 
 class MessageParser {
 	constructor() {
+		this.userdetails = '';
+                this.qroom = '';
                 /**@type {string[]} */
 		this.formatsList = [];
                 /**@type {{[k: string]: {name: string, id: string, section: string, searchShow: boolean, challengeShow: boolean, tournamentShow: boolean, playable: boolean}}} */
@@ -184,6 +186,20 @@ class MessageParser {
 			if (Config.avatar) Client.send('|/avatar ' + Config.avatar);
 		        if (Config.status) Client.send('|/status ' + Config.status);
 			break;
+				case 'queryresponse': {
+                                      let room2 = this.qroom;
+                                      let q = message.split('|');
+                                      if(!q[3].includes('status')) return;
+                                      if(typeof this.qroom == "object"){
+                                      this.qroom.say((q[3]));
+                               }
+                         this.qroom = '';
+                         this.userdetails = JSON.parse(q[3]);
+                         let user = Users.add(JSON.parse(q[3]).id);
+                         user.status = JSON.parse(q[3]).status;
+                         user.avatar = JSON.parse(q[3]).avatar;
+                }
+		break;
 		case 'init':
 			room.onJoin(Users.self, ' ');
 			console.log('Joined room: ' + room.id);
@@ -202,6 +218,13 @@ class MessageParser {
 				const parsedUsername = Tools.parseUsernameText(users[i].substr(1));
 				let user = Users.add(parsedUsername.username);
 				let rank = users[i].charAt(0);
+                                const {away, status, username} = Tools.parseUsernameText(users[i].substr(1));
+                                if (status || user.status) user.status = status;
+				if (away) {
+					user.away = true;
+				} else if (user.away) {
+					user.away = false;
+				}
 				room.users.set(user, rank);
 				user.rooms.set(room, rank);
 			}
