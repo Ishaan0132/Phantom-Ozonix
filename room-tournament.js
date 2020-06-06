@@ -200,8 +200,8 @@ class Tournament {
 				}
 			}
 		} else if (data.type === 'table') {
-			if (!this.info.bracketData.tableHeaders || !this.info.bracketData.tableHeaders.cols) return;
-			for (const name of this.info.bracketData.tableHeaders.cols) {
+			if (!data.tableHeaders || !data.tableHeaders.cols) return;
+			for (const name of data.tableHeaders.cols) {
 				const id = Tools.toId(name);
 				if (!players[id]) players[id] = name;
 			}
