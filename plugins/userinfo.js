@@ -87,7 +87,7 @@ function getUserInfo(userid) {
 exports.commands = {
     regdate: {
         command(target, room, user) {
-        if (room instanceof Users.User || !user.hasRank(room, '+')) return;
+        if (!room instanceof Users.User && !user.hasRank(room, '+')) return;
         
         target = Tools.toId(target) || user.userid;
       if (!target || target.length > 18) return this.say("Please enter a valid username");
@@ -104,7 +104,7 @@ exports.commands = {
     
     regtime: {
         command(target, room, user) {
-        if (room instanceof Users.User || !user.hasRank(room, '+')) return;
+        if (!room instanceof Users.User && !user.hasRank(room, '+')) return;
         
         target = Tools.toId(target) || user.userid;
         
@@ -120,7 +120,7 @@ exports.commands = {
     
     rank: {
         command(target, room, user) {
-       if (room instanceof Users.User || !user.hasRank(room, '+')) return;
+       if (!room instanceof Users.User && !user.hasRank(room, '+')) return;
         
         target = Tools.toId(target) || user.userid;
         
