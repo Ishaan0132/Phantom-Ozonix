@@ -169,7 +169,7 @@ let commands = {
         },
       timer: {
 	      command(target, room, user) {
-			if (!user.hasRank(room, 'voice') && !user.isDeveloper) return;
+			if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 			const id = Tools.toId(target);
 			if (id === 'off' || id === 'end') {
 				if (!room.timers || !(user.id in room.timers)) return this.say("You do not have a timer running.");
@@ -292,7 +292,7 @@ let commands = {
 	"helix": "8ball",
 	"8ball": {
 		command(target, room, user){
-                 if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+                 if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 	         let cases = ["Signs point to yes.","Yes.","Reply hazy,try again.","Without a doubt.","My sources say no.","As I see it, yes.","You may rely on it.","Concentrate and ask again.", "Outlook not so good.",	"It is decidedly so.",   "Very doubtful.","Better not tell you now.","Yes - definitely.", "It is certain.", "Cannot predict now.","Most likely.","Ask again later.",	"My reply is no.","Outlook good.","Don't count on it."]
                  this.say(Tools.sampleOne(cases));
 		},
@@ -302,7 +302,7 @@ let commands = {
         "randp": "randompokemon",
         randompokemon: {
 		command(target, room, user) {
-	                if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+	               if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 	                if (!target) {
        	                const species = Tools.getExistingPokemon(Tools.sampleOne(Object.keys(Tools.data.pokedex))).name;
 	                {
@@ -317,7 +317,7 @@ let commands = {
 	"randmove": "randommove",
          randommove:  {
 		 command(target, room, user) {
-			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+			if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 			const move = Tools.getExistingMove(Tools.sampleOne(Object.keys(Tools.data.moves))).name;
   		        this.say('!dt ' + move);
 		 },
@@ -326,7 +326,7 @@ let commands = {
 	"randitem": "randomitem",
          randomitem: {
 		 command(target, room, user) {
-		     if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+		    if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		     const item = Tools.getExistingItem(Tools.sampleOne(Object.keys(Tools.data.items))).name;
 		     this.say('!dt ' + item);
 		 },
@@ -335,7 +335,7 @@ let commands = {
 	"randability": "randomability",
          randomability: {
 		 command(target, room, user) {
-			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+			if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 			const abilities = Object.keys(Tools.data.abilities);
 			let ability = Tools.getExistingAbility(Tools.sampleOne(abilities));
 			while (ability.id === 'noability') {
@@ -348,7 +348,7 @@ let commands = {
 	"randtype": "randomtype",
          randomtype:  {
 		 command(target, room, user) {
-			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+			if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 			const types = Object.keys(Tools.data.typeChart);
 			let type = Tools.sampleOne(types);
 			if (Tools.random(2)) {
@@ -362,7 +362,7 @@ let commands = {
         "rchar": "randomcharacter",
         randomcharacter: {
 		command(target, room, user) {
-			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+			if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 			this.say('Randomly generated character: **' + Tools.sampleOne(Tools.data.characters).trim() + '**');
 		},
 	},
@@ -371,7 +371,7 @@ let commands = {
 	"randloc": "randomlocation",
         randomlocation:	{
 		command(target, room, user) {
-			if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+			if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 			this.say('Randomly generated location: **' + Tools.sampleOne(Tools.data.locations).trim() + '**');
 		},
 	}, 
