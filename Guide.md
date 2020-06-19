@@ -19,11 +19,10 @@ Misc commands for multiple features:
 
  - `pick [option1], [option2], [...]` - Choose between multiple options.
  - `iq` - Get a random iq of the user.
- - `joke` - Get a random joke.
+ - `joke` - Generates a random joke.
  - `ping` - Pings the bot.
  - `judge` - Judges the user.
  - `calculate` - Calculate mathematics.
- - `joke` - Generates a random joke.
  - `roast` - Roast someone.
  - `helix` or `8ball` - Get a random answer.
  - `regdate (username)` - Get the register date of a Pokemon Showdown account.
@@ -78,7 +77,7 @@ Commands for Tournaments feature
  - `tour` - Start a tournament
  - `tour start` - Force start a tornament
  - `tour end` - Force end a tornament
- - 'settour` - Schedules a tournament for the particular room
+ - `settour` - Schedules a tournament for the particular room
  - `canceltour` - Cancels the Scheduled tour 
 
 Commands for leaderboards system 
