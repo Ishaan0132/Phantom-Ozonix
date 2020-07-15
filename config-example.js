@@ -25,7 +25,7 @@ exports.avatar = '';
 exports.status = "PM me .guide for help!";
 
 // A guide for commands and features
-exports.guide = 'https://github.com/FlyingPhantom/Phantom-Ozonix/blob/master/Guide.md';
+exports.guide = 'https://github.com/FlyingPhantom/Phantom-Ozonix/blob/master/GUIDE.md';
 
 // Rooms that Phantom Ozonix will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
