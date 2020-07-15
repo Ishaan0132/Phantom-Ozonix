@@ -297,6 +297,29 @@ let commands = {
                  this.say(Tools.sampleOne(cases));
 		},
         },
+	  repeat: function(target, room, user) {
+   if (room instanceof Users.User || !user.hasRank(room, '%')) return;
+      return this.say("You do not have permission to use this.");
+    if (!target)
+      return this.say("Syntax: " + Config.commandCharacter + "repeat time, phrase");
+    if (target === "stop" && room.repeat) {
+      clearInterval(room.repeat);
+      delete room.repeat;
+      return this.say("The repeat was stopped.");
+    }
+    if (room.repeat) return this.say("There is already a repeat in this room.");
+    let opts = target.split(",");
+    let time = parseInt(opts[0]);
+    if (!time || isNaN(time) || time < 5)
+      return this.say("The time must be a real number greater than 5");
+    opts.splice(0, 1);
+    let phrase = opts.join(",");
+    function repeat() {
+      room.say(phrase);
+    }
+    room.repeat = setInterval(repeat, time * 60000);
+    this.say("I will be repeating that message once every " + time + " minutes.");
+  }
         "rpoke":"randompokemon",
 	"randpoke": "randompokemon",
         "randp": "randompokemon",
