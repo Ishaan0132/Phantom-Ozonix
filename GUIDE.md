@@ -27,6 +27,8 @@ Misc commands for multiple features:
  - `helix` or `8ball` - Get a random answer.
  - `regdate (username)` - Get the register date of a Pokemon Showdown account.
  - `regtime (username)` - Get the age of a Pokemon Showdown account, useful for check if an account is autoconfirmed.
+ - `repeat [time], [phrase]` - Repeat the given phrase in the room at a specific interval.(Minimum 5 minutes)
+ - `repeat stop` - Stops the repeat in the room.
 
 
 Commands for getting pokemon info:
