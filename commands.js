@@ -90,7 +90,7 @@ let commands = {
       if (!(room instanceof Users.User) && !user.hasRank(room, "+")) return;
       this.say(
         Config.username +
-          " code by A Flying Phantom: https://github.com/FlyingPhantom/Phantom-Ozonix"
+          " code: https://github.com/FlyingPhantom/Phantom-Ozonix"
       );
     }
   },
