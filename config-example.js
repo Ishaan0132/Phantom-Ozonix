@@ -104,4 +104,4 @@ exports.punishmentActions = punishmentActions;
 /**@type {?{[k: string]: string}} */
 exports.punishmentReasons = null;
 
-exports.allowMail = false;
+exports.allowMail = true;
