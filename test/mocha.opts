@@ -1,3 +1,0 @@
-test/main.js test/modules/*.js
--R dot
--u bdd
