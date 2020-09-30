@@ -455,6 +455,36 @@ let commands = {
     },
     chatOnly: true
   },
+  pair: {
+    command(target, room, user) {
+    if (room instanceof Users.User && !user.hasRank(room, '+')) return;
+        let splitStr = target.split(",");
+        if (splitStr.length !== 2) return;
+        let str1 = splitStr[0];
+        let str2 = splitStr[1];
+        var userr = str1;
+        var pairing = str2;
+        function toBase(num, base) {
+            var symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+            var val;
+            var total = 0;
+ 
+            if (base > symbols.length || base <= 1) return false;
+            let i;
+            for (i = 0; i < num.length; i++) {
+                val = symbols.indexOf(num[i]);
+                total += ((val % base) * Math.pow(10, i)) + (Math.floor(val / base) * Math.pow(10, i + 1));
+            }
+            return parseInt(total);
+        }
+ 
+        userr = toBase(userr, 10);
+        pairing = toBase(pairing, 10);
+        var match = (userr + pairing) % 101;
+ 
+        this.say( str1 + ' and ' + str2 + ' are ' + Math.abs(match) + '% compatible!');
+    },
+  },
   rpoke: "randompokemon",
   randpoke: "randompokemon",
   randp: "randompokemon",
@@ -631,6 +661,7 @@ let commands = {
     },
     chatOnly: true
   },
+ 
 
   // Storage commands
   bits: "points",
