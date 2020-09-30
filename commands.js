@@ -204,6 +204,14 @@ let commands = {
         this.say(target.split("/") + judgement[rand]);
     }
   },
+  vibe: {
+    command(target, room, user){
+      if (room instanceof Users.User || !user.hasRank(room, '+')) return;
+      let rate = Math.floor(Math.random() * 100 + 1);
+      let vibe = '<img src="https://cdn.discordapp.com/emojis/682731600479518730.gif" alt="vibe" height="60" width="60"/>';
+      room.say("/adduhtml vibe, " + vibe.repeat(rate));
+    },
+  },
   timer: {
     command(target, room, user) {
       if (!(room instanceof Users.User) && !user.hasRank(room, "+")) return;
