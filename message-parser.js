@@ -187,7 +187,6 @@ class MessageParser {
 		        if (Config.status) Client.send('|/status ' + Config.status);
 			break;
 				case 'queryresponse': {
-                                      let room2 = this.qroom;
                                       let q = message.split('|');
                                       if(!q[3].includes('status')) return;
                                       if(typeof this.qroom == "object"){
