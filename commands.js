@@ -434,8 +434,7 @@ let commands = {
   },
   repeat: {
     command(target, room, user) {
-      if (room instanceof Users.User || !user.hasRank(room, "%")) return;
-      return this.say("You do not have permission to use this.");
+      if (room instanceof Users.User || !user.hasRank(room, "%")) return this.say("You do not have permission to use this.");
       if (!target)
         return this.say(
           "Syntax: " + Config.commandCharacter + "repeat time, phrase"
