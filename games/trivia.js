@@ -59,7 +59,7 @@ class Trivia extends Games.Game {
 		this.timeout = null;
 		this.hint = '';
 		this.points = new Map();
-		this.maxPoints = 3;
+		this.maxPoints = 5;
 		this.categories = Object.keys(data);
                 /**@type {{[k: string]: string[]}} */
                 this.questions = {};

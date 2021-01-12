@@ -57,7 +57,7 @@ class Hangman extends Games.Game {
 		/**@type {Array<string>} */
 		this.hint = [];
 		this.points = new Map();
-		this.maxPoints = 3;
+		this.maxPoints = 5;
 		this.categories = Object.keys(data);
 		this.currentCategory = '';
 		this.guessLimit = 10;
