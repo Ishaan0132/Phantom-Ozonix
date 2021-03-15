@@ -9,7 +9,7 @@ Basic Commands
 Basic features and some information about the bot.
 
  - `about` - Basic bot info, with the link to this repo.
- - `git` or `help` - Link to this repo.
+ - `guide` or `help` - Link to this guide.
  - `mail` - Sends a message to a user. 
 
 Chat Plugins
@@ -29,6 +29,11 @@ Misc commands for multiple features:
  - `regtime (username)` - Get the age of a Pokemon Showdown account, useful for check if an account is autoconfirmed.
  - `repeat [time], [phrase]` - Repeat the given phrase in the room at a specific interval.(Minimum 5 minutes)
  - `repeat stop` - Stops the repeat in the room.
+ - `timer` - Starts a timer.
+ - `timer end` - Stops the timer.
+ - `vibe` - VIBING.
+ - `reversio` - Reverses the given text.
+ - `pair` - Check the compatibility of 2 users. 
 
 
 Commands for getting pokemon info:
