@@ -1,6 +1,6 @@
 /**
  * Games
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * This file contains the games manager
  *
