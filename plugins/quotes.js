@@ -1,6 +1,6 @@
 /**
  * Quotes
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * Manages the quotes system for the bot, allowing the adding,
  * removing, and viewing of added quotes.
