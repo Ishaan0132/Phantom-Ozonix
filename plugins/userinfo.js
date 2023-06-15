@@ -1,6 +1,6 @@
 /**
  * User Info
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * Fetches User information
  *
