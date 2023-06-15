@@ -1,6 +1,6 @@
 /**
  * Rooms
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * This file tracks information about the rooms that the bot joins.
  *
