@@ -1,6 +1,6 @@
 /**
  * Tools
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * This file contains functions that are useful globally.
  *
