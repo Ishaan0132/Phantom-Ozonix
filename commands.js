@@ -1,6 +1,6 @@
 /**
  * Commands
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * This file contains the base commands for Phantom Ozonix.
  *

@@ -1,6 +1,6 @@
 /**
  * Example commands
- * Phantom Ozonix - https://github.com/FlyingPhantom/Phantom-Ozonix
+ * Phantom Ozonix - https://github.com/Ishaan0132/Phantom-Ozonix
  *
  * Plugins make it easier to have custom commands and
  * modules while rebasing with the main repository.

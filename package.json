@@ -13,7 +13,7 @@
 	"main": "app.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/FlyingPhantom/Phantom-Ozonix.git"
+		"url": "https://github.com/Ishaan0132/Phantom-Ozonix.git"
 	},
 	"dependencies": {
 		"websocket": "1.0.32"
