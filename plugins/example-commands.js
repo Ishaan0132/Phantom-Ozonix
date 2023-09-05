@@ -17,7 +17,7 @@ let commands = {
 	about: {
 		command(target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
-		this.say(Config.username + " code by A Flying Phantom: https://github.com/FlyingPhantom/Phantom-Ozonix");
+		this.say(Config.username + ": https://github.com/FlyingPhantom/Phantom-Ozonix");
 		},
 	},
 };
