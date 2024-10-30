@@ -16,7 +16,16 @@
 		"url": "https://github.com/Ishaan0132/Phantom-Ozonix.git"
 	},
 	"dependencies": {
-		"websocket": "1.0.32"
+		"websocket": "1.0.32",
+		"solenolyrics": "^5.0.0",
+    		"@blad3mak3r/reddit-memes": "^0.2.4",
+		"wtf_wikipedia": "^8.4.0",
+		"urban-dictionary": "^2.2.1",
+		"rgbcolor": "^1.0.1",
+		"popular-movie-quotes": "^1.2.4",
+		"querystring": "^0.2.0",
+		"request": "^2.88.2",
+		"superagent": "^6.1.0"
 	},
 	"devDependencies": {
 		"@types/mocha": "8.0.3",
