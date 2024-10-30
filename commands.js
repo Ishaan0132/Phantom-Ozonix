@@ -9,6 +9,11 @@
 
 "use strict";
 
+const { getRandomMeme } = require("@blad3mak3r/reddit-memes");
+const https = require("https");
+const solenolyrics = require("solenolyrics");
+const wtf = require("wtf_wikipedia");
+const movieQuote = require("popular-movie-quotes");
 // Users who use the settour command when a tournament is already
 // scheduled will be added here and prompted to reuse the command.
 // This prevents accidentally overwriting a scheduled tournament.
@@ -461,6 +466,173 @@ let commands = {
       );
     },
     chatOnly: true
+  },
+  meme: {
+    command(target, room, user) {
+      if (room instanceof Users.User || !user.hasRank(room, "+")) return;
+      getRandomMeme("memes")
+        .then(info => {
+          room.say(
+            `/adduhtml memem, <b> ${info.title} </b> <hr> <img src="${info.image}" width=70% height=70%/>`
+          );
+        })
+        .catch(console.error);
+    },
+    chatOnly: true
+  },
+  vibe: {
+    command(target, room, user) {
+      if (room instanceof Users.User || !user.hasRank(room, "+")) return;
+      let rate = Math.floor(Math.random() * 100 + 1);
+      let vibe =
+        '<img src="https://cdn.discordapp.com/emojis/682731600479518730.gif" alt="vibe" height="60" width="60"/>';
+      room.say("/adduhtml vibe, " + vibe.repeat(rate));
+    }
+  },
+  mquote: {
+    command(target, room, user) {
+      if (!(room instanceof Users.User) && !user.hasRank(room, "+")) return;
+      let mquote = movieQuote.getRandomQuote();
+      room.say(mquote);
+    },
+    chatOnly: true
+  },
+  wiki: {
+    async command(target, room, user) {
+      if (!user.hasRank(room, "+")) return;
+      let doc = await wtf.fetch(target);
+      var cat = doc.categories();
+      var img = wtf(doc).images(0);
+      room.say(
+        '/adduhtml wiki, <img src="' +
+          img.url() +
+          '" height="200" width="200"' +
+          doc.text()
+      );
+    }
+  },
+
+  lyrics: async function(target, room, user) {
+    if (room instanceof Users.User || !user.hasRank(room, "+")) return;
+    var lyrics = await solenolyrics.requestLyricsFor(target);
+    var title = await solenolyrics.requestTitleFor(target);
+    var author = await solenolyrics.requestAuthorFor(target);
+    var icon = await solenolyrics.requestIconFor(target);
+    room.say(
+      `/adduhtml lyrics, <h2 style="text-align:center;">` +
+        author +
+        `'s ` +
+        title +
+        `</h2><img src="` +
+        icon +
+        `" width="200" height="200" align="right"/>` +
+        lyrics.replace(/\n/g, "<br>")
+    );
+  },
+  gif: {
+    command(target, room, user) {
+      var qs = require("querystring");
+
+      var giphy_config = {
+        api_key: "9X5y5BwRvAPuXob3lCgowghaCn1i9hjT",
+        rating: "r",
+        url: "http://api.giphy.com/v1/gifs/random",
+        permission: ["NORMAL"]
+      };
+
+      var request = require("request");
+
+      function get_gif(tags, func) {
+        //limit=1 will only return 1 gif
+        var params = {
+          api_key: giphy_config.api_key,
+          rating: giphy_config.rating,
+          format: "json",
+          limit: 1
+        };
+        var query = qs.stringify(params);
+
+        if (tags !== null) {
+          query += "&tag=" + tags.join("+");
+        }
+
+        //wouldnt see request lib if defined at the top for some reason:\
+        var request = require("request");
+        //console.log(query)
+        request(
+          giphy_config.url + "?" + query,
+          function(error, response, body) {
+            //console.log(arguments)
+            if (error || response.statusCode !== 200) {
+              console.error("giphy: Got error: " + body);
+              console.log(error);
+              //console.log(response)
+            } else {
+              try {
+                var responseObj = JSON.parse(body);
+                func(responseObj.data.id);
+              } catch (err) {
+                func(undefined);
+              }
+            }
+          }.bind(this)
+        );
+      }
+      var tags = target.split(" ");
+      get_gif(tags, function(id) {
+        if (typeof id !== "undefined") {
+          room.say(
+            '/adduhtml giphy, <img src="http://media.giphy.com/media/' +
+              id +
+              '/giphy.gif" width=100% height =100%/><br><br> [Tags: ' +
+              (tags ? tags : "Random GIF") +
+              "]"
+          );
+        } else {
+          room.say(
+            "Couldn't fetch GIF [Tags: " + (tags ? tags : "Random GIF") + "]"
+          );
+        }
+      });
+    },
+  },
+  dog: {
+   async command(target, room, user) {
+      const SA = require('superagent')
+    const res = await SA.get('https://random.dog/woof.json?filter=mp4,webm')
+    const { fact } = (await SA.get('https://some-random-api.ml/facts/dog')).body
+     room.say()
+         
+    },
+  },
+
+  cat: {
+    command(target, room, user) {
+      if (room instanceof Users.User || !user.hasRank(room, "+")) return;
+      const options = {
+        hostname: "aws.random.cat",
+        path: "/meow?filter=mp4,webm",
+        method: "GET"
+      };
+
+      const req = https.request(options, res => {
+        console.log(`statusCode: ${res.statusCode}`);
+
+        res.on("data", d => {
+          let data = JSON.parse(d.toString());
+          room.say(
+            `/adduhtml cat, <img src = "${data.file}" width=90% height=100% /> `
+          );
+        });
+      });
+
+      req.on("error", error => {
+        console.log(error);
+      });
+
+      req.end();
+    },
+    chatOnly: true,
   },
   pair: {
     command(target, room, user) {
